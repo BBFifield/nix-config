@@ -14,38 +14,45 @@
     };
 
     nurpkgs.url = "github:nix-community/NUR";
-
-
   };
-  outputs = inputs:
-  with inputs;
-  let
-    system = "x86_64-linux";
 
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-      overlays = [nurpkgs.overlay];
-    };
-    pkgs-stable = import nixpkgs-stable {
-      inherit system;
-      config.allowUnfree = true;
-    };
-  in
-{
+  outputs = inputs:
+    with inputs;
+    let
+
+      initPkgs = system: import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = [nurpkgs.overlay];
+      };
+      pkgs-stable = import nixpkgs-stable {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    in
+  {
     nixosConfigurations = {
 
-      nixos = nixpkgs.lib.nixosSystem rec {
-        inherit pkgs;
 
-        #specialArgs = {
-         # inherit system
-        #};
-
+      virtualbox = nixpkgs.lib.nixosSystem {
+        pkgs = initPkgs "x86_64-linux";
         modules = [
+          ./systems/virtualbox/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.backupFileExtension = "backup";
+            home-manager.users.brandon = import ./home/home.nix;
 
-          ./configuration.nix
-
+            # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
+          }
+        ];
+      };
+      desktop = nixpkgs.lib.nixosSystem  {
+        pkgs = initPkgs "x86_64-linux";
+        modules = [
+          ./systems/desktop/configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -59,4 +66,4 @@
       };
     };
   };
-  }
+}

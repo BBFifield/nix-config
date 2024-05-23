@@ -77,6 +77,7 @@ in
           # Set preferences shared by all profiles.
           Preferences = {
             "browser.contentblocking.category" = { Value = "strict"; Status = "locked"; };
+            "widget.use-xdg-desktop-portal.file-picker" = 1;
           };
         };
       };

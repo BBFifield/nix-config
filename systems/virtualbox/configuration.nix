@@ -15,7 +15,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "primary-desktop"; # Define your hostname.
+  networking.hostName = "virtualbox"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -88,7 +88,7 @@
   #programs.firefox.enable = true;
 
   # Allow unfree packages
-  #nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -101,14 +101,6 @@
     efibootmgr
     gptfdisk
     home-manager
-    libsForQt5.sddm-kcm
-    libsForQt5.partitionmanager
-    libsForQt5.kpmcore
-    discord
-    _1password-gui
-    vivaldi
-    vivaldi-ffmpeg-codecs
-    vscode
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -144,12 +136,12 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];  
 
-  virtualisation.virtualbox.host.enable = true;
-  virtualisation.virtualbox.guest.enable = true;
-  users.extraGroups.vboxusers.members = [ "brandon" ];
+  #virtualisation.virtualbox.host.enable = true;
+  #virtualisation.virtualbox.guest.enable = true;
+  #users.extraGroups.vboxusers.members = [ "brandon" ];
 
   # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = ["nvidia"];
+  /*services.xserver.videoDrivers = ["nvidia"];
 
   hardware = {
     # bluetooth settings
@@ -196,5 +188,5 @@
       # Optionally, you may need to select the appropriate driver version for your specific GPU.
       package = config.boot.kernelPackages.nvidiaPackages.production;
     };
-  };
+  };*/
 }
