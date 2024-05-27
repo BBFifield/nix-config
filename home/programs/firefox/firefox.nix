@@ -4,28 +4,25 @@ let
 
   profilesPath = ".mozilla/firefox";
 
-  extensionSet = {
-    # ublock
-    "uBlock0@raymondhill.net" = {
-      install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
-      installation_mode = "force_installed";
+  extensionListNur = with pkgs.nur.repos.rycee.firefox-addons; [
+    ublock-origin
+    reddit-enhancement-suite
+    betterttv
+  ];
+
+  extensionList = with builtins;
+    let extension = shortID: uuid: {
+      name = uuid;
+      value = {
+        install_url = "https://addons.mozilla.org/firefox/downloads/latest/${shortID}/latest.xpi";
+        installation_mode = "force_installed";
+      };
     };
-    # RES
-    "jid1-xUfzOsOFlzSOXg@jetpack" = {
-      install_url = "https://addons.mozilla.org/firefox/downloads/latest/reddit-enhancement-suite/latest.xpi";
-      installation_mode = "force_installed";
-    };
-    # Better Youtube Shorts
-    "{ac34afe8-3a2e-4201-b745-346c0cf6ec7d}" = {
-      install_url = "https://addons.mozilla.org/firefox/downloads/latest/better-youtube-shorts/latest.xpi";
-      installation_mode = "force_installed";
-    };
-    # Breeze Dark Theme
-    "{4e507435-d65f-4467-a2c0-16dbae24f288}" = {
-      install_url = "https://addons.mozilla.org/firefox/downloads/latest/breezedarktheme/latest.xpi";
-      installation_mode = "force_installed";
-    };
-  };
+    in listToAttrs
+    [
+      (extension "better-youtube-shorts" "{ac34afe8-3a2e-4201-b745-346c0cf6ec7d}")
+      (extension "breezedarktheme" "{4e507435-d65f-4467-a2c0-16dbae24f288}")
+    ];
 
   settings = {
     "browser.aboutConfig.showWarning" = false;
@@ -71,7 +68,7 @@ in
           SearchBar = "unified";
 
           /* ---- EXTENSIONS ---- */
-          ExtensionSettings = extensionSet;
+          ExtensionSettings = extensionList;
 
           /* ---- PREFERENCES ---- */
           # Set preferences shared by all profiles.
@@ -88,6 +85,7 @@ in
         testagain3 = {
           id = 0;               # 0 is the default profile; see also option "isDefault"
           inherit settings;
+          extensions = extensionListNur;
         };
       };
     };

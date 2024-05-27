@@ -16,6 +16,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "virtualbox"; # Define your hostname.
+
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -79,7 +80,6 @@
     description = "Brandon";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      kate
     #  thunderbird
     ];
   };
@@ -96,11 +96,6 @@
     wget
     curl
     vim
-    git
-    gh
-    efibootmgr
-    gptfdisk
-    home-manager
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -136,8 +131,9 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];  
 
-  #virtualisation.virtualbox.host.enable = true;
-  #virtualisation.virtualbox.guest.enable = true;
+  virtualisation.virtualbox.guest.enable = true;
+  virtualisation.virtualbox.guest.clipboard = true;
+
   #users.extraGroups.vboxusers.members = [ "brandon" ];
 
   # Load nvidia driver for Xorg and Wayland

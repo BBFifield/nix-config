@@ -2,9 +2,8 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ inputs, outputs, lib, config, pkgs, ... }: {
 
-{
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -15,6 +14,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "desktop"; # Define your hostname.
+
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -41,7 +41,8 @@
     wayland.enable = true;
     wayland.compositor = "kwin";
   };
-  services.xserver.desktopManager.plasma5.enable = true;
+
+  services.desktopManager.plasma6.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -78,7 +79,6 @@
     description = "Brandon";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-      kate
     #  thunderbird
     ];
   };
@@ -86,29 +86,18 @@
   # Install firefox.
   #programs.firefox.enable = true;
 
-  # Allow unfree packages
-  #nixpkgs.config.allowUnfree = true;
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     wget
     curl
     vim
-    git
-    gh
-    efibootmgr
-    gptfdisk
-    home-manager
-    libsForQt5.sddm-kcm
-    libsForQt5.partitionmanager
-    libsForQt5.kpmcore
-    discord
-    _1password-gui
-    vivaldi
-    vivaldi-ffmpeg-codecs
-    vscode
   ];
+
+  nixpkgs = {
+    overlays = outputs.overlays.defaults;
+    config.allowUnfree = true;
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -144,7 +133,6 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];  
 
   virtualisation.virtualbox.host.enable = true;
-  virtualisation.virtualbox.guest.enable = true;
   users.extraGroups.vboxusers.members = [ "brandon" ];
 
   # Load nvidia driver for Xorg and Wayland
