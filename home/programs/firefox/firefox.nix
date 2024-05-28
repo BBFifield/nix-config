@@ -4,13 +4,16 @@ let
 
   profilesPath = ".mozilla/firefox";
 
-  extensionListNur = with pkgs.nur.repos.rycee.firefox-addons; [
+  #Profile specific extensions
+  extensions = with pkgs.nur.repos.rycee.firefox-addons; [
     ublock-origin
     reddit-enhancement-suite
     betterttv
+    darkreader
   ];
 
-  extensionList = with builtins;
+  #System-wide extensions. Will probably update to a list to concatenate with ${extensions} if I can figure out a way.
+  ExtensionSettings = with builtins;
     let extension = shortID: uuid: {
       name = uuid;
       value = {
@@ -49,7 +52,76 @@ let
     # Automatically enable extensions
     "extensions.autoDisableScopes" = 0;
   };
+
+  engines = {
+    "Bing".metaData.hidden = true;
+    "eBay".metaData.hidden = true;
+    "Google".metaData.alias = "@g";
+    "Wikipedia (en)".metaData.alias = "@w";
+
+    "GitHub" = {
+      urls = [{
+        template = "https://github.com/search";
+        params = [
+          { name = "q"; value = "{searchTerms}"; }
+        ];
+      }];
+      icon = "${pkgs.fetchurl {
+        url = "https://github.githubassets.com/favicons/favicon-dark.svg";
+        sha256 = "1b474jhw71ppqpx9d0znsqinkh1g8pac7cavjilppckgzgsxvvxa";
+      }}";
+      definedAliases = [ "@gh" ];
+    };
+
+    "Nix Packages" = {
+      urls = [{
+        template = "https://search.nixos.org/packages";
+        params = [
+          { name = "channel"; value = "unstable"; }
+          { name = "query"; value = "{searchTerms}"; }
+        ];
+      }];
+      icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+      definedAliases = [ "@np" ];
+    };
+
+    "NixOS Wiki" = {
+      urls = [{
+        template = "https://nixos.wiki/index.php";
+        params = [ { name = "search"; value = "{searchTerms}"; }];
+      }];
+      icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
+      definedAliases = [ "@nw" ];
+    };
+
+    "Reddit" = {
+      urls = [{
+        template = "https://www.reddit.com/search";
+        params = [
+          { name = "q"; value = "{searchTerms}"; }
+        ];
+      }];
+      icon = "${pkgs.fetchurl {
+        url = "https://www.redditstatic.com/accountmanager/favicon/favicon-512x512.png";
+        sha256 = "0a173np89imayid67vfwi8rxp0r91rdm9cn2jc523mcbgdq96dg3";
+      }}";
+      definedAliases = [ "@r" ];
+    };
+
+    "Youtube" = {
+      urls = [{
+        template = "https://www.youtube.com/results";
+        params = [ { name = "search_query"; value = "{searchTerms}"; }];
+      }];
+      icon = "${pkgs.fetchurl {
+        url = "www.youtube.com/s/desktop/8498231a/img/favicon_144x144.png";
+        sha256 = "1wpnxfch3fs1rwbizh7icqff6l4ljqpp660afbxj2n58pin603lm";
+      }}";
+      definedAliases = [ "@y" ];
+    };
+  };
 in
+
 {
   programs = {
     firefox = {
@@ -68,7 +140,7 @@ in
           SearchBar = "unified";
 
           /* ---- EXTENSIONS ---- */
-          ExtensionSettings = extensionList;
+          inherit ExtensionSettings;
 
           /* ---- PREFERENCES ---- */
           # Set preferences shared by all profiles.
@@ -79,13 +151,17 @@ in
         };
       };
 
-
       profiles = {
         # fm2ch33d.default is primary profile
         testagain3 = {
           id = 0;               # 0 is the default profile; see also option "isDefault"
-          inherit settings;
-          extensions = extensionListNur;
+          inherit settings extensions;
+          search = {
+            force = true;
+            default = "DuckDuckGo";
+            order = [ "DuckDuckGo" "Google" ];
+            inherit engines;
+          };
         };
       };
     };

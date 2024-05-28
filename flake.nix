@@ -69,7 +69,6 @@
         specialArgs = {inherit inputs outputs;};
         modules = [
           ./systems/virtualbox/configuration.nix
->>>>>>> 9938512 (Added plasma-manager)
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
