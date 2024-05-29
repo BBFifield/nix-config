@@ -47,6 +47,10 @@ let
     "userChrome.Tabs.SelectedTabIndicator.Enabled" = true;
     # Appearance
     "browser.toolbars.bookmarks.visibility" = "never";
+
+    "browser.uiCustomization.state"
+      = "{\"placements\":{\"widget-overflow-fixed-list\":[],\"unified-extensions-area\":[\"_ac34afe8-3a2e-4201-b745-346c0cf6ec7d_-browser-action\",\"addon_darkreader_org-browser-action\"],\"nav-bar\":[\"back-button\",\"forward-button\",\"stop-reload-button\",\"urlbar-container\",\"downloads-button\",\"unified-extensions-button\",\"ublock0_raymondhill_net-browser-action\",\"fxa-toolbar-menu-button\"],\"toolbar-menubar\":[\"menubar-items\"],\"TabsToolbar\":[\"tabbrowser-tabs\",\"new-tab-button\",\"alltabs-button\"],\"PersonalToolbar\":[\"import-button\",\"personal-bookmarks\"]},\"seen\":[\"save-to-pocket-button\",\"developer-button\",\"_ac34afe8-3a2e-4201-b745-346c0cf6ec7d_-browser-action\",\"ublock0_raymondhill_net-browser-action\",\"addon_darkreader_org-browser-action\"],\"dirtyAreaCache\":[\"nav-bar\",\"unified-extensions-area\",\"PersonalToolbar\",\"toolbar-menubar\",\"TabsToolbar\"],\"currentVersion\":20,\"newElementCount\":5}";
+
     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
     "widget.gtk.non-native-titlebar-buttons.enabled" = false;
     # Automatically enable extensions

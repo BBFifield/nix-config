@@ -53,21 +53,30 @@ in
 
   programs.plasma = {
     enable = true;
-
+    overrideConfig = true;
     #
     # Some high-level settings:
     #
     workspace = {
-      #lookAndFeel = "org.kde.breezedark.desktop";
-      #cursorTheme = "breeze_cursors";
-      #iconTheme = "breeze-dark";
+      lookAndFeel = "org.kde.breezedark.desktop";
+      cursorTheme = "breeze_cursors";
+      iconTheme = "breeze-dark";
       wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Next/contents/images_dark/3840x2160.png";
     };
 
     panels = [
-      # Windows-like panel at the bottom
+      /*{
+        location = "top";
+        height = 27;
+        widgets = [
+          {
+            name = "org.kde.plasma.appmenu";
+          }
+        ];
+      }*/
       {
         location = "bottom";
+        floating = true;
         height = 44;
         widgets = [
           # We can configure the widgets by adding the name and config
@@ -89,8 +98,31 @@ in
             config = {
               General.launchers = [
                 "applications:org.kde.konsole.desktop"
+                "applications:org.kde.dolphin.desktop"
+                "applications:firefox.desktop"
+                "applications:org.kde.kate.desktop"
               ];
             };
+          }
+          {
+            systemTray.items = {
+              shown = [
+
+              ];
+              hidden = [
+
+              ];
+            };
+          }
+          {
+            digitalClock = {
+              calendar.firstDayOfWeek = "sunday";
+              time.format = "12h";
+            };
+          }
+          {
+            name = "org.kde.plasma.showdesktop";
+
           }
         ];
       }
