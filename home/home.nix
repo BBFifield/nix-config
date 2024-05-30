@@ -5,6 +5,8 @@ let
   homeDirectory = "/home/${username}";
   configHome = "${homeDirectory}/.config";
 
+  plasmoidPkgs = (pkgs.callPackage ../plasmoids.nix {});
+
   defaultPkgs = with pkgs; [
     git
     gh
@@ -18,11 +20,11 @@ let
     vscode
   ];
 
-  kdePackages = with pkgs.kdePackages; [
+  /*kdePackages = with pkgs.kdePackages; [
     sddm-kcm
     partitionmanager
     kpmcore
-  ];
+  ];*/
 in
 {
 
@@ -30,12 +32,12 @@ in
     ./programs
   ];
 
-  programs.home-manager.enable = true;
+  #programs.home-manager.enable = true;
 
   home = {
     inherit username homeDirectory;
     stateVersion = "24.05";
-    packages = defaultPkgs ++ kdePackages;
+    packages = defaultPkgs ++ (with plasmoidPkgs; [window-title-applet]);
 
   };
 
@@ -122,7 +124,6 @@ in
           }
           {
             name = "org.kde.plasma.showdesktop";
-
           }
         ];
       }

@@ -91,8 +91,12 @@
   environment.systemPackages = with pkgs; [
     wget
     curl
-    vim
-  ];
+    vim ] ++
+    ( with kdePackages; [
+    sddm-kcm
+    partitionmanager
+    kpmcore
+  ]);
 
   nixpkgs = {
     overlays = outputs.overlays.defaults;
@@ -132,8 +136,8 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];  
 
-  virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "brandon" ];
+  #virtualisation.virtualbox.host.enable = true;
+  #users.extraGroups.vboxusers.members = [ "brandon" ];
 
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = ["nvidia"];
