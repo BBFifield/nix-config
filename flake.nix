@@ -28,16 +28,6 @@
               plasma-manager, ... }@inputs:
 
     let
-      /*initPkgs = system: import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-        overlays = [nurpkgs.overlay];
-      };
-      pkgs-stable = import nixpkgs-stable {
-        inherit system;
-        config.allowUnfree = true;
-
-      };*/
       inherit (self) outputs;
       # Supported systems for your flake packages, shell, etc.
       systems = [

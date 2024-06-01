@@ -156,13 +156,12 @@ in
       };
 
       profiles = {
-        # fm2ch33d.default is primary profile
         testagain3 = {
           id = 0;               # 0 is the default profile; see also option "isDefault"
           inherit settings extensions;
           search = {
             force = true;
-            default = "DuckDuckGo";
+            default = "Google";
             order = [ "DuckDuckGo" "Google" ];
             inherit engines;
           };

@@ -2,7 +2,9 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, outputs, lib, config, pkgs, ... }: {
+{ inputs, outputs, lib, config, pkgs, ... }:
+
+{
 
   imports =
     [ # Include the results of the hardware scan.
@@ -88,10 +90,12 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
+
   environment.systemPackages = with pkgs; [
     wget
     curl
-    vim ] ++
+    vim
+    nix-output-monitor ] ++
     ( with kdePackages; [
     sddm-kcm
     partitionmanager
@@ -128,13 +132,18 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 
 
 
   ################# User Additions #########################
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];  
+
+  /*programs.bash.shellAliases = {
+    "sudo nixos-rebuild switch" = "sudo nixos-rebuild switch --log-format internal-json -v |& nom --json";
+    "sudo nixos-rebuild test" = "sudo nixos-rebuild test --log-format internal-json -v |& nom --json";
+  };*/
 
   #virtualisation.virtualbox.host.enable = true;
   #users.extraGroups.vboxusers.members = [ "brandon" ];

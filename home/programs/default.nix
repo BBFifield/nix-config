@@ -1,3 +1,3 @@
 [
-  ./firefox/firefox.nix
+  ./browsers/firefox.nix
 ]
