@@ -55,10 +55,9 @@
     # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = {
       virtualbox = nixpkgs.lib.nixosSystem {
-        #pkgs = initPkgs "x86_64-linux";
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = {inherit inputs outputs; hostname = "virtualbox";};
         modules = [
-          ./systems/virtualbox/configuration.nix
+          ./systems
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -71,10 +70,10 @@
         ];
       };
       desktop = nixpkgs.lib.nixosSystem {
-        #pkgs = initPkgs "x86_64-linux";
-        specialArgs = {inherit inputs outputs;};
+
+        specialArgs = {inherit inputs outputs; hostname = "desktop";};
         modules = [
-          ./systems/desktop/configuration.nix
+          ./systems
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

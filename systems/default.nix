@@ -2,13 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ inputs, outputs, lib, config, pkgs, ... }:
+{ hostname, ... }:
 
 {
 
   imports = [
-    ./${networking.hostname}/configuration.nix
-    ./${networking.hostname}/hardware-configuration.nix
+    ./${hostname}/configuration.nix
+    #./${pkgs.networking.hostname}/hardware-configuration.nix
   ];
 
   # Bootloader.
@@ -60,10 +60,12 @@
     isNormalUser = true;
     description = "Brandon";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
+    #packages = with pkgs; [
     #  thunderbird
-    ];
+    #];
   };
+
+
 
   # Install firefox.
   #programs.firefox.enable = true;
