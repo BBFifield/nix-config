@@ -1,7 +1,6 @@
 { pkgs, ...}:
 {
-
-programs.plasma = {
+  programs.plasma = {
     enable = true;
     overrideConfig = true;
     #
@@ -15,15 +14,37 @@ programs.plasma = {
     };
 
     panels = [
-      /*{
+      {
         location = "top";
         height = 27;
         widgets = [
+          {  name = "org.kde.plasma.ginti";  }
+          {  name = "org.kde.plasma.appmenu";  }
+          {  name ="org.kde.plasma.panelspacer";  }
           {
-            name = "org.kde.plasma.appmenu";
+            name = "org.kde.windowtitle";
+            config.General = {
+              boldFont = "false";
+              showIcon = "false";
+              fontSize = "13";
+            };
+          }
+          {
+            name ="org.kde.plasma.panelspacer";
+          }
+          {
+            name = "org.kde.windowbuttons";
+
+            config.General = {
+              visibility="ActiveMaximizedWindow";
+              buttonSizePercentage = "90";
+              buttons = "3|4|5|10|2|9";
+              containmentType = "Plasma";
+
+            };
           }
         ];
-      }*/
+      }
       {
         location = "bottom";
         floating = true;
@@ -84,8 +105,14 @@ programs.plasma = {
         Engine = "none";
         Theme = "None";
       };
-
+      kwinrc = {
+        Windows = {
+          BorderlessMaximizedWindows = true;
+        };
+        Desktops = {
+          Number = 2;
+        };
+      };
     };
   };
-
 }

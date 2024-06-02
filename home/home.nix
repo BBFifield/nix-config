@@ -37,11 +37,10 @@ in
     stateVersion = "24.11";
     packages = defaultPkgs ++
                (with plasmoidPkgs; [
+                      gnomeDesktopIndicatorApplet
                       windowTitleApplet
-                      #windowButtonsApplet
+                      windowButtonsApplet
                ]);
-               #++
-               #[windowButtonsApplet];
   };
 
   programs.git = {
