@@ -11,6 +11,9 @@
       ./hardware-configuration.nix
     ];
 
+
+   boot.binfmt.emulatedSystems = [ "armv7l-linux" ];
+
    # Define your hostname.
   networking.hostName = hostname;
 
@@ -41,6 +44,7 @@
     partitionmanager
     kpmcore
     kde-cli-tools
+    isoimagewriter
   ]);
 
   nixpkgs = {

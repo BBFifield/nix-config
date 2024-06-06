@@ -2,7 +2,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
 
     home-manager = {
       url = "github:nix-community/home-manager/master";
@@ -20,12 +20,10 @@
     };
 
     nurpkgs.url = "github:nix-community/NUR";
+
   };
 
-  outputs = { self,
-              nixpkgs,
-              home-manager,
-              plasma-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, plasma-manager, ... }@inputs:
 
     let
       inherit (self) outputs;
