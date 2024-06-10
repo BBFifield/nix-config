@@ -105,6 +105,10 @@
         Engine = "none";
         Theme = "None";
       };
+      kscreenlockerrc.Daemon = {
+        LockGrace = 60;
+        Timeout = 30;
+      };
       kwinrc = {
         Windows = {
           BorderlessMaximizedWindows = true;

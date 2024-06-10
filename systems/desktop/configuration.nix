@@ -7,12 +7,12 @@
 {
 
   imports =
-    [ # Include the results of the hardware scan.
+    [
       ./hardware-configuration.nix
     ];
 
 
-   boot.binfmt.emulatedSystems = [ "armv7l-linux" ];
+  boot.binfmt.emulatedSystems = [ "armv7l-linux" ];
 
    # Define your hostname.
   networking.hostName = hostname;
@@ -38,6 +38,10 @@
     curl
     vim
     nil
+    cachix
+    ssh-to-age
+    age
+    sops
     nix-output-monitor ] ++
     ( with kdePackages; [
     sddm-kcm

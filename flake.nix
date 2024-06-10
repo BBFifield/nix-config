@@ -19,13 +19,12 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    nurpkgs.url = "github:nix-community/NUR";
+    sops-nix.url = "github:Mic92/sops-nix";
 
+    nurpkgs.url = "github:nix-community/NUR";
   };
 
-  outputs = { self, nixpkgs, home-manager, plasma-manager, ... }@inputs:
-
-    let
+  outputs = { self, nixpkgs, ... }@inputs: let
       inherit (self) outputs;
       # Supported systems for your flake packages, shell, etc.
       systems = [
@@ -38,53 +37,21 @@
       # This is a function that generates an attribute by calling a function you
       # pass to it, with each system as an argument
       forAllSystems = nixpkgs.lib.genAttrs systems;
-    in
-  {
+  in rec {
     # Your custom packages
     # Accessible through 'nix build', 'nix shell', etc
-    packages = forAllSystems (system: nixpkgs.legacyPackages.${system});
+    # packages = forAllSystems (system: nixpkgs.legacyPackages.${system});
+
     # Formatter for your nix files, available through 'nix fmt'
     # Other options beside 'alejandra' include 'nixpkgs-fmt'
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-    # Your custom packages and modifications, exported as overlays
-    overlays = import ./overlays {inherit inputs;};
+    overlays = import ./overlays { inherit inputs; };
 
-    # Available through 'nixos-rebuild --flake .#your-hostname'
-    nixosConfigurations = {
-      virtualbox = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs; hostname = "virtualbox";};
-        modules = [
-          ./systems
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup";
-            home-manager.users.brandon = import ./home/home.nix;
+    nixosConfigurations =
+        import ./outputs/nixosConfigurations { inherit inputs outputs; };
 
-            # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
-          }
-        ];
-      };
-      desktop = nixpkgs.lib.nixosSystem {
-
-        specialArgs = {inherit inputs outputs; hostname = "desktop";};
-        modules = [
-          ./systems
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "backup";
-            home-manager.users.brandon = import ./home/home.nix;
-
-            home-manager.sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
-
-            # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
-          }
-        ];
-      };
-    };
+    images.pi2 =
+        nixosConfigurations.pi2.config.system.build.sdImage;
   };
 }

@@ -2,13 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ hostname, ... }:
+{ config, hostname, ... }:
 
 {
 
   imports = [
     ./${hostname}/configuration.nix
-    #./${pkgs.networking.hostname}/hardware-configuration.nix
   ];
 
   # Bootloader.
@@ -55,24 +54,29 @@
     #media-session.enable = true;
   };
 
+  sops.defaultSopsFile = ../secrets/keys.yaml;
+  sops.age.keyFile = "/home/brandon/.config/sops/age/keys.txt";
+
+  sops.age.generateKey = true;
+  sops.secrets."user_passwords/brandon".neededForUsers = true;
+  sops.secrets."user_passwords/root".neededForUsers = true;
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.brandon = {
-    isNormalUser = true;
-    description = "Brandon";
-    extraGroups = [ "networkmanager" "wheel" ];
-    #packages = with pkgs; [
-    #  thunderbird
-    #];
+  users.users = {
+    brandon = {
+      hashedPasswordFile = config.sops.secrets."user_passwords/brandon".path;
+      isNormalUser = true;
+      description = "Brandon";
+      extraGroups = [ "networkmanager" "wheel" ];
+    };
+    root = {
+      hashedPasswordFile = config.sops.secrets."user_passwords/root".path;
+    };
   };
 
-
-
-  # Install firefox.
-  #programs.firefox.enable = true;
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-
+  environment.variables = {
+    EDITOR = "vim";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
