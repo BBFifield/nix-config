@@ -115,6 +115,7 @@
         };
         Desktops = {
           Number = 2;
+          Rows = 1;
         };
       };
     };

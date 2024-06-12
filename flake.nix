@@ -1,8 +1,18 @@
 {
+
+  nixConfig = {
+    extra-substitutors = [ "https://app.cachix.org/cache/bbfifield" ];
+
+    extra-trusted-public-keys =
+      [ "bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg=" ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+
+    nurpkgs.url = "github:nix-community/NUR";
 
     home-manager = {
       url = "github:nix-community/home-manager/master";
@@ -21,10 +31,11 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
-    nurpkgs.url = "github:nix-community/NUR";
+    #nixos-generators.url = "github:nix-community/nixos-generators";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: let
+  outputs = { self, nixpkgs, ... }@inputs:
+    let
       inherit (self) outputs;
       # Supported systems for your flake packages, shell, etc.
       systems = [
@@ -37,21 +48,25 @@
       # This is a function that generates an attribute by calling a function you
       # pass to it, with each system as an argument
       forAllSystems = nixpkgs.lib.genAttrs systems;
-  in rec {
-    # Your custom packages
-    # Accessible through 'nix build', 'nix shell', etc
-    # packages = forAllSystems (system: nixpkgs.legacyPackages.${system});
+    in rec {
+      # Your custom packages
+      # Accessible through 'nix build', 'nix shell', etc
+      # packages = forAllSystems (system: nixpkgs.legacyPackages.${system});
 
-    # Formatter for your nix files, available through 'nix fmt'
-    # Other options beside 'alejandra' include 'nixpkgs-fmt'
-    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+      # Formatter for your nix files, available through 'nix fmt'
+      # Other options beside 'alejandra' include 'nixpkgs-fmt'
+      formatter =
+        forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-    overlays = import ./overlays { inherit inputs; };
+      overlays = import ./overlays { inherit inputs; };
 
-    nixosConfigurations =
+      nixosConfigurations =
         import ./outputs/nixosConfigurations { inherit inputs outputs; };
 
-    images.pi2 =
-        nixosConfigurations.pi2.config.system.build.sdImage;
-  };
+      # nix build .#images.pi2
+      images.pi2 = nixosConfigurations.pi2.config.system.build.sdImage;
+
+      # nix build .#images.desktop
+      images.desktop = nixosConfigurations.desktop.config.system.build.isoImage;
+    };
 }

@@ -1,36 +1,43 @@
-{inputs, ...}: with inputs;
+{ inputs, outputs, ... }:
+with inputs;
 
-{
-  virtualbox = nixpkgs.lib.nixosSystem {
-    specialArgs = {inherit inputs outputs; hostname = "virtualbox";};
-    modules = [
-      ../../systems
-      home-manager.nixosModules.home-manager
-      {
+let
+  hmConfig = {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.backupFileExtension = "backup";
         home-manager.users.brandon = import ../../home/home.nix;
 
-        # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
-      }
+        home-manager.sharedModules =
+          [ plasma-manager.homeManagerModules.plasma-manager sops-nix.homeManagerModules.sops ];
+      };
+
+in {
+  virtualbox = nixpkgs.lib.nixosSystem {
+    specialArgs = {
+      inherit inputs outputs;
+      hostname = "virtualbox";
+    };
+    modules = [
+      ../../systems
+      home-manager.nixosModules.home-manager
+      hmConfig
     ];
   };
   desktop = nixpkgs.lib.nixosSystem {
-    specialArgs = {inherit inputs outputs; hostname = "desktop";};
+    specialArgs = {
+      inherit inputs outputs;
+      hostname = "desktop";
+    };
     modules = [
       ../../systems
       sops-nix.nixosModules.sops
       home-manager.nixosModules.home-manager
+      hmConfig
+      "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
       {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        home-manager.backupFileExtension = "backup";
-        home-manager.users.brandon = import ../../home/home.nix;
-
-        home-manager.sharedModules = [ plasma-manager.homeManagerModules.plasma-manager ];
-
-        # Optionally, use home-manager.extraSpecialArgs to pass arguments to home.nix
+        isoImage.makeEfiBootable = true;
+        isoImage.makeUsbBootable = true;
       }
     ];
   };
@@ -39,8 +46,9 @@
   pi2 = nixpkgs.lib.nixosSystem {
     modules = [
       sops-nix.nixosModules.sops
-      "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-armv7l-multiplatform.nix"
       ../../systems/pi2/configuration.nix
+
+      "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-armv7l-multiplatform.nix"
     ];
   };
 }

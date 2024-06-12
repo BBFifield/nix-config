@@ -5,7 +5,7 @@ let
   homeDirectory = "/home/${username}";
   configHome = "${homeDirectory}/.config";
 
-  plasmoidPkgs = (pkgs.callPackage ./plasma/plasmoids/plasmoids.nix {});
+  plasmoidPkgs = (pkgs.callPackage ./plasma/plasmoids/plasmoids.nix { });
   #windowButtonsApplet = (pkgs.kdePackages.callPackage ../windowButtonsPlasmoid.nix {});
 
   defaultPkgs = with pkgs; [
@@ -20,27 +20,21 @@ let
     vivaldi-ffmpeg-codecs
     vscode
   ];
-in
-{
 
-  imports = lib.concatMap import [
-    ./programs
-    ./plasma
-  ];
+in {
 
-
+  imports = lib.concatMap import [ ./programs ./plasma ];
 
   #programs.home-manager.enable = true;
 
   home = {
     inherit username homeDirectory;
     stateVersion = "24.11";
-    packages = defaultPkgs ++
-               (with plasmoidPkgs; [
-                      gnomeDesktopIndicatorApplet
-                      windowTitleApplet
-                      windowButtonsApplet
-               ]);
+    packages = defaultPkgs ++ (with plasmoidPkgs; [
+      gnomeDesktopIndicatorApplet
+      windowTitleApplet
+      windowButtonsApplet
+    ]);
   };
 
   programs.git = {

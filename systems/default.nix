@@ -6,9 +6,10 @@
 
 {
 
-  imports = [
-    ./${hostname}/configuration.nix
-  ];
+  imports = [ ./${hostname}/configuration.nix ];
+
+  # With regard to substitutors
+  nix.settings.trusted-users = [ "brandon" ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -55,13 +56,12 @@
   };
 
   sops.defaultSopsFile = ../secrets/keys.yaml;
-  sops.age.keyFile = "/home/brandon/.config/sops/age/keys.txt";
+  sops.age.keyFile = "../secrets/private/keys.txt";
 
   sops.age.generateKey = true;
   sops.secrets."user_passwords/brandon".neededForUsers = true;
   sops.secrets."user_passwords/root".neededForUsers = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users = {
     brandon = {
       hashedPasswordFile = config.sops.secrets."user_passwords/brandon".path;
@@ -74,9 +74,7 @@
     };
   };
 
-  environment.variables = {
-    EDITOR = "vim";
-  };
+  environment.variables = { EDITOR = "vim"; };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -105,14 +103,13 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-
-
   ################# User Additions #########################
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-  /*programs.bash.shellAliases = {
-    "sudo nixos-rebuild switch" = "sudo nixos-rebuild switch --log-format internal-json -v |& nom --json";
-    "sudo nixos-rebuild test" = "sudo nixos-rebuild test --log-format internal-json -v |& nom --json";
-  };*/
+  /* programs.bash.shellAliases = {
+       "sudo nixos-rebuild switch" = "sudo nixos-rebuild switch --log-format internal-json -v |& nom --json";
+       "sudo nixos-rebuild test" = "sudo nixos-rebuild test --log-format internal-json -v |& nom --json";
+     };
+  */
 }
