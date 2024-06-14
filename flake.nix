@@ -31,10 +31,13 @@
 
     sops-nix.url = "github:Mic92/sops-nix";
 
-    #nixos-generators.url = "github:nix-community/nixos-generators";
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, ... }@inputs:
+  outputs = { self, nixpkgs, nixos-generators, ... }@inputs:
     let
       inherit (self) outputs;
       # Supported systems for your flake packages, shell, etc.
@@ -48,6 +51,8 @@
       # This is a function that generates an attribute by calling a function you
       # pass to it, with each system as an argument
       forAllSystems = nixpkgs.lib.genAttrs systems;
+
+      hostnames = builtins.attrNames (builtins.readDir ./systems);
     in rec {
       # Your custom packages
       # Accessible through 'nix build', 'nix shell', etc
@@ -60,13 +65,18 @@
 
       overlays = import ./overlays { inherit inputs; };
 
-      nixosConfigurations =
-        import ./outputs/nixosConfigurations { inherit inputs outputs; };
+      nixosConfigurations = builtins.listToAttrs (builtins.map (hostname: {
+        name = hostname;
+        value = nixpkgs.lib.nixosSystem {
+          specialArgs = {inherit inputs outputs hostname;};
+          modules = (import ./systems/${hostname}/modules-list.nix {inherit inputs;}).modules;
+        };
+      }) hostnames);
 
       # nix build .#images.pi2
       images.pi2 = nixosConfigurations.pi2.config.system.build.sdImage;
 
       # nix build .#images.desktop
-      images.desktop = nixosConfigurations.desktop.config.system.build.isoImage;
+      images.desktop = nixosConfigurations.desktop.config.formats.install-iso;
     };
 }

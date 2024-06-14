@@ -6,11 +6,6 @@
 
 {
 
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
-
   # Define your hostname.
   networking.hostName = hostname;
 

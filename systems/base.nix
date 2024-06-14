@@ -1,22 +1,15 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# The core module of NixOS configuration.
 
-{ config, hostname, ... }:
+{ pkgs, hostname, ... }:
 
 {
-
-  imports = [ ./${hostname}/configuration.nix ];
-
   # With regard to substitutors
   nix.settings.trusted-users = [ "brandon" ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
   # Enable networking
   networking.networkmanager.enable = true;
+
+  networking.hostName = hostname;
 
   # Set your time zone.
   time.timeZone = "America/St_Johns";
@@ -26,55 +19,33 @@
   # Select internationalisation properties.
   i18n.defaultLocale = "en_CA.UTF-8";
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-  # Enable sound with pipewire.
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)i
-    #media-session.enable = true;
-  };
-
+  /*
   sops.defaultSopsFile = ../secrets/keys.yaml;
   sops.age.keyFile = "../secrets/private/keys.txt";
 
   sops.age.generateKey = true;
   sops.secrets."user_passwords/brandon".neededForUsers = true;
   sops.secrets."user_passwords/root".neededForUsers = true;
-
+  */
   users.users = {
     brandon = {
-      hashedPasswordFile = config.sops.secrets."user_passwords/brandon".path;
+      hashedPassword = "$y$j9T$v4UN6562YZBZR.cqnWOiV0$JhBpDsBHHNtcbjzJ1AeY1JRmtNwwK4QGEAizjey1g6/";
       isNormalUser = true;
       description = "Brandon";
       extraGroups = [ "networkmanager" "wheel" ];
     };
     root = {
-      hashedPasswordFile = config.sops.secrets."user_passwords/root".path;
+      hashedPassword = "$y$j9T$2Y/Apsh35UhYHOXBwomYS.$w3PBuxNSv9mIn9/vepOT86hjpl7SaRYGIS04.Z5DGhD";
     };
   };
 
-  environment.variables = { EDITOR = "vim"; };
+  environment.systemPackages = with pkgs; [
+    wget
+    curl
+    neovim
+  ];
+
+  environment.variables = { EDITOR = "neovim"; };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -103,13 +74,5 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-  ################# User Additions #########################
-
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  /* programs.bash.shellAliases = {
-       "sudo nixos-rebuild switch" = "sudo nixos-rebuild switch --log-format internal-json -v |& nom --json";
-       "sudo nixos-rebuild test" = "sudo nixos-rebuild test --log-format internal-json -v |& nom --json";
-     };
-  */
 }

@@ -2,22 +2,27 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ outputs, hostname, config, pkgs, ... }:
+{ outputs, config, pkgs, lib, ... }:
+
 
 {
 
-  imports = [ ./hardware-configuration.nix ];
+ # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   boot.binfmt.emulatedSystems = [ "armv7l-linux" ];
 
-  # Define your hostname.
-  networking.hostName = hostname;
+
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+  # Enable the X11 windowing system.
+  services.xserver.enable = true;
 
   # Enable the KDE Plasma 6 Desktop Environment.
   services.displayManager.sddm = {
@@ -29,7 +34,7 @@
   services.desktopManager.plasma6.enable = true;
 
   environment.systemPackages = with pkgs;
-    [ wget curl vim nil cachix ssh-to-age age sops nix-output-monitor ]
+    [ nil cachix ssh-to-age age sops htop nix-output-monitor nixos-generators ]
     ++ (with kdePackages; [
       sddm-kcm
       partitionmanager
@@ -43,8 +48,34 @@
     config.allowUnfree = true;
   };
 
-  #virtualisation.virtualbox.host.enable = true;
-  #users.extraGroups.vboxusers.members = [ "brandon" ];
+  # Configure keymap in X11
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
+
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
+
+  # Enable sound with pipewire.
+  sound.enable = true;
+  hardware.pulseaudio.enable = lib.mkForce false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)i
+    #media-session.enable = true;
+  };
+
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "brandon" ];
 
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = [ "nvidia" ];
@@ -95,4 +126,6 @@
       package = config.boot.kernelPackages.nvidiaPackages.production;
     };
   };
+
+
 }

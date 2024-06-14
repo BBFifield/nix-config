@@ -5,23 +5,16 @@
   # With regard to the substitutors
   nix.settings.trusted-users = [ "brandon" ];
 
-  sops.defaultSopsFile = ../../secrets/keys.yaml;
+  /*sops.defaultSopsFile = ../../secrets/keys.yaml;
   sops.age.keyFile = "../../secrets/private/keys.txt";
   sops.age.generateKey = true;
 
   sops.secrets."user_passwords/brandon".neededForUsers = true;
-  sops.secrets."user_passwords/root".neededForUsers = true;
+  sops.secrets."user_passwords/root".neededForUsers = true;*/
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users = {
-    brandon = {
-      hashedPasswordFile = config.sops.secrets."user_passwords/brandon".path;
-      isNormalUser = true;
-      description = "Brandon";
-      extraGroups = [ "networkmanager" "wheel" ];
-    };
     root = {
-      hashedPasswordFile = config.sops.secrets."user_passwords/root".path;
       openssh.authorizedKeys.keys = [
         "ssh-ed255119 AAAAC3NzaC1lZDI1NTE5AAAAIMbUPOHQI/iLB6tSyR9Jh9OVJuPkNUNqBlQBgEwiyXYr bb.fifield@gmail.com"
       ];
@@ -44,17 +37,7 @@
     buildPlatform.system = "x86_64-linux"; #If you build on x86 other wise changes this.
   };
 
-  environment.systemPackages = with pkgs; [
-    wget
-    curl
-    vim
-  ];
 
-  environment.variables = {
-    EDITOR = "vim";
-  };
-
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   boot = {
     supportedFilesystems = lib.mkForce [ "vfat" "ext4" ];
@@ -88,11 +71,7 @@
 
   powerManagement.enable = lib.mkDefault false;
 
-  services.openssh = {
-    enable = lib.mkDefault true;
-    settings.PermitRootLogin = "yes";
-    #settings.PasswordAuthentication = false;
-  };
+  services.openssh.settings.PermitRootLogin = "yes";
 
 /*
   */
