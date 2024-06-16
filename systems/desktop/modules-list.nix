@@ -1,7 +1,8 @@
 {inputs, ...}:
 
+with inputs;
 {
-  modules = with inputs; [
+  imports = [
     ../base.nix
     ./configuration.nix
     ./hardware-configuration.nix
@@ -18,7 +19,7 @@
     }
     nixos-generators.nixosModules.all-formats
     {
-      formatConfigs.install-iso = {modulesPath, ...}: {
+      formatConfigs.install-iso = { modulesPath, ... }: {
         imports = [ "${modulesPath}/installer/cd-dvd/installation-cd-graphical-calamares.nix" ];
       };
     }

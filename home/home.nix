@@ -13,12 +13,10 @@ let
     gh
     efibootmgr
     gptfdisk
-    home-manager
     discord
     _1password-gui
-    vivaldi
-    vivaldi-ffmpeg-codecs
     vscode
+    arduino-ide
   ];
 
 in {

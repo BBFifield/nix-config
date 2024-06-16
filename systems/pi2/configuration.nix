@@ -1,9 +1,11 @@
-{ lib, config, pkgs, modulesPath, ... }:
+{ lib, config, pkgs, outputs, modulesPath, ... }:
 
 
 {
   # With regard to the substitutors
   nix.settings.trusted-users = [ "brandon" ];
+
+  networking.networkmanager.enable = lib.mkForce false;
 
   /*sops.defaultSopsFile = ../../secrets/keys.yaml;
   sops.age.keyFile = "../../secrets/private/keys.txt";
@@ -31,12 +33,16 @@
   };*/
 
   nixpkgs = {
+    overlays = [ outputs.overlays.uboot ];
     config.platform = lib.systems.platforms.raspberrypi2;
     config.allowUnsupportedSystem = true;
     hostPlatform.system = "armv7l-linux";
     buildPlatform.system = "x86_64-linux"; #If you build on x86 other wise changes this.
   };
 
+  environment.systemPackages = with pkgs; [
+    arduino-cli
+  ];
 
 
   boot = {

@@ -68,8 +68,8 @@
       nixosConfigurations = builtins.listToAttrs (builtins.map (hostname: {
         name = hostname;
         value = nixpkgs.lib.nixosSystem {
-          specialArgs = {inherit inputs outputs hostname;};
-          modules = (import ./systems/${hostname}/modules-list.nix {inherit inputs;}).modules;
+          specialArgs = { inherit inputs outputs hostname; };
+          modules = [./systems/${hostname}/modules-list.nix];
         };
       }) hostnames);
 

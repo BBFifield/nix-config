@@ -1,12 +1,11 @@
-{inputs, modulesPath, ...}:
+{ inputs, modulesPath, ... }:
+with inputs;
 
 {
-  modules = with inputs; [
+  imports = [
     ../base.nix
     ./configuration.nix
-    ./hardware-configuration.nix
-    sops-nix.nixosModules.sops
-
+    #sops-nix.nixosModules.sops
     "${modulesPath}/installer/sd-card/sd-image-armv7l-multiplatform.nix"
   ];
 }

@@ -13,8 +13,6 @@
 
   boot.binfmt.emulatedSystems = [ "armv7l-linux" ];
 
-
-
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -34,7 +32,7 @@
   services.desktopManager.plasma6.enable = true;
 
   environment.systemPackages = with pkgs;
-    [ nil cachix ssh-to-age age sops htop nix-output-monitor nixos-generators ]
+    [ nil cachix ssh-to-age age sops htop nix-output-monitor ]
     ++ (with kdePackages; [
       sddm-kcm
       partitionmanager
@@ -74,8 +72,8 @@
     #media-session.enable = true;
   };
 
-  virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "brandon" ];
+  #virtualisation.virtualbox.host.enable = true;
+  #users.extraGroups.vboxusers.members = [ "brandon" ];
 
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = [ "nvidia" ];
