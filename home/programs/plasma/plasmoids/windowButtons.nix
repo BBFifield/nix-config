@@ -2,7 +2,7 @@
 , kcoreaddons, kdecoration, ki18n, kirigami, kitemmodels, ksvg, libplasma
 , plasma-workspace, qt6 }:
 
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "applet-window-buttons6";
   version = "0.13.0";
 

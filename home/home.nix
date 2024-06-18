@@ -5,8 +5,7 @@ let
   homeDirectory = "/home/${username}";
   configHome = "${homeDirectory}/.config";
 
-  plasmoidPkgs = (pkgs.callPackage ./plasma/plasmoids/plasmoids.nix { });
-  #windowButtonsApplet = (pkgs.kdePackages.callPackage ../windowButtonsPlasmoid.nix {});
+  plasmoidPkgs = (pkgs.callPackage ./programs/plasma/plasmoids/plasmoids.nix { });
 
   defaultPkgs = with pkgs; [
     git
@@ -21,9 +20,9 @@ let
 
 in {
 
-  imports = lib.concatMap import [ ./programs ./plasma ];
+  imports = lib.concatMap import [ ./programs ];
 
-  #programs.home-manager.enable = true;
+  programs.home-manager.enable = true;
 
   home = {
     inherit username homeDirectory;

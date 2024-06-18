@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 let
 
@@ -10,6 +10,9 @@ let
     reddit-enhancement-suite
     betterttv
     darkreader
+    istilldontcareaboutcookies
+    privacy-badger
+    unpaywall
   ];
 
   #System-wide extensions. Will probably update to a list to concatenate with ${extensions} if I can figure out a way.
@@ -22,21 +25,34 @@ let
       };
     };
     in listToAttrs
-    [
-      (extension "better-youtube-shorts" "{ac34afe8-3a2e-4201-b745-346c0cf6ec7d}")
-      (extension "breezedarktheme" "{4e507435-d65f-4467-a2c0-16dbae24f288}")
-    ];
+      [
+        (extension "better-youtube-shorts" "{ac34afe8-3a2e-4201-b745-346c0cf6ec7d}")
+        (extension "breezedarktheme" "{4e507435-d65f-4467-a2c0-16dbae24f288}")
+      ];
+
+  # Couldn't use builtins.toJSON by itself to convert because it would put label before url
+  pinnedShortcuts = with builtins;
+    let shortcut = url: label: concatStringsSep ","
+      [
+        (lib.strings.removeSuffix "}" (builtins.toJSON {"url" = url;}))
+        (lib.strings.removePrefix "{" (builtins.toJSON {"label" = label;}))
+      ];
+    in concatStringsSep ","
+      [
+        # Each element in the list is the returned string of the function "shortcut",
+        # defined in the let block above, when given the url and label in that order.
+        (shortcut "https://www.youtube.com/" "Youtube")
+        (shortcut "https://github.com/BBFifield" "Github")
+        (shortcut "https://mapleleafshotstove.com" "MLHS")
+        (shortcut "https://yaleclimateconnections.org/topic/eye-on-the-storm" "YCC")
+        (shortcut "https://www.reddit.com/r/leafs/" "/r/leafs")
+      ];
 
   settings = {
-    "browser.aboutConfig.showWarning" = false;
-    "browser.startup.homepage" = "about:home";
-    # New tab page
-    "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
-    "browser.newtabpage.activity-stream.feeds.section.highlights" = false;
-    "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
-    "browser.newtabpage.activity-stream.topSitesRows" = 2;
+
     # Functionality
     "general.autoScroll" = true;
+    "browser.newtabpage.pinned" = "[${pinnedShortcuts}]";
     # Wavefox customizations
     "userChrome.DarkTheme.Tabs.Borders.Saturation.Medium.Enabled" = true;
     "userChrome.DarkTheme.Tabs.Shadows.Saturation.Medium.Enabled" = true;
@@ -49,21 +65,21 @@ let
     # Appearance
     "browser.toolbars.bookmarks.visibility" = "never";
     "browser.tabs.inTitlebar" = 0;
-
     "browser.uiCustomization.state"
-      = "{\"placements\":{\"widget-overflow-fixed-list\":[],\"unified-extensions-area\":[\"_ac34afe8-3a2e-4201-b745-346c0cf6ec7d_-browser-action\",\"addon_darkreader_org-browser-action\"],\"nav-bar\":[\"back-button\",\"forward-button\",\"stop-reload-button\",\"urlbar-container\",\"downloads-button\",\"unified-extensions-button\",\"ublock0_raymondhill_net-browser-action\",\"fxa-toolbar-menu-button\"],\"toolbar-menubar\":[\"menubar-items\"],\"TabsToolbar\":[\"tabbrowser-tabs\",\"new-tab-button\",\"alltabs-button\"],\"PersonalToolbar\":[\"import-button\",\"personal-bookmarks\"]},\"seen\":[\"save-to-pocket-button\",\"developer-button\",\"_ac34afe8-3a2e-4201-b745-346c0cf6ec7d_-browser-action\",\"ublock0_raymondhill_net-browser-action\",\"addon_darkreader_org-browser-action\"],\"dirtyAreaCache\":[\"nav-bar\",\"unified-extensions-area\",\"PersonalToolbar\",\"toolbar-menubar\",\"TabsToolbar\"],\"currentVersion\":20,\"newElementCount\":5}";
-
+      = ''{"placements":{"widget-overflow-fixed-list":[],"unified-extensions-area":["_ac34afe8-3a2e-4201-b745-346c0cf6ec7d_-browser-action","addon_darkreader_org-browser-action"],"nav-bar":["back-button","forward-button","stop-reload-button","urlbar-container","downloads-button","unified-extensions-button","ublock0_raymondhill_net-browser-action","fxa-toolbar-menu-button"],"toolbar-menubar":["menubar-items"],"TabsToolbar":["tabbrowser-tabs","new-tab-button","alltabs-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["save-to-pocket-button","developer-button","_ac34afe8-3a2e-4201-b745-346c0cf6ec7d_-browser-action","ublock0_raymondhill_net-browser-action","addon_darkreader_org-browser-action"],"dirtyAreaCache":["nav-bar","unified-extensions-area","PersonalToolbar","toolbar-menubar","TabsToolbar"],"currentVersion":20,"newElementCount":5}'';
     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
     "widget.gtk.non-native-titlebar-buttons.enabled" = false;
     # Automatically enable extensions
     "extensions.autoDisableScopes" = 0;
   };
 
+
   engines = {
     "Bing".metaData.hidden = true;
     "eBay".metaData.hidden = true;
     "Google".metaData.alias = "@g";
     "Wikipedia (en)".metaData.alias = "@w";
+
 
     "GitHub" = {
       urls = [{
@@ -94,10 +110,25 @@ let
     "NixOS Wiki" = {
       urls = [{
         template = "https://nixos.wiki/index.php";
-        params = [ { name = "search"; value = "{searchTerms}"; }];
+        params = [{ name = "search"; value = "{searchTerms}"; }];
       }];
       icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
       definedAliases = [ "@nw" ];
+    };
+
+    "Home Manager Options" = {
+      urls = [{
+        template = "https://home-manager-options.extranix.com";
+        params = [
+          { name = "query"; value = "{searchTerms}"; }
+          { name = "release"; value = "master"; }
+        ];
+      }];
+      icon = "${pkgs.fetchurl {
+        url = "https://avatars.githubusercontent.com/u/33221035?s=48&v=4";
+        sha256 = "144199c7miyz6767b5h53zjvhf8kj24l0pziabf04s2n9spycv8f";
+      }}";
+      definedAliases = [ "@hm" ];
     };
 
     "Reddit" = {
@@ -126,14 +157,16 @@ let
       definedAliases = [ "@y" ];
     };
   };
-in
 
-{
+in {
   programs = {
     firefox = {
       enable = true;
       package = pkgs.wrapFirefox pkgs.firefox-unwrapped {
         extraPolicies = {
+          # Default download directory
+          DefaultDownloadDirectory ="./Downloads";
+          DisableAppUpdate = true;
           DisableTelemetry = true;
           DisableFirefoxStudies = true;
           EnableTrackingProtection = {
@@ -151,14 +184,27 @@ in
           /* ---- PREFERENCES ---- */
           # Set preferences shared by all profiles.
           Preferences = {
-            "browser.contentblocking.category" = { Value = "strict"; Status = "locked"; };
+            # Pointless on nix
+            "browser.aboutConfig.showWarning" = false;
+            "browser.contentblocking.category" = { Value = "standard"; Status = "locked"; };
+            "browser.startup.homepage" = "about:home";
+            # New tab page
+            "browser.newtabpage.activity-stream.default.sites" = null;
+            "browser.newtabpage.activity-stream.feeds.section.highlights" = false;
+            "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
+            "browser.newtabpage.activity-stream.showSponsored" = false;
+            "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
+            "browser.newtabpage.activity-stream.system.showSponsored" = false;
+            "browser.newtabpage.activity-stream.telemetry" = false;
+            "browser.newtabpage.activity-stream.topSitesRows" = 2;
+            # File-picker
             "widget.use-xdg-desktop-portal.file-picker" = 1;
           };
         };
       };
 
       profiles = {
-        testagain3 = {
+        default = {
           id = 0;               # 0 is the default profile; see also option "isDefault"
           inherit settings extensions;
           search = {
@@ -172,7 +218,7 @@ in
     };
   };
 
-  home.file."${profilesPath}/testagain3/chrome" = {
+  home.file."${profilesPath}/default/chrome" = {
     source = pkgs.nur.repos.slaier.wavefox;
     recursive = true;
     force = true;

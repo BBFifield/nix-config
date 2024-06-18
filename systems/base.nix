@@ -1,13 +1,13 @@
 # The core module of NixOS configuration.
 
-{ pkgs, hostname, ... }:
+{ pkgs, hostname, lib, ... }:
 
 {
   # With regard to substitutors
   nix.settings.trusted-users = [ "brandon" ];
 
   # Enable networking
-  networking.networkmanager.enable = true;
+  networking.networkmanager.enable = lib.mkDefault true;
 
   networking.hostName = hostname;
 
@@ -32,7 +32,7 @@
       hashedPassword = "$y$j9T$v4UN6562YZBZR.cqnWOiV0$JhBpDsBHHNtcbjzJ1AeY1JRmtNwwK4QGEAizjey1g6/";
       isNormalUser = true;
       description = "Brandon";
-      extraGroups = [ "networkmanager" "wheel" ];
+      extraGroups = [ "networkmanager" "wheel" "dialout" ];
     };
     root = {
       hashedPassword = "$y$j9T$2Y/Apsh35UhYHOXBwomYS.$w3PBuxNSv9mIn9/vepOT86hjpl7SaRYGIS04.Z5DGhD";
@@ -42,10 +42,10 @@
   environment.systemPackages = with pkgs; [
     wget
     curl
-    neovim
+    vim
   ];
 
-  environment.variables = { EDITOR = "neovim"; };
+  environment.variables = { EDITOR = "vim"; };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -75,4 +75,5 @@
   system.stateVersion = "24.11"; # Did you read the comment?
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  #warn-dirty = false;
 }

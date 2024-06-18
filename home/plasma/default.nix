@@ -1,3 +1,0 @@
-[
-  ./plasmaConfig.nix
-]
