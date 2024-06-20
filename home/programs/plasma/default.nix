@@ -8,7 +8,7 @@
     #
     workspace = {
       lookAndFeel = "org.kde.breezedark.desktop";
-      cursorTheme = "breeze_cursors";
+      cursor.theme = "breeze_cursors";
       iconTheme = "breeze-dark";
       wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Next/contents/images_dark/3840x2160.png";
     };
@@ -120,4 +120,12 @@
       };
     };
   };
+
+  /*programs.kate = {
+    enable = true;
+    editor = {
+      tabWidth = 2;
+
+    };
+  };*/
 }

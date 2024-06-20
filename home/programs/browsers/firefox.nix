@@ -124,10 +124,7 @@ let
           { name = "release"; value = "master"; }
         ];
       }];
-      icon = "${pkgs.fetchurl {
-        url = "https://avatars.githubusercontent.com/u/33221035?s=48&v=4";
-        sha256 = "144199c7miyz6767b5h53zjvhf8kj24l0pziabf04s2n9spycv8f";
-      }}";
+      icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
       definedAliases = [ "@hm" ];
     };
 
@@ -189,7 +186,7 @@ in {
             "browser.contentblocking.category" = { Value = "standard"; Status = "locked"; };
             "browser.startup.homepage" = "about:home";
             # New tab page
-            "browser.newtabpage.activity-stream.default.sites" = null;
+            "browser.newtabpage.activity-stream.default.sites" = "";
             "browser.newtabpage.activity-stream.feeds.section.highlights" = false;
             "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
             "browser.newtabpage.activity-stream.showSponsored" = false;

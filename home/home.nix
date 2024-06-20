@@ -5,7 +5,8 @@ let
   homeDirectory = "/home/${username}";
   configHome = "${homeDirectory}/.config";
 
-  plasmoidPkgs = (pkgs.callPackage ./programs/plasma/plasmoids/plasmoids.nix { });
+  plasmoidPkgs = (pkgs.callPackage ./packages/plasmoids/plasmoids.nix { });
+  klassy = (pkgs.kdePackages.callPackage ./packages/klassy/klassy.nix {});
 
   defaultPkgs = with pkgs; [
     git
@@ -15,7 +16,9 @@ let
     discord
     _1password-gui
     vscode
+    shellcheck
     arduino-ide
+
   ];
 
 in {
@@ -31,7 +34,7 @@ in {
       gnomeDesktopIndicatorApplet
       windowTitleApplet
       windowButtonsApplet
-    ]);
+    ]) ++ [klassy];
   };
 
   programs.git = {
