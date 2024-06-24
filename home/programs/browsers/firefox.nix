@@ -55,11 +55,12 @@ let
     "browser.newtabpage.pinned" = "[${pinnedShortcuts}]";
     # Wavefox customizations
     "userChrome.DarkTheme.Tabs.Borders.Saturation.Medium.Enabled" = true;
-    "userChrome.DarkTheme.Tabs.Shadows.Saturation.Medium.Enabled" = true;
+    "userChrome.DarkTheme.Tabs.Shadows.Saturation.Medium.Enabled" = false;
     "userChrome.DragSpace.Left.Disabled" = true;
     "userChrome.Menu.Icons.Regular.Enabled" = true;
     "userChrome.Menu.Size.Compact.Enabled" = true;
-    "userChrome.Tabs.Option6.Enabled" = true;
+    "userChrome.Tabs.Option6.Enabled" = false;
+    "userChrome.Tabs.Option7.Enabled" = true;
     "userChrome.Tabs.SelectedTabIndicator.Enabled" = true;
     "userChrome.Tabs.TabsOnBottom.Enabled" = true;
     # Appearance

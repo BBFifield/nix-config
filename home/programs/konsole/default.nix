@@ -16,15 +16,17 @@
     };
   };
 
-  programs.plasma.dataFile = {
-    "konsole/Breeze.colorscheme".General = {
-      Blur = {
-        value =true;
-        immutable = true;
-      };
-      Opacity = {
-        value = 0.7;
-        immutable = true;
+  programs.plasma = {
+    dataFile = {
+      "konsole/Breeze.colorscheme".General = {
+        Blur = {
+          value =true;
+          immutable = true;
+        };
+        Opacity = {
+          value = 0.7;
+          immutable = true;
+        };
       };
     };
   };

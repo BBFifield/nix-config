@@ -1,16 +1,34 @@
 { pkgs, ... }:
+
 {
   programs.plasma = {
     enable = true;
     overrideConfig = true;
-    #
-    # Some high-level settings:
-    #
+
     workspace = {
-      lookAndFeel = "org.kde.breezedark.desktop";
+      #lookAndFeel = "org.kde.breezedark.desktop";
+      theme = "breeze-dark";
+      colorScheme = "BreezeDark";
       cursor.theme = "breeze_cursors";
       iconTheme = "breeze-dark";
       wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Next/contents/images_dark/3840x2160.png";
+
+      windowDecorations = {
+        library="org.kde.klassy";
+        theme="Klassy";
+      };
+
+      splashScreen = {
+        engine = "none";
+        theme = "None";
+      };
+    };
+
+    kwin = {
+      virtualDesktops = {
+        rows = 1;
+        number = 2;
+      };
     };
 
     panels = [
@@ -33,14 +51,18 @@
             name ="org.kde.plasma.panelspacer";
           }
           {
-            name = "org.kde.windowbuttons";
-
-            config.General = {
-              visibility="ActiveMaximizedWindow";
-              buttonSizePercentage = "90";
-              buttons = "3|4|5|10|2|9";
-              containmentType = "Plasma";
-
+            name = "com.github.antroids.application-title-bar";
+            config.Appearance = {
+              widgetButtonsIconsTheme="Breeze";
+              widgetElements = "windowMinimizeButton,windowMaximizeButton,windowCloseButton";
+              widgetElementsMaximized = "windowMinimizeButton,windowMaximizeButton,windowCloseButton";
+              widgetElementsDisabledMode = "HideKeepSpace";
+              widgetHorizontalAlignment = "2";
+              widgetMargins = "0";
+              widgetSpacing = "1";
+            };
+            config.Behaviour = {
+              widgetActiveTaskFilterNotMaximized ="true";
             };
           }
         ];
@@ -101,31 +123,21 @@
     configFile = {
       kdeGlobals.Kscreen.ScaleFactor = 2;
       breezerc.Style.MenuOpacity = 70;
-      ksplashrc.KSplash = {
-        Engine = "none";
-        Theme = "None";
-      };
+
       kscreenlockerrc.Daemon = {
         LockGrace = 60;
         Timeout = 30;
       };
       kwinrc = {
+        "org.kde.kdecoration2" = {
+          BorderSize="None";
+          BorderSizeAuto=false;
+        };
         Windows = {
           BorderlessMaximizedWindows = true;
         };
-        Desktops = {
-          Number = 2;
-          Rows = 1;
-        };
+        Xwayland.Scale = 4;
       };
     };
   };
-
-  /*programs.kate = {
-    enable = true;
-    editor = {
-      tabWidth = 2;
-
-    };
-  };*/
 }

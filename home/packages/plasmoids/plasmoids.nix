@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 
 let
@@ -6,7 +6,7 @@ let
 in
 {
   gnomeDesktopIndicatorApplet = pkgs.stdenv.mkDerivation {
-    pname = "Ginti";
+    pname = "plasma6-desktopindicator-gnome";
     version = "0.5";
 
     src = pkgs.fetchFromGitHub {
@@ -20,10 +20,17 @@ in
       mkdir -p ${basePlasmoidDir}/org.kde.plasma.ginti
       cp -rf * ${basePlasmoidDir}/org.kde.plasma.ginti
     '';
+
+    meta = with lib; {
+      description = "Simple display for virtual desktops";
+      homepage = "https://github.com/dhruv8sh/plasma6-desktopindicator-gnome";
+      license = licenses.gpl3Plus;
+      maintainers = with maintainers; [dhruv8sh];
+    };
   };
 
   windowTitleApplet = pkgs.stdenv.mkDerivation {
-    pname = "window-title-applet";
+    pname = "plasma6-window-title-applet";
     version = "0.5.5";
 
     src = pkgs.fetchFromGitHub {
@@ -37,7 +44,16 @@ in
       mkdir -p ${basePlasmoidDir}/org.kde.windowtitle
       cp -rf * ${basePlasmoidDir}/org.kde.windowtitle
     '';
+
+    meta = with lib; {
+      description = "Shows the application title and icon of the active window";
+      homepage = "https://github.com/dhruv8sh/plasma6-window-title-applet";
+      license = licenses.gpl2Only;
+      maintainers = with maintainers; [dhruv8sh];
+    };
   };
 
   windowButtonsApplet = (pkgs.kdePackages.callPackage ./windowButtons.nix {});
+
+  panelColorizer = (pkgs.kdePackages.callPackage ./panelColorizer.nix {});
 }

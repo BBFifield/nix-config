@@ -1,26 +1,23 @@
-{ lib, stdenv, fetchgit, cmake, extra-cmake-modules, kcolorscheme, kconfig
-, kcoreaddons, kdecoration, ki18n, kirigami, kitemmodels, ksvg, libplasma
-, plasma-workspace, qt6 }:
+{ lib, stdenv, fetchFromGitHub, cmake, kdePackages }:
 
 stdenv.mkDerivation {
   pname = "applet-window-buttons6";
   version = "0.13.0";
 
-  src = fetchgit {
-    #owner = "moodyhunter";
-    #repo = "applet-window-buttons";
-    url = "https://github.com/moodyhunter/applet-window-buttons6.git";
-    rev = "326382805641d340c9902689b549e4488682f553";
+  src = fetchFromGitHub {
+    owner = "moodyhunter";
+    repo = "applet-window-buttons6";
+    rev = "3263828";
     hash = "sha256-POr56g3zqs10tmCbKN+QcF6P6OL84tQNkA+Jtk1LUfY=";
   };
 
-  nativeBuildInputs = [
+  nativeBuildInputs = with kdePackages; [
     cmake
     extra-cmake-modules
-    qt6.wrapQtAppsHook
+    wrapQtAppsHook
   ];
 
-  buildInputs = [
+  buildInputs = with kdePackages; [
     kcolorscheme
     kconfig
     kcoreaddons
@@ -31,8 +28,8 @@ stdenv.mkDerivation {
     ksvg
     libplasma
     plasma-workspace
-    qt6.qtbase
-    qt6.qtdeclarative
+    qtbase
+    qtdeclarative
   ];
 
   meta = with lib; {
