@@ -47,7 +47,9 @@
         "x86_64-darwin"
       ];
       # This is a function that generates an attribute by calling a function you
-      # pass to it, with each system as an argument
+      # pass to it, with each system as an argument. genAttrs already accepts 'systems' as
+      # an argument, but it also needs a function as an argument to execute, which is what will be provide when
+      # forAllSystems is called
       forAllSystems = nixpkgs.lib.genAttrs systems;
 
       hostnames = builtins.attrNames (builtins.readDir ./systems);
@@ -64,8 +66,8 @@
 
     overlays = import ./overlays { inherit inputs; };
 
-    # Explanation: Each hostname and created nixosSystem gets mapped to name and value attributes respectively to create a list of sets,
-    # from which a set of hostname = nixosSystem attributes is constructed.
+    # Explanation: Hostnames and nixosSystems are mapped to name and value attributes respectively to create a list of sets,
+    # from which attributes of hostname = nixosSystem are created
     nixosConfigurations = builtins.listToAttrs (builtins.map (hostname: {
       name = hostname;
       value = nixpkgs.lib.nixosSystem {

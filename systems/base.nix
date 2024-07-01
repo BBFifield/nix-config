@@ -1,8 +1,25 @@
 # The core module of NixOS configuration.
 
-{ pkgs, hostname, lib, ... }:
+{ pkgs, inputs, hostname, lib, desktopEnv, ... }:
 
 {
+  # Which desktop environment to use
+  imports = [
+    ./environments/${desktopEnv}.nix
+  ];
+
+  #desktopEnv.enable = "plasma6";
+
+  # make `nix run nixpkgs#nixpkgs` use the same nixpkgs as the one used by this flake.
+  nix.registry.nixpkgs.flake = inputs.nixpkgs;
+  nix.channel.enable = false; # remove nix-channel related tools & configs, we use flakes instead.
+
+  # but NIX_PATH is still used by many useful tools, so we set it to the same value as the one used by this flake.
+  # Make `nix repl '<nixpkgs>'` use the same nixpkgs as the one used by this flake.
+  environment.etc."nix/inputs/nixpkgs".source = "${inputs.nixpkgs}";
+  # https://github.com/NixOS/nix/issues/9574
+  nix.settings.nix-path = lib.mkForce "nixpkgs=/etc/nix/inputs/nixpkgs";
+
   # With regard to substitutors
   nix.settings.trusted-users = [ "brandon" ];
 
@@ -38,6 +55,8 @@
       hashedPassword = "$y$j9T$2Y/Apsh35UhYHOXBwomYS.$w3PBuxNSv9mIn9/vepOT86hjpl7SaRYGIS04.Z5DGhD";
     };
   };
+
+
 
   environment.systemPackages = with pkgs; [
     wget
@@ -75,5 +94,4 @@
   system.stateVersion = "24.11"; # Did you read the comment?
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  #warn-dirty = false;
 }

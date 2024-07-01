@@ -1,10 +1,10 @@
-{ pkgs, lib, ... }:
+{ pkgs, config, lib, desktopEnv, ... }:
 
 let
   username = "brandon";
   homeDirectory = "/home/${username}";
-  configHome = "${homeDirectory}/.config";
 
+  iconPkgs = (pkgs.callPackage ./packages/icons {});
   plasmoidPkgs = (pkgs.callPackage ./packages/plasmoids/plasmoids.nix {});
   klassy = (pkgs.kdePackages.callPackage ./packages/klassy/klassy.nix {});
 
@@ -15,32 +15,53 @@ let
     gptfdisk
     discord
     _1password-gui
-    vscode
+    vscodium
     shellcheck
     arduino-ide
-    application-title-bar
   ];
 
-in {
-
-  imports = lib.concatMap import [ ./programs ];
-
-  programs.home-manager.enable = true;
-
-  home = {
-    inherit username homeDirectory;
-    stateVersion = "24.11";
-    packages
-      = defaultPkgs
-      ++ (with plasmoidPkgs;
+  plasmaPkgs =
+    [ pkgs.application-title-bar ] #plasmoid
+    ++ (with plasmoidPkgs;
       [
         gnomeDesktopIndicatorApplet
         windowTitleApplet
         windowButtonsApplet
         panelColorizer
       ])
-      ++ [klassy];
-    };
+    ++ (with iconPkgs;
+      [ breezeChameleon ])
+    ++ [klassy];
+
+  gnomePkgs = with pkgs;
+    [
+      kdePackages.breeze
+      adw-gtk3
+      gnome-builder
+      gnomeExtensions.blur-my-shell
+      gnomeExtensions.gsconnect
+      tela-icon-theme
+      orchis-theme
+    ];
+
+
+in {
+
+  imports = (import ./programs {inherit pkgs lib config desktopEnv;}).${desktopEnv};
+
+  programs.home-manager.enable = true;
+
+  home = {
+    inherit username homeDirectory;
+    stateVersion = "24.11";
+    packages =
+      defaultPkgs
+      ++ lib.optionals (desktopEnv == "plasma6")
+        plasmaPkgs
+     # ++ lib.optionals (desktopEnv == "gnome")
+      #  gnomePkgs
+    ;
+  };
 
   programs.git = {
     enable = true;

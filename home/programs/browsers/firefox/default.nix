@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, desktopEnv, ... }:
 
 let
 
@@ -16,7 +16,7 @@ let
   ];
 
   #System-wide extensions. Will probably update to a list to concatenate with ${extensions} if I can figure out a way.
-  ExtensionSettings = with builtins;
+  ExtensionSettings = (with builtins;
     let extension = shortID: uuid: {
       name = uuid;
       value = {
@@ -27,8 +27,7 @@ let
     in listToAttrs
       [
         (extension "better-youtube-shorts" "{ac34afe8-3a2e-4201-b745-346c0cf6ec7d}")
-        (extension "breezedarktheme" "{4e507435-d65f-4467-a2c0-16dbae24f288}")
-      ];
+      ]) // (import ./${desktopEnv}.nix {inherit pkgs lib;}).ExtensionSettings;
 
   # Couldn't use builtins.toJSON by itself to convert because it would put label before url
   pinnedShortcuts = with builtins;
@@ -49,30 +48,20 @@ let
       ];
 
   settings = {
-
     # Functionality
     "general.autoScroll" = true;
     "browser.newtabpage.pinned" = "[${pinnedShortcuts}]";
-    # Wavefox customizations
-    "userChrome.DarkTheme.Tabs.Borders.Saturation.Medium.Enabled" = true;
-    "userChrome.DarkTheme.Tabs.Shadows.Saturation.Medium.Enabled" = false;
-    "userChrome.DragSpace.Left.Disabled" = true;
-    "userChrome.Menu.Icons.Regular.Enabled" = true;
-    "userChrome.Menu.Size.Compact.Enabled" = true;
-    "userChrome.Tabs.Option6.Enabled" = false;
-    "userChrome.Tabs.Option7.Enabled" = true;
-    "userChrome.Tabs.SelectedTabIndicator.Enabled" = true;
-    "userChrome.Tabs.TabsOnBottom.Enabled" = true;
     # Appearance
     "browser.toolbars.bookmarks.visibility" = "never";
-    "browser.tabs.inTitlebar" = 0;
+    "browser.tabs.inTitlebar" = lib.mkDefault 0;
     "browser.uiCustomization.state"
-      = ''{"placements":{"widget-overflow-fixed-list":[],"unified-extensions-area":["_ac34afe8-3a2e-4201-b745-346c0cf6ec7d_-browser-action","addon_darkreader_org-browser-action"],"nav-bar":["back-button","forward-button","stop-reload-button","urlbar-container","downloads-button","unified-extensions-button","ublock0_raymondhill_net-browser-action","fxa-toolbar-menu-button"],"toolbar-menubar":["menubar-items"],"TabsToolbar":["tabbrowser-tabs","new-tab-button","alltabs-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["save-to-pocket-button","developer-button","_ac34afe8-3a2e-4201-b745-346c0cf6ec7d_-browser-action","ublock0_raymondhill_net-browser-action","addon_darkreader_org-browser-action"],"dirtyAreaCache":["nav-bar","unified-extensions-area","PersonalToolbar","toolbar-menubar","TabsToolbar"],"currentVersion":20,"newElementCount":5}'';
+      = lib.mkDefault ''{"placements":{"widget-overflow-fixed-list":[],"unified-extensions-area":["_ac34afe8-3a2e-4201-b745-346c0cf6ec7d_-browser-action","addon_darkreader_org-browser-action"],"nav-bar":["back-button","forward-button","stop-reload-button","urlbar-container","downloads-button","unified-extensions-button","ublock0_raymondhill_net-browser-action","fxa-toolbar-menu-button"],"toolbar-menubar":["menubar-items"],"TabsToolbar":["tabbrowser-tabs","new-tab-button","alltabs-button"],"PersonalToolbar":["import-button","personal-bookmarks"]},"seen":["save-to-pocket-button","developer-button","_ac34afe8-3a2e-4201-b745-346c0cf6ec7d_-browser-action","ublock0_raymondhill_net-browser-action","addon_darkreader_org-browser-action"],"dirtyAreaCache":["nav-bar","unified-extensions-area","PersonalToolbar","toolbar-menubar","TabsToolbar"],"currentVersion":20,"newElementCount":5}'';
+    "extensions.activeThemeID" = lib.mkDefault	"default-theme@mozilla.org";
     "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-    "widget.gtk.non-native-titlebar-buttons.enabled" = false;
+    "widget.gtk.non-native-titlebar-buttons.enabled" = lib.mkDefault false;
     # Automatically enable extensions
     "extensions.autoDisableScopes" = 0;
-  };
+  } // (import ./${desktopEnv}.nix {inherit pkgs lib;}).settings;
 
 
   engines = {
@@ -216,9 +205,5 @@ in {
     };
   };
 
-  home.file."${profilesPath}/default/chrome" = {
-    source = pkgs.nur.repos.slaier.wavefox;
-    recursive = true;
-    force = true;
-  };
+  home.file."${profilesPath}/default/chrome" = (import ./${desktopEnv}.nix { inherit pkgs lib; }).theme;
 }

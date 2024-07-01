@@ -1,21 +1,6 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ inputs, outputs, config, pkgs, lib, ... }:
-
+{ outputs, config, pkgs, lib, ... }:
 
 {
-  # make `nix run nixpkgs#nixpkgs` use the same nixpkgs as the one used by this flake.
-  nix.registry.nixpkgs.flake = inputs.nixpkgs;
-  nix.channel.enable = false; # remove nix-channel related tools & configs, we use flakes instead.
-
-  # but NIX_PATH is still used by many useful tools, so we set it to the same value as the one used by this flake.
-  # Make `nix repl '<nixpkgs>'` use the same nixpkgs as the one used by this flake.
-  environment.etc."nix/inputs/nixpkgs".source = "${inputs.nixpkgs}";
-  # https://github.com/NixOS/nix/issues/9574
-  nix.settings.nix-path = lib.mkForce "nixpkgs=/etc/nix/inputs/nixpkgs";
-
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -23,35 +8,18 @@
 
   boot.binfmt.emulatedSystems = [ "armv7l-linux" ];
 
+  # Eliminates phantom display 'unknown-1'
+  boot.kernelParams = [ "nvidia-drm.fbdev=1" ];
+
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the KDE Plasma 6 Desktop Environment.
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
-    wayland.compositor = "kwin";
-  };
-
-  services.desktopManager.plasma6.enable = true;
 
   environment.systemPackages = with pkgs;
-    [ nil cachix ssh-to-age age sops htop nix-output-monitor ]
-    ++ (with kdePackages; [
-      sddm-kcm
-      partitionmanager
-      kpmcore
-      kde-cli-tools
-      kdbusaddons
-      isoimagewriter
-    ]);
-
+    [ nil cachix ssh-to-age age sops htop nix-output-monitor ];
 
   nixpkgs = {
     overlays = outputs.overlays.defaults;
@@ -66,6 +34,12 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+  # https://www.reddit.com/r/NixOS/comments/k8yo9e/comment/k13rjna/
+  # Avahi is used by the cups daemon to discover ipp printers over a network, no driver for the
+  # specific printer is needed
+  services.avahi.enable = true;
+	services.avahi.nssmdns4 = true;
+	services.avahi.openFirewall = true;
 
   # Enable sound with pipewire.
   sound.enable = true;
@@ -136,5 +110,13 @@
     };
   };
 
-
+  # This is the beta driver.
+  /*hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+    version = "555.52.04";
+    sha256_64bit = "sha256-nVOubb7zKulXhux9AruUTVBQwccFFuYGWrU1ZiakRAI=";
+    sha256_aarch64 = lib.fakeSha256;
+    openSha256 = lib.fakeSha256;
+    settingsSha256 = "sha256-PMh5efbSEq7iqEMBr2+VGQYkBG73TGUh6FuDHZhmwHk=";
+    persistencedSha256 = lib.fakeSha256;
+  };*/
 }
