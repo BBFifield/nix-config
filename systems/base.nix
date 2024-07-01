@@ -1,14 +1,14 @@
 # The core module of NixOS configuration.
 
-{ pkgs, inputs, hostname, lib, desktopEnv, ... }:
+{ pkgs, inputs, hostname, lib, ... }:
 
 {
   # Which desktop environment to use
-  imports = [
+  /*imports = [
     ./environments/${desktopEnv}.nix
-  ];
+  ];*/
 
-  #desktopEnv.enable = "plasma6";
+  desktopEnv.enable = "plasma";
 
   # make `nix run nixpkgs#nixpkgs` use the same nixpkgs as the one used by this flake.
   nix.registry.nixpkgs.flake = inputs.nixpkgs;

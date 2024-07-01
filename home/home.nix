@@ -1,4 +1,4 @@
-{ pkgs, config, lib, desktopEnv, ... }:
+{ pkgs, osConfig, lib, ... }:
 
 let
   username = "brandon";
@@ -47,7 +47,25 @@ let
 
 in {
 
-  imports = (import ./programs {inherit pkgs lib config desktopEnv;}).${desktopEnv};
+  imports = lib.concatMap import [ ./programs ];
+
+
+   hm = lib.optionalAttrs (osConfig.desktopEnv.enable == "plasma") {
+      firefox = {
+        enable = true;
+        variant = "plasma";
+      };
+      plasma.enable = true;
+      konsole.enable = true;
+      klassy.enable = true;
+    }
+    // lib.optionalAttrs (osConfig.desktopEnv.enable == "gnome") {
+      firefox = {
+        enable = true;
+        variant = "gnome";
+      };
+      dconf.enable = true;
+    };
 
   programs.home-manager.enable = true;
 
@@ -56,10 +74,10 @@ in {
     stateVersion = "24.11";
     packages =
       defaultPkgs
-      ++ lib.optionals (desktopEnv == "plasma6")
+      ++ lib.optionals (osConfig.desktopEnv.enable == "plasma")
         plasmaPkgs
-     # ++ lib.optionals (desktopEnv == "gnome")
-      #  gnomePkgs
+      ++ lib.optionals (osConfig.desktopEnv.enable == "gnome")
+        gnomePkgs
     ;
   };
 
