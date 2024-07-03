@@ -1,13 +1,12 @@
-{ pkgs, config, lib, inputs, hostname, ... }:
-
-#let
- # desktopEnv = "plasma6";
-#in
-
-#assert lib.assertOneOf "desktopEnv" desktopEnv [ "plasma6" "gnome" "none" ];
-
-with inputs;
 {
+  pkgs,
+  config,
+  lib,
+  inputs,
+  hostname,
+  ...
+}:
+with inputs; {
   imports = [
     ../base.nix
     ../desktopEnv.nix
@@ -21,13 +20,12 @@ with inputs;
       home-manager.backupFileExtension = "backup";
       home-manager.users.brandon = import ../../home/home.nix;
 
-      home-manager.sharedModules =
-        [ plasma-manager.homeManagerModules.plasma-manager sops-nix.homeManagerModules.sops ];
+      home-manager.sharedModules = [plasma-manager.homeManagerModules.plasma-manager sops-nix.homeManagerModules.sops];
     }
     nixos-generators.nixosModules.all-formats
     {
-      formatConfigs.install-iso = { modulesPath, ... }: {
-        imports = [ "${modulesPath}/installer/cd-dvd/installation-cd-graphical-calamares.nix" ];
+      formatConfigs.install-iso = {modulesPath, ...}: {
+        imports = ["${modulesPath}/installer/cd-dvd/installation-cd-graphical-calamares.nix"];
       };
     }
   ];

@@ -1,5 +1,11 @@
-{ lib, stdenv, fetchFromGitHub, cmake, kdePackages, ... }:
-
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  cmake,
+  kdePackages,
+  ...
+}:
 stdenv.mkDerivation (finalAttrs: {
   pname = "plasma-panel-colorizer";
   version = "0.5.2";
@@ -42,5 +48,4 @@ stdenv.mkDerivation (finalAttrs: {
     license = licenses.gpl3Only;
     maintainers = with maintainers; [luisbocanegra];
   };
-
 })

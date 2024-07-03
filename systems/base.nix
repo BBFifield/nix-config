@@ -1,13 +1,11 @@
 # The core module of NixOS configuration.
-
-{ pkgs, inputs, hostname, lib, ... }:
-
 {
-  # Which desktop environment to use
-  /*imports = [
-    ./environments/${desktopEnv}.nix
-  ];*/
-
+  pkgs,
+  inputs,
+  hostname,
+  lib,
+  ...
+}: {
   desktopEnv.enable = "plasma";
 
   # make `nix run nixpkgs#nixpkgs` use the same nixpkgs as the one used by this flake.
@@ -21,7 +19,7 @@
   nix.settings.nix-path = lib.mkForce "nixpkgs=/etc/nix/inputs/nixpkgs";
 
   # With regard to substitutors
-  nix.settings.trusted-users = [ "brandon" ];
+  nix.settings.trusted-users = ["brandon"];
 
   # Enable networking
   networking.networkmanager.enable = lib.mkDefault true;
@@ -49,14 +47,12 @@
       hashedPassword = "$y$j9T$v4UN6562YZBZR.cqnWOiV0$JhBpDsBHHNtcbjzJ1AeY1JRmtNwwK4QGEAizjey1g6/";
       isNormalUser = true;
       description = "Brandon";
-      extraGroups = [ "networkmanager" "wheel" "dialout" ];
+      extraGroups = ["networkmanager" "wheel" "dialout"];
     };
     root = {
       hashedPassword = "$y$j9T$2Y/Apsh35UhYHOXBwomYS.$w3PBuxNSv9mIn9/vepOT86hjpl7SaRYGIS04.Z5DGhD";
     };
   };
-
-
 
   environment.systemPackages = with pkgs; [
     wget
@@ -64,7 +60,7 @@
     vim
   ];
 
-  environment.variables = { EDITOR = "vim"; };
+  environment.variables = {EDITOR = "vim";};
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -93,5 +89,5 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
 }

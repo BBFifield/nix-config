@@ -1,10 +1,11 @@
 # Generated via dconf2nix: https://github.com/gvolpe/dconf2nix
-{ pkgs, lib, config, ... }:
-
-with lib.hm.gvariant;
-
 {
-
+  pkgs,
+  lib,
+  config,
+  ...
+}:
+with lib.hm.gvariant; {
   options.hm.dconf = {
     enable = lib.mkEnableOption "Enable dconf configuration";
   };
@@ -61,7 +62,7 @@ with lib.hm.gvariant;
 
       "org/gnome/desktop/search-providers" = {
         disabled = [];
-        sort-order = [ "org.gnome.Contacts.desktop" "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop" ];
+        sort-order = ["org.gnome.Contacts.desktop" "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop"];
       };
 
       "org/gnome/desktop/wm/preferences" = {
@@ -77,7 +78,7 @@ with lib.hm.gvariant;
         bottom-panel-size = 139;
         side-panel-active-page = "GeditWindowDocumentsPanel";
         side-panel-size = 200;
-        size = mkTuple [ 900 700 ];
+        size = mkTuple [900 700];
         state = 87168;
       };
 
@@ -92,7 +93,7 @@ with lib.hm.gvariant;
       };
 
       "org/gnome/nautilus/window-state" = {
-        initial-size = mkTuple [ 890 550 ];
+        initial-size = mkTuple [890 550];
       };
 
       "org/gnome/shell" = {
@@ -100,7 +101,7 @@ with lib.hm.gvariant;
           blur-my-shell.extensionUuid
           gsconnect.extensionUuid
         ];
-        favorite-apps = [ "firefox.desktop" "1password.desktop" "org.gnome.Nautilus.desktop" "org.gnome.Console.desktop" "org.gnome.TextEditor.desktop" "org.gnome.Builder.desktop" ];
+        favorite-apps = ["firefox.desktop" "1password.desktop" "org.gnome.Nautilus.desktop" "org.gnome.Console.desktop" "org.gnome.TextEditor.desktop" "org.gnome.Builder.desktop"];
       };
 
       "org/gnome/shell/extensions/blur-my-shell/panel" = {
