@@ -1,10 +1,8 @@
 {
-
   nixConfig = {
-    extra-substitutors = [ "https://app.cachix.org/cache/bbfifield" ];
+    extra-substitutors = ["https://app.cachix.org/cache/bbfifield"];
 
-    extra-trusted-public-keys =
-      [ "bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg=" ];
+    extra-trusted-public-keys = ["bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg="];
   };
 
   inputs = {
@@ -35,25 +33,29 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixos-generators, ... }@inputs:
-    let
-      inherit (self) outputs;
-      # Supported systems for your flake packages, shell, etc.
-      systems = [
-        "aarch64-linux"
-        "i686-linux"
-        "x86_64-linux"
-        "aarch64-darwin"
-        "x86_64-darwin"
-      ];
-      # This is a function that generates an attribute by calling a function you
-      # pass to it, with each system as an argument. genAttrs already accepts 'systems' as
-      # an argument, but it also needs a function as an argument to execute, which is what will be provide when
-      # forAllSystems is called
-      forAllSystems = nixpkgs.lib.genAttrs systems;
+  outputs = {
+    self,
+    nixpkgs,
+    nixos-generators,
+    ...
+  } @ inputs: let
+    inherit (self) outputs;
+    # Supported systems for your flake packages, shell, etc.
+    systems = [
+      "aarch64-linux"
+      "i686-linux"
+      "x86_64-linux"
+      "aarch64-darwin"
+      "x86_64-darwin"
+    ];
+    # This is a function that generates an attribute by calling a function you
+    # pass to it, with each system as an argument. genAttrs already accepts 'systems' as
+    # an argument, but it also needs a function as an argument to execute, which is what will be provide when
+    # forAllSystems is called
+    forAllSystems = nixpkgs.lib.genAttrs systems;
 
-      hostnames = builtins.attrNames (builtins.readDir ./systems);
-    in rec
+    hostnames = builtins.attrNames (builtins.readDir ./systems);
+  in rec
   {
     # Your custom packages
     # Accessible through 'nix build', 'nix shell', etc
@@ -64,17 +66,18 @@
     formatter =
       forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-    overlays = import ./overlays { inherit inputs; };
+    overlays = import ./overlays {inherit inputs;};
 
     # Explanation: Hostnames and nixosSystems are mapped to name and value attributes respectively to create a list of sets,
     # from which attributes of hostname = nixosSystem are created
     nixosConfigurations = builtins.listToAttrs (builtins.map (hostname: {
-      name = hostname;
-      value = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs outputs hostname; };
-        modules = [./systems/${hostname}/modules-list.nix];
-      };
-    }) hostnames);
+        name = hostname;
+        value = nixpkgs.lib.nixosSystem {
+          specialArgs = {inherit inputs outputs hostname;};
+          modules = [./systems/${hostname}/modules-list.nix];
+        };
+      })
+      hostnames);
 
     images = {
       # nix build .#images.pi2

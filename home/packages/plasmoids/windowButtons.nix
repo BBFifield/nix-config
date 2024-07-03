@@ -1,5 +1,10 @@
-{ lib, stdenv, fetchFromGitHub, cmake, kdePackages }:
-
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  cmake,
+  kdePackages,
+}:
 stdenv.mkDerivation {
   pname = "applet-window-buttons6";
   version = "0.13.0";
@@ -33,10 +38,9 @@ stdenv.mkDerivation {
   ];
 
   meta = with lib; {
-    description =
-      "Plasma 6 applet in order to show window buttons in your panels";
+    description = "Plasma 6 applet in order to show window buttons in your panels";
     homepage = "https://github.com/psifidotos/applet-window-buttons";
     license = licenses.gpl2Plus;
-    maintainers = with maintainers; [ dotlambda ];
+    maintainers = with maintainers; [dotlambda];
   };
 }

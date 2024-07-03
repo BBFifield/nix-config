@@ -1,10 +1,10 @@
-{ lib, pkgs, ... }:
-
-
-let
-  basePlasmoidDir = "$out/share/plasma/plasmoids";
-in
 {
+  lib,
+  pkgs,
+  ...
+}: let
+  basePlasmoidDir = "$out/share/plasma/plasmoids";
+in {
   gnomeDesktopIndicatorApplet = pkgs.stdenv.mkDerivation {
     pname = "plasma6-desktopindicator-gnome";
     version = "0.5";
@@ -53,7 +53,7 @@ in
     };
   };
 
-  windowButtonsApplet = (pkgs.kdePackages.callPackage ./windowButtons.nix {});
+  windowButtonsApplet = pkgs.kdePackages.callPackage ./windowButtons.nix {};
 
-  panelColorizer = (pkgs.kdePackages.callPackage ./panelColorizer.nix {});
+  panelColorizer = pkgs.kdePackages.callPackage ./panelColorizer.nix {};
 }

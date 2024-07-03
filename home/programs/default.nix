@@ -3,5 +3,6 @@
   ./konsole
   ./plasma
   ./klassy
+  ./kate
   ./dconf
 ]

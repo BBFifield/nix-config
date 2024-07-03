@@ -1,15 +1,18 @@
-{ outputs, config, pkgs, lib, ... }:
-
 {
-
+  outputs,
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.binfmt.emulatedSystems = [ "armv7l-linux" ];
+  boot.binfmt.emulatedSystems = ["armv7l-linux"];
 
   # Eliminates phantom display 'unknown-1'
-  boot.kernelParams = [ "nvidia-drm.fbdev=1" ];
+  boot.kernelParams = ["nvidia-drm.fbdev=1"];
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -17,12 +20,10 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-
-  environment.systemPackages = with pkgs;
-    [ nil cachix ssh-to-age age sops htop nix-output-monitor ];
+  environment.systemPackages = with pkgs; [nil cachix ssh-to-age age sops htop nix-output-monitor];
 
   nixpkgs = {
-    overlays = outputs.overlays.defaults;
+    overlays = outputs.overlays.defaults ++ [outputs.overlays.vivaldiFixed];
     config.allowUnfree = true;
   };
 
@@ -38,8 +39,8 @@
   # Avahi is used by the cups daemon to discover ipp printers over a network, no driver for the
   # specific printer is needed
   services.avahi.enable = true;
-	services.avahi.nssmdns4 = true;
-	services.avahi.openFirewall = true;
+  services.avahi.nssmdns4 = true;
+  services.avahi.openFirewall = true;
 
   # Enable sound with pipewire.
   sound.enable = true;
@@ -62,7 +63,7 @@
   #users.extraGroups.vboxusers.members = [ "brandon" ];
 
   # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = [ "nvidia" ];
+  services.xserver.videoDrivers = ["nvidia"];
 
   hardware = {
     # bluetooth settings
@@ -111,12 +112,14 @@
   };
 
   # This is the beta driver.
-  /*hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+  /*
+    hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
     version = "555.52.04";
     sha256_64bit = "sha256-nVOubb7zKulXhux9AruUTVBQwccFFuYGWrU1ZiakRAI=";
     sha256_aarch64 = lib.fakeSha256;
     openSha256 = lib.fakeSha256;
     settingsSha256 = "sha256-PMh5efbSEq7iqEMBr2+VGQYkBG73TGUh6FuDHZhmwHk=";
     persistencedSha256 = lib.fakeSha256;
-  };*/
+  };
+  */
 }

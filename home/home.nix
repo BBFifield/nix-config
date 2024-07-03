@@ -1,12 +1,15 @@
-{ pkgs, osConfig, lib, ... }:
-
-let
+{
+  pkgs,
+  osConfig,
+  lib,
+  ...
+}: let
   username = "brandon";
   homeDirectory = "/home/${username}";
 
-  iconPkgs = (pkgs.callPackage ./packages/icons {});
-  plasmoidPkgs = (pkgs.callPackage ./packages/plasmoids/plasmoids.nix {});
-  klassy = (pkgs.kdePackages.callPackage ./packages/klassy/klassy.nix {});
+  iconPkgs = pkgs.callPackage ./packages/icons {};
+  plasmoidPkgs = pkgs.callPackage ./packages/plasmoids/plasmoids.nix {};
+  klassy = pkgs.kdePackages.callPackage ./packages/klassy/klassy.nix {};
 
   defaultPkgs = with pkgs; [
     git
@@ -20,49 +23,46 @@ let
     arduino-ide
   ];
 
-  plasmaPkgs =
-    [ pkgs.application-title-bar ] #plasmoid
-    ++ (with plasmoidPkgs;
-      [
-        gnomeDesktopIndicatorApplet
-        windowTitleApplet
-        windowButtonsApplet
-        panelColorizer
-      ])
-    ++ (with iconPkgs;
-      [ breezeChameleon ])
+  plasmaPkgs = with pkgs;
+    [
+      application-title-bar #plasmoid
+    ]
+    ++ (with plasmoidPkgs; [
+      gnomeDesktopIndicatorApplet
+      windowTitleApplet
+      windowButtonsApplet
+      panelColorizer
+    ])
+    ++ (with iconPkgs; [breezeChameleon breezeXcursor])
     ++ [klassy];
 
-  gnomePkgs = with pkgs;
-    [
-      kdePackages.breeze
-      adw-gtk3
-      gnome-builder
-      gnomeExtensions.blur-my-shell
-      gnomeExtensions.gsconnect
-      tela-icon-theme
-      orchis-theme
-    ];
-
-
+  gnomePkgs = with pkgs; [
+    kdePackages.breeze
+    adw-gtk3
+    gnome-builder
+    gnomeExtensions.blur-my-shell
+    gnomeExtensions.gsconnect
+    tela-icon-theme
+    orchis-theme
+  ];
 in {
+  imports = lib.concatMap import [./programs];
 
-  imports = lib.concatMap import [ ./programs ];
-
-
-   hm = lib.optionalAttrs (osConfig.desktopEnv.enable == "plasma") {
+  hm =
+    lib.optionalAttrs (osConfig.desktopEnv.enable == "plasma") {
       firefox = {
         enable = true;
-        variant = "plasma";
+        style = "plasma";
       };
       plasma.enable = true;
       konsole.enable = true;
       klassy.enable = true;
+      kate.enable = true;
     }
     // lib.optionalAttrs (osConfig.desktopEnv.enable == "gnome") {
       firefox = {
         enable = true;
-        variant = "gnome";
+        style = "gnome";
       };
       dconf.enable = true;
     };
@@ -75,10 +75,9 @@ in {
     packages =
       defaultPkgs
       ++ lib.optionals (osConfig.desktopEnv.enable == "plasma")
-        plasmaPkgs
+      plasmaPkgs
       ++ lib.optionals (osConfig.desktopEnv.enable == "gnome")
-        gnomePkgs
-    ;
+      gnomePkgs;
   };
 
   programs.git = {
@@ -89,5 +88,4 @@ in {
 
   # restart services on change
   systemd.user.startServices = "sd-switch";
-
 }
