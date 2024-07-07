@@ -7,9 +7,9 @@
   username = "brandon";
   homeDirectory = "/home/${username}";
 
-  iconPkgs = pkgs.callPackage ./packages/icons {};
-  plasmoidPkgs = pkgs.callPackage ./packages/plasmoids/plasmoids.nix {};
-  klassy = pkgs.kdePackages.callPackage ./packages/klassy/klassy.nix {};
+  iconPkgs = pkgs.callPackage ../pkgs/icons {};
+  plasmoidPkgs = pkgs.callPackage ../pkgs/plasmoids/plasmoids.nix {};
+  klassy = pkgs.kdePackages.callPackage ../pkgs/klassy/klassy.nix {};
 
   defaultPkgs = with pkgs; [
     git
@@ -26,6 +26,7 @@
   plasmaPkgs = with pkgs;
     [
       application-title-bar #plasmoid
+      kde-rounded-corners
     ]
     ++ (with plasmoidPkgs; [
       gnomeDesktopIndicatorApplet
@@ -33,23 +34,40 @@
       windowButtonsApplet
       panelColorizer
     ])
-    ++ (with iconPkgs; [breezeChameleon breezeXcursor])
+    ++ (with iconPkgs; [breezeChameleon])
     ++ [klassy];
 
   gnomePkgs = with pkgs; [
-    kdePackages.breeze
     adw-gtk3
     gnome-builder
     gnomeExtensions.blur-my-shell
     gnomeExtensions.gsconnect
     tela-icon-theme
     orchis-theme
+  ]
+  ++ (with iconPkgs; [breezeXcursor]); #For the cursor
+
+  hyprlandPkgs = with pkgs; [
+    adw-gtk3
+    alacritty
+    nautilus
+    nwg-bar
+    nwg-look
+    nwg-dock-hyprland
+    nwg-displays
+    nwg-launchers
+    elegant-sddm
+    alacritty-theme
+    tela-icon-theme
+    orchis-theme
   ];
+
 in {
   imports = lib.concatMap import [./programs];
 
   hm =
-    lib.optionalAttrs (osConfig.desktopEnv.enable == "plasma") {
+    lib.optionalAttrs (osConfig.desktopEnv.choice == "plasma") {
+
       firefox = {
         enable = true;
         style = "plasma";
@@ -59,12 +77,19 @@ in {
       klassy.enable = true;
       kate.enable = true;
     }
-    // lib.optionalAttrs (osConfig.desktopEnv.enable == "gnome") {
+    // lib.optionalAttrs (osConfig.desktopEnv.choice == "gnome") {
       firefox = {
         enable = true;
         style = "gnome";
       };
       dconf.enable = true;
+    }
+    // lib.optionalAttrs (osConfig.desktopEnv.choice == "hyprland") {
+      firefox = {
+        enable = true;
+        style = "gnome";
+      };
+      hyprland.enable = true;
     };
 
   programs.home-manager.enable = true;
@@ -74,10 +99,12 @@ in {
     stateVersion = "24.11";
     packages =
       defaultPkgs
-      ++ lib.optionals (osConfig.desktopEnv.enable == "plasma")
+      ++ lib.optionals (osConfig.desktopEnv.choice == "plasma")
       plasmaPkgs
-      ++ lib.optionals (osConfig.desktopEnv.enable == "gnome")
-      gnomePkgs;
+      ++ lib.optionals (osConfig.desktopEnv.choice == "gnome")
+      gnomePkgs
+      ++ lib.optionals (osConfig.desktopEnv.choice == "hyprland")
+      hyprlandPkgs;
   };
 
   programs.git = {

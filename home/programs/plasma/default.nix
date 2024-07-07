@@ -14,15 +14,17 @@
       overrideConfig = true;
 
       workspace = {
+        #lookAndFeel = "org.kde.breezedark.desktop";
         theme = "breeze-dark";
         colorScheme = "BreezeDark";
         cursor = {
           theme = "BreezeX-Dark";
           size = 28;
         };
-        iconTheme = "Breeze-Round-Chameleon Dark Icons";
+        iconTheme = ''"Breeze-Round-Chameleon Dark Icons"''; # Needed to encase in double single quotes because of the spaces in directory/theme name
         wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Next/contents/images_dark/3840x2160.png";
 
+        # kwinrc
         windowDecorations = {
           library = "org.kde.klassy";
           theme = "Klassy";
@@ -62,13 +64,13 @@
             }
             {
               applicationTitleBar = {
-                widgetButtons.iconSource = "Breeze";
+                windowControlButtons.iconSource = "Breeze";
                 layout = {
                   elements = [ "windowMinimizeButton" "windowMaximizeButton" "windowCloseButton" ];
                   showDisabledElements = "HideKeepSpace";
                   horizontalAlignment = "right";
-                  widgetMargins = "0";
-                  widgetSpacing = "1";
+                  widgetMargins = 0;
+                  spacingBetweenElements = 1;
                 };
                 overrideForMaximized = {
                   enable = true;
@@ -161,13 +163,13 @@
       ];
 
       configFile = {
-        kdeGlobals.Kscreen.ScaleFactor = 2;
         breezerc.Style.MenuOpacity = 70;
 
         kscreenlockerrc.Daemon = {
           LockGrace = 60;
           Timeout = 30;
         };
+
         kwinrc = {
           "org.kde.kdecoration2" = {
             BorderSize = "None";
@@ -176,15 +178,48 @@
           Windows = {
             BorderlessMaximizedWindows = true;
           };
-          Xwayland.Scale = 1;
+
+          PrimaryOutline = {
+            InactiveOutlineColor = "94,97,100";
+            InactiveOutlineThickness = 1.5;
+            OutlineColor = "94,97,100";
+            OutlineThickness = 1.5;
+          };
+          SecondOutline = {
+            InactiveSecondOutlineThickness = 0;
+            SecondOutlineThickness = 0;
+          };
+          Shadow = {
+            ActiveShadowAlpha = 148;
+            InactiveShadowAlpha = 148;
+          };
+          # Broke head for hours on this. Look at the weird R character required
+          "ًRound-Corners" = {
+            InactiveShadowSize = 40;
+            ShadowSize = 70;
+          };
         };
       };
     };
 
-    home.file.".config/gtkrc" = {
-      text = ''        include "/run/current-system/sw/share/themes/Breeze/gtk-2.0/gtkrc"
-                  gtk-theme-name="Breeze"
+   /* # This is required so the firefox gtk theme is properly switched back to breeze when switching from gnome to kde
+    home.file.".gtkrc-2.0" = {
+      text = ''
+        gtk-enable-animations=1
+        gtk-theme-name="Breeze-Dark"
+        gtk-primary-button-warps-slider=1
+        gtk-toolbar-style=3
+        gtk-menu-images=1
+        gtk-button-images=1
+        gtk-cursor-theme-size=28
+        gtk-cursor-theme-name="BreezeX-Dark"
+        gtk-sound-theme-name="ocean"
+        gtk-icon-theme-name="Breeze-Round-Chameleon Dark Icons"
+        gtk-font-name="Noto Sans,  10"
+        gtk-modules=appmenu-gtk-module
       '';
-    };
+    };*/
   };
 }
+
+

@@ -189,12 +189,12 @@
   };
 in {
   options.hm.firefox = {
-    enable = lib.mkEnableOption "Enable default firefox configuration";
+    enable = lib.mkEnableOption "Enable home-manager firefox configuration";
 
     style = lib.mkOption {
       type = lib.types.enum ["plasma" "gnome" null];
       default = null;
-      description = "Choose which style settings to use";
+      description = "Choose which style of settings to use";
     };
   };
 
@@ -222,16 +222,18 @@ in {
             ---- EXTENSIONS ----
             */
 
-            ExtensionSettings = lib.mkMerge [
-              ExtensionSettings
-
-              (lib.mkIf (config.hm.firefox.style == "plasma") {
-                "{4e507435-d65f-4467-a2c0-16dbae24f288}" = {
-                  install_url = "https://addons.mozilla.org/firefox/downloads/latest/breezedarktheme/latest.xpi";
-                  installation_mode = "force_installed";
-                };
-              })
-            ];
+            /* https://discourse.nixos.org/t/optionalattrs-in-module-infinite-recursion-with-config/27876
+               I think mkIf and mkMerge don't work inside ExtensionSettings because it's not part of the module system, but merely
+               nix syntax which is converted to json. That's what I gathered from the above discussion.
+            */
+            ExtensionSettings = ExtensionSettings //
+              (lib.optionalAttrs (
+                config.hm.firefox.style == "plasma") {
+                  "{4e507435-d65f-4467-a2c0-16dbae24f288}" = {
+                    install_url = "https://addons.mozilla.org/firefox/downloads/latest/breezedarktheme/latest.xpi";
+                    installation_mode = "normal_installed";
+                  };
+                });
 
             /*
             ---- PREFERENCES ----

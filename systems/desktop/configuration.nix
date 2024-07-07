@@ -5,6 +5,13 @@
   lib,
   ...
 }: {
+
+  desktopEnv = {
+    enable = true;
+    choice = "plasma";
+  };
+
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -20,7 +27,9 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  environment.systemPackages = with pkgs; [nil cachix ssh-to-age age sops htop nix-output-monitor];
+  environment.systemPackages = with pkgs; [
+    nil cachix ssh-to-age age sops htop nix-output-monitor
+  ];
 
   nixpkgs = {
     overlays = outputs.overlays.defaults ++ [outputs.overlays.vivaldiFixed];

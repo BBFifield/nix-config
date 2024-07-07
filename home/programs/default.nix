@@ -5,4 +5,5 @@
   ./klassy
   ./kate
   ./dconf
+  ./hyprland
 ]

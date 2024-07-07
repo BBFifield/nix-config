@@ -1,9 +1,5 @@
 {
-  pkgs,
-  config,
-  lib,
   inputs,
-  hostname,
   ...
 }:
 with inputs; {

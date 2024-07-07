@@ -20,17 +20,18 @@
       extraConfig = {
         TabBar.CloseTabOnMiddleMouseButton = true;
       };
+      customColorSchemes = { BreezeBlur = ./BreezeBlur.colorscheme; };
+
     };
 
-    programs.plasma.dataFile."konsole/Breeze.colorscheme".General = {
+    # Doesn't seem possible to merge/replace keys in a file?
+   /* programs.plasma.dataFile."konsole/Breeze.colorscheme".General = {
       Blur = {
         value = true;
-        immutable = true;
       };
       Opacity = {
         value = 0.7;
-        immutable = true;
       };
-    };
+    };*/
   };
 }

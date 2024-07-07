@@ -22,8 +22,8 @@ with lib.hm.gvariant; {
 
       "org/gnome/desktop/background" = {
         picture-options = "zoom";
-        picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/amber-l.jxl";
-        picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/amber-d.jxl";
+        picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/fold-l.jxl";
+        picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/fold-d.jxl";
       };
 
       "org/gnome/desktop/interface" = {
@@ -32,7 +32,7 @@ with lib.hm.gvariant; {
         enable-animations = true;
         font-name = "Noto Sans,  10";
         gtk-theme = "adw-gtk3-dark";
-        icon-theme = "Adwaita";
+        icon-theme = "Tela";
         scaling-factor = mkUint32 2;
         text-scaling-factor = 1.0;
         toolbar-style = "text";

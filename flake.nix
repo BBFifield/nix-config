@@ -31,6 +31,10 @@
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    Hyprspace = {
+      url = "github:KZDKM/Hyprspace";
+    };
   };
 
   outputs = {
