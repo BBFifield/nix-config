@@ -35,6 +35,10 @@
     Hyprspace = {
       url = "github:KZDKM/Hyprspace";
     };
+
+    gBar = {
+      url = "github:scorpion-26/gBar";
+    };
   };
 
   outputs = {

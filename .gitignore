@@ -1,1 +1,6 @@
 /result
+systems/pi2/backup/configuration.nix
+systems/pi2/backup/flake.lock
+systems/pi2/backup/flake.nix
+systems/pi2/backup2/flake.lock
+systems/pi2/backup2/flake.nix

@@ -23,20 +23,6 @@
     arduino-ide
   ];
 
-  plasmaPkgs = with pkgs;
-    [
-      application-title-bar #plasmoid
-      kde-rounded-corners
-    ]
-    ++ (with plasmoidPkgs; [
-      gnomeDesktopIndicatorApplet
-      windowTitleApplet
-      windowButtonsApplet
-      panelColorizer
-    ])
-    ++ (with iconPkgs; [breezeChameleon])
-    ++ [klassy];
-
   gnomePkgs = with pkgs; [
     adw-gtk3
     gnome-builder
@@ -47,23 +33,8 @@
   ]
   ++ (with iconPkgs; [breezeXcursor]); #For the cursor
 
-  hyprlandPkgs = with pkgs; [
-    adw-gtk3
-    alacritty
-    nautilus
-    nwg-bar
-    nwg-look
-    nwg-dock-hyprland
-    nwg-displays
-    nwg-launchers
-    elegant-sddm
-    alacritty-theme
-    tela-icon-theme
-    orchis-theme
-  ];
-
 in {
-  imports = lib.concatMap import [./programs];
+  imports = (lib.concatMap import [./programs]) ++ [./fonts];
 
   hm =
     lib.optionalAttrs (osConfig.desktopEnv.choice == "plasma") {
@@ -89,7 +60,13 @@ in {
         enable = true;
         style = "gnome";
       };
-      hyprland.enable = true;
+      #dconf.enable = true;
+      #waybar.enable = true;
+      gBar.enable = true;
+      #kate.enable = true;
+      hyprland = {
+        enable = true;
+      };
     };
 
   programs.home-manager.enable = true;
@@ -99,12 +76,8 @@ in {
     stateVersion = "24.11";
     packages =
       defaultPkgs
-      ++ lib.optionals (osConfig.desktopEnv.choice == "plasma")
-      plasmaPkgs
       ++ lib.optionals (osConfig.desktopEnv.choice == "gnome")
-      gnomePkgs
-      ++ lib.optionals (osConfig.desktopEnv.choice == "hyprland")
-      hyprlandPkgs;
+      gnomePkgs;
   };
 
   programs.git = {

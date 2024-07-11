@@ -66,6 +66,10 @@
     "widget.gtk.non-native-titlebar-buttons.enabled" = lib.mkDefault false;
     # Automatically enable extensions
     "extensions.autoDisableScopes" = 0;
+    # For vaapi support
+    "media.ffmpeg.vaapi.enabled" = true;
+    "gfx.x11-egl.force-enabled" = true;
+    "widget.dmabuf.force-enabled" = true;
   };
 
   engines = {
@@ -145,7 +149,10 @@
           ];
         }
       ];
-      icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+      icon = "${pkgs.fetchurl {
+        url = "https://home-manager-options.extranix.com/images/favicon.png";
+        sha256 = "sha256-oFp+eoTLXd0GAK/VrYRUeoXntJDfTu6VnzisEt+bW74=";
+      }}";
       definedAliases = ["@hm"];
     };
 
@@ -227,13 +234,12 @@ in {
                nix syntax which is converted to json. That's what I gathered from the above discussion.
             */
             ExtensionSettings = ExtensionSettings //
-              (lib.optionalAttrs (
-                config.hm.firefox.style == "plasma") {
-                  "{4e507435-d65f-4467-a2c0-16dbae24f288}" = {
-                    install_url = "https://addons.mozilla.org/firefox/downloads/latest/breezedarktheme/latest.xpi";
-                    installation_mode = "normal_installed";
-                  };
-                });
+              {
+                "{4e507435-d65f-4467-a2c0-16dbae24f288}" = {
+                  install_url = "https://addons.mozilla.org/firefox/downloads/latest/breezedarktheme/latest.xpi";
+                  installation_mode = if (config.hm.firefox.style == "plasma") then "normal_installed" else "blocked";
+                };
+              };
 
             /*
             ---- PREFERENCES ----

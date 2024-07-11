@@ -8,7 +8,7 @@
 
   desktopEnv = {
     enable = true;
-    choice = "plasma";
+    choice = "hyprland";
   };
 
 
@@ -26,9 +26,10 @@
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+  programs.neovim.enable = true;
 
   environment.systemPackages = with pkgs; [
-    nil cachix ssh-to-age age sops htop nix-output-monitor
+    nil cachix ssh-to-age age sops htop nix-output-monitor nvidia-vaapi-driver
   ];
 
   nixpkgs = {
@@ -70,6 +71,15 @@
 
   #virtualisation.virtualbox.host.enable = true;
   #users.extraGroups.vboxusers.members = [ "brandon" ];
+
+  # For vaapi support in firefox
+  environment.variables = {
+    LIBVA_DRIVER_NAME = "nvidia";
+    NVD_BACKEND = "direct";
+    MOZ_DISABLE_RDD_SANDBOX = "1";
+    GBM_BACKEND = "nvidia-drm";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  };
 
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = ["nvidia"];
@@ -116,19 +126,19 @@
       nvidiaSettings = true;
 
       # Optionally, you may need to select the appropriate driver version for your specific GPU.
-      package = config.boot.kernelPackages.nvidiaPackages.production;
+      #package = config.boot.kernelPackages.nvidiaPackages.production;
     };
   };
 
   # This is the beta driver.
-  /*
+  
     hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-    version = "555.52.04";
-    sha256_64bit = "sha256-nVOubb7zKulXhux9AruUTVBQwccFFuYGWrU1ZiakRAI=";
-    sha256_aarch64 = lib.fakeSha256;
-    openSha256 = lib.fakeSha256;
-    settingsSha256 = "sha256-PMh5efbSEq7iqEMBr2+VGQYkBG73TGUh6FuDHZhmwHk=";
-    persistencedSha256 = lib.fakeSha256;
-  };
-  */
+      version = "555.58";
+      sha256_64bit = "sha256-bXvcXkg2kQZuCNKRZM5QoTaTjF4l2TtrsKUvyicj5ew=";
+      sha256_aarch64 = "sha256-7XswQwW1iFP4ji5mbRQ6PVEhD4SGWpjUJe1o8zoXYRE=";
+      openSha256 = "sha256-hEAmFISMuXm8tbsrB+WiUcEFuSGRNZ37aKWvf0WJ2/c=";
+      settingsSha256 = "sha256-vWnrXlBCb3K5uVkDFmJDVq51wrCoqgPF03lSjZOuU8M="; #"sha256-m2rNASJp0i0Ez2OuqL+JpgEF0Yd8sYVCyrOoo/ln2a4=";
+      persistencedSha256 = lib.fakeHash; #"sha256-XaPN8jVTjdag9frLPgBtqvO/goB5zxeGzaTU0CdL6C4=";
+    };
+  
 }

@@ -9,6 +9,21 @@
   };
 
   config = lib.mkIf config.hm.plasma.enable {
+
+    home.packages = with pkgs;
+      [
+        application-title-bar #plasmoid
+        kde-rounded-corners
+      ]
+      ++ (with plasmoidPkgs; [
+        gnomeDesktopIndicatorApplet
+        windowTitleApplet
+        windowButtonsApplet
+        panelColorizer
+      ])
+      ++ (with iconPkgs; [breezeChameleon])
+      ++ [klassy];
+
     programs.plasma = {
       enable = true;
       overrideConfig = true;

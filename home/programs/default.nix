@@ -6,4 +6,8 @@
   ./kate
   ./dconf
   ./hyprland
+  ./hyprland/hyprlock.nix
+  ./waybar
+  ./gBar
+  ./wpaperd
 ]

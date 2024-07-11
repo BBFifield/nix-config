@@ -30,7 +30,7 @@ with lib.hm.gvariant; {
         clock-format = "12h";
         color-scheme = "prefer-dark";
         enable-animations = true;
-        font-name = "Noto Sans,  10";
+        font-name = "Sans, 10";
         gtk-theme = "adw-gtk3-dark";
         icon-theme = "Tela";
         scaling-factor = mkUint32 2;

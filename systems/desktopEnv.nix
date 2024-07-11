@@ -82,22 +82,28 @@ in {
           enable = true;
           wayland.enable = true;
           wayland.compositor = "weston";
-          theme = "Elegant";
+          theme = "chili";
           settings = {
+            General = {
+              GreeterEnvironment="QT_SCREEN_SCALE_FACTORS=2,QT_FONT_DPI=192";
+            };
             Theme = {
               CursorSize = 28;
               CursorTheme = "BreezeX-Dark";
             };
           };
         };
+        
+        services.gvfs.enable = true; # Need this to see trash folder
+        security.pam.services.hyprlock = {};
 
         environment.systemPackages = with pkgs; [
           gnome-tweaks
-          dconf-editor
-          dconf2nix
-          elegant-sddm
+          sddm-chili-theme
+          kdePackages.qtwayland #QT apps will not open under wayland mode otherwise
+          kdePackages.qt6ct
         ]
-        ++ (with (callPackage ../pkgs/icons {}); [breezeXcursor]);
+        ++ (with (callPackage ../pkgs/icons {}); [breezeXcursor]); # Needs to be installed system-wide to be accessible to sddm
       })
     ]
   ));

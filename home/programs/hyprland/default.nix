@@ -1,31 +1,113 @@
-{ config, lib, ... }:
+{ pkgs, config, lib, ... }:
 
 with lib;
 {
 
   options.hm.hyprland = {
-	enable = mkEnableOption "Enable hyprland configuration via home-manager";
+	  enable = mkEnableOption "Enable hyprland configuration via home-manager";
   };
 
   config = mkIf config.hm.hyprland.enable {
-	wayland.windowManager.hyprland = {
+    programs.qutebrowser.enable = true;
+
+    home.packages = with pkgs; [
+      walker
+      alacritty
+      xfce.thunar
+      swaynotificationcenter
+      alacritty-theme
+      tela-icon-theme
+    ];
+    /*
+    services.hyprpaper = {
+      enable = true;
+      settings = {
+        ipc = "on";
+        splash = true;
+        splash_offset = 2.0;
+
+        preload =
+          [ 
+            "Home/$USER/pictures/wallpapers" #Bonsai-Plant.png" 
+          ];
+
+        wallpaper = [
+          #"HDMI-A-1,../../../images/wallpapers/Bonsai-Plant.png"
+        ];
+      };
+    };*/
+
+    services.hypridle =  {
+      enable = true;
+      settings = {
+        general = {
+          lock_cmd = "pidof hyprlock || hyprlock";      # avoid starting multiple hyprlock instances.
+          before_sleep_cmd = "loginctl lock-session";    # lock before suspend.
+          after_sleep_cmd = "hyprctl dispatch dpms on";  # to avoid having to press a key twice to turn on the display.
+        };
+
+        listener = [
+          {
+            timeout = 300  ;                          # 5min
+            on-timeout = "loginctl lock-session";    # lock screen when timeout has passed
+          }
+          {
+            timeout = 1200;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+        ];
+      };
+    };
+
+    xdg.portal = { 
+      enable = true;
+      extraPortals = [ 
+        pkgs.xdg-desktop-portal-gtk 
+        pkgs.xdg-desktop-portal-hyprland
+      ];
+      config = {
+        common = {
+          default = [
+            "hyprland"
+            "gtk"
+          ];
+        };
+      }; 
+    };
+    
+    home.pointerCursor = {
+      gtk.enable = true;
+      package = (pkgs.callPackage ../../../pkgs/icons {}).breezeXcursor;
+      name = "BreezeX-Dark";
+      size = 28;
+    };
+
+    gtk = {
+      enable = true;
+      theme = {
+        package = pkgs.adw-gtk3;
+        name = "adw-gtk3-dark";
+      };
+      iconTheme = {
+        name = "Tela";
+      };
+      font = {
+        name = "Sans";
+        size = lib.mkForce 10;
+      };
+    };
+  
+	  wayland.windowManager.hyprland = {
       enable = true;
       /*plugins = [
         inputs.packages.${pkgs.system}.Hyprspace
       ];*/
 
       settings = {
-        # This is an example Hyprland config file.
-        # Refer to the wiki for more information.
-        # https://wiki.hyprland.org/Configuring/Configuring-Hyprland/
-
-        # Please note not all available settings / options are set here.
-        # For a full list, see the wiki
-
         # You can split this configuration into multiple files
         # Create your files separately and then link them to this file like this:
         # source = ~/.config/hypr/myColors.conf
-
 
         ################
         ### MONITORS ###
@@ -43,8 +125,9 @@ with lib;
 
         # Set programs that you use
         "$terminal" = "alacritty";
-        "$fileManager" = "nautilus";
-        #"$menu" = "wofi --show drun";
+        "$fileManager" = "thunar";
+        "$wallpaperUtils" = "waypaper";
+        "$menu" = "walker";
 
 
         #################
@@ -54,9 +137,12 @@ with lib;
         # Autostart necessary processes (like notifications daemons, status bars, etc.)
         # Or execute your favorite apps at launch like this:
 
-        # exec-once = $terminal
         # exec-once = nm-applet &
-        exec-once = "nwg-bar & nwg-dock-hyprland & nwg-launchers";
+        exec-once = [
+                      "gBar bar HDMI-A-1"
+                      "wpaperd"
+                      "swaynotificationcenter"     
+                    ];
 
 
         #############################
@@ -67,12 +153,24 @@ with lib;
 
         env =
           [
-            #"GTK_THEME, adw-gtk3-dark"
-
             "XCURSOR_SIZE,28"
             "HYPRCURSOR_SIZE,28"
             "HYPRCURSOR_THEME,BreezeX-Dark"
             "XCURSOR_THEME,BreezeX-Dark"
+
+            "GDK_BACKEND,wayland,x11,*"
+            "GDK_SCALE,2"
+
+            "XDG_CURRENT_DESKTOP,Hyprland"
+            "XDG_SESSION_TYPE,wayland"
+            "XDG_SESSION_DESKTOP,Hyprland"
+
+            
+            "QT_QPA_PLATFORM,wayland;xcb"
+            "QT_QPA_PLATFORMTHEME,qt6ct"
+           
+            #"QT_PLUGIN_PATH,${pkgs.kdePackages.qtbase}/${pkgs.kdePackages.qtbase.qtPluginPrefix}"
+            #"QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
           ];
 
 
@@ -102,6 +200,10 @@ with lib;
           layout = "dwindle";
         };
 
+        xwayland = {
+          force_zero_scaling = true;
+        };
+
         # https://wiki.hyprland.org/Configuring/Variables/#decoration
         decoration = {
           rounding = 10;
@@ -118,8 +220,8 @@ with lib;
           # https://wiki.hyprland.org/Configuring/Variables/#blur
           blur = {
             enabled = true;
-            size = 3;
-            passes = 1;
+            size = 4;
+            passes = 3;
 
             vibrancy = 0.1696;
 
@@ -159,7 +261,7 @@ with lib;
 
         # https://wiki.hyprland.org/Configuring/Variables/#misc
         misc = {
-          force_default_wallpaper = -1; # Set to 0 or 1 to disable the anime mascot wallpapers
+          force_default_wallpaper = 1; # Set to 0 or 1 to disable the anime mascot wallpapers
           disable_hyprland_logo = false; # If true disables the random hyprland logo / anime girl background. :(
         };
 
@@ -170,25 +272,11 @@ with lib;
 
         # https://wiki.hyprland.org/Configuring/Variables/#input
         input = {
-          kb_layout = "us";
-          kb_variant = "";
-          kb_model = "";
-          kb_options = "";
-          kb_rules = "";
-
-          follow_mouse = 1;
+          # This changes window focus
+          follow_mouse = 2;
           
 
           sensitivity = 0; # -1.0 - 1.0, 0 means no modification.
-
-          touchpad = {
-            natural_scroll = false;
-          };
-        };
-
-        # https://wiki.hyprland.org/Configuring/Variables/#gestures
-        gestures = {
-          workspace_swipe = false;
         };
 
         # Example per-device config
@@ -209,11 +297,14 @@ with lib;
         bind =
           [
             "$mainMod, T, exec, $terminal"
-            "$mainMod, K, killactive,"
-            "$mainMod, M, exit,"
             "$mainMod, F, exec, $fileManager"
-            "$mainMod, V, togglefloating,"
+            "$mainMod, W, exec, $wallpaperUtils"
             "$mainMod, R, exec, $menu"
+
+            "$mainMod, K, killactive,"
+            "$mainMod, Q, exit,"
+            
+            "$mainMod, V, togglefloating,"
             "$mainMod, P, pseudo," # dwindle
             "$mainMod, J, togglesplit," # dwindle
 
@@ -223,41 +314,42 @@ with lib;
             "$mainMod, up, movefocus, u"
             "$mainMod, down, movefocus, d"
 
-        # Switch workspaces with mainMod + [0-9]
-            "$mainMod, 1, workspace, 1"
-            "$mainMod, 2, workspace, 2"
-            "$mainMod, 3, workspace, 3"
-            "$mainMod, 4, workspace, 4"
-            "$mainMod, 5, workspace, 5"
-            "$mainMod, 6, workspace, 6"
-            "$mainMod, 7, workspace, 7"
-            "$mainMod, 8, workspace, 8"
-            "$mainMod, 9, workspace, 9"
-            "$mainMod, 0, workspace, 10"
+        # Cycle to next or previous wallpaper with wpaperd
+            "$mainMod SHIFT, right, exec, wpaperctl next"
+            "$mainMod SHIFT, left, exec, wpaperctl previous" # Doesn't work for some reason
+          ]
 
-        # Move active window to a workspace with mainMod + SHIFT + [0-9]
-            "$mainMod SHIFT, 1, movetoworkspace, 1"
-            "$mainMod SHIFT, 2, movetoworkspace, 2"
-            "$mainMod SHIFT, 3, movetoworkspace, 3"
-            "$mainMod SHIFT, 4, movetoworkspace, 4"
-            "$mainMod SHIFT, 5, movetoworkspace, 5"
-            "$mainMod SHIFT, 6, movetoworkspace, 6"
-            "$mainMod SHIFT, 7, movetoworkspace, 7"
-            "$mainMod SHIFT, 8, movetoworkspace, 8"
-            "$mainMod SHIFT, 9, movetoworkspace, 9"
-            "$mainMod SHIFT, 0, movetoworkspace, 10"
+        # workspaces
+        # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
+      ++ (
+            builtins.concatLists (builtins.genList (
+              x: let
+                ws = let
+                  c = (x + 1) / 10;
+                in
+                  builtins.toString (x + 1 - (c * 10));
+              in [
+                "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
+                "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+              ]
+            )
+            10)
+          )
 
+      ++ [
         # Example special workspace (scratchpad)
             "$mainMod, S, togglespecialworkspace, magic"
             "$mainMod SHIFT, S, movetoworkspace, special:magic"
-
+          
         # Scroll through existing workspaces with mainMod + scroll
             "$mainMod, mouse_down, workspace, e+1"
             "$mainMod, mouse_up, workspace, e-1"
-
+      ];
+      
+      bindm = [  
         # Move/resize windows with mainMod + LMB/RMB and dragging
             "$mainMod, mouse:272, movewindow"
-           # "$mainMod, mouse:273, resizewindow"
+            "$mainMod, mouse:273, resizewindow"
           ];
 
 
@@ -276,7 +368,6 @@ with lib;
 
         windowrulev2 = "suppressevent maximize, class:.*"; # You'll probably like this.
       };
-	};
+	  };
   };
-
 }

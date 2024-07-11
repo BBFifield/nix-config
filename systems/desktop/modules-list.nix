@@ -16,7 +16,11 @@ with inputs; {
       home-manager.backupFileExtension = "backup";
       home-manager.users.brandon = import ../../home/home.nix;
 
-      home-manager.sharedModules = [plasma-manager.homeManagerModules.plasma-manager sops-nix.homeManagerModules.sops];
+      home-manager.sharedModules = [
+        plasma-manager.homeManagerModules.plasma-manager
+        gBar.homeManagerModules.x86_64-linux.default
+        sops-nix.homeManagerModules.sops
+      ];
     }
     nixos-generators.nixosModules.all-formats
     {
