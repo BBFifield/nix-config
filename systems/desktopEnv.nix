@@ -10,7 +10,7 @@ in {
   options.desktopEnv = {
     enable = mkEnableOption "Enable a desktop environment";
 
-    choice = mkOption {
+    session = mkOption {
       type = types.enum ["plasma" "gnome" "hyprland" null];
       default = null;
       example = "plasma";
@@ -20,7 +20,7 @@ in {
 
   config = (mkIf (cfg.enable) (
     mkMerge [
-      (mkIf (cfg.choice == "plasma") {
+      (mkIf (cfg.session == "plasma") {
         services.xserver.enable = true;
 
         # Enable the KDE Plasma 6 Desktop Environment.
@@ -49,7 +49,7 @@ in {
         ++ (with (callPackage ../pkgs/icons {}); [breezeXcursor]); # Needs to be installed system-wide so sddm has access to it
       })
 
-      (mkIf (cfg.choice == "gnome") {
+      (mkIf (cfg.session == "gnome") {
         # Enable the Gnome desktop environment
         services.xserver.desktopManager.gnome.enable = true;
         services.xserver.displayManager.gdm = {
@@ -75,7 +75,7 @@ in {
         ];
       })
 
-      (mkIf (cfg.choice == "hyprland") {
+      (mkIf (cfg.session == "hyprland") {
         # Enable the hyprland desktop environment
         programs.hyprland.enable = true;
         services.displayManager.sddm = {

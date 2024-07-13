@@ -10,6 +10,9 @@ with lib;
           mode = "center";
           sorting = "random";
           transition-time = "1000";
+          transition = {
+            swirl = {};
+          };
         };
         any = {
           path = "${config.home.homeDirectory}/Pictures/wallpapers";

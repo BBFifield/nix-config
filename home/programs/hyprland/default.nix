@@ -18,24 +18,6 @@ with lib;
       alacritty-theme
       tela-icon-theme
     ];
-    /*
-    services.hyprpaper = {
-      enable = true;
-      settings = {
-        ipc = "on";
-        splash = true;
-        splash_offset = 2.0;
-
-        preload =
-          [ 
-            "Home/$USER/pictures/wallpapers" #Bonsai-Plant.png" 
-          ];
-
-        wallpaper = [
-          #"HDMI-A-1,../../../images/wallpapers/Bonsai-Plant.png"
-        ];
-      };
-    };*/
 
     services.hypridle =  {
       enable = true;
@@ -48,7 +30,7 @@ with lib;
 
         listener = [
           {
-            timeout = 300  ;                          # 5min
+            timeout = 600  ;                          # 5min
             on-timeout = "loginctl lock-session";    # lock screen when timeout has passed
           }
           {
@@ -127,7 +109,7 @@ with lib;
         "$terminal" = "alacritty";
         "$fileManager" = "thunar";
         "$wallpaperUtils" = "waypaper";
-        "$menu" = "walker";
+        "$menu" = "ags -t applauncher";
 
 
         #################
@@ -140,6 +122,7 @@ with lib;
         # exec-once = nm-applet &
         exec-once = [
                       "gBar bar HDMI-A-1"
+                      #"ags"
                       "wpaperd"
                       "swaynotificationcenter"     
                     ];
@@ -183,12 +166,12 @@ with lib;
         # https://wiki.hyprland.org/Configuring/Variables/#general
         general = {
           gaps_in = 5;
-          gaps_out = 20;
+          gaps_out = 15;
 
           border_size = 2;
 
           # https://wiki.hyprland.org/Configuring/Variables/#variable-types for info about colors
-          "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
+          "col.active_border" = "rgba(3eff00ee) rgba(cb00ffee) 45deg";
           "col.inactive_border" = "rgba(595959aa)";
 
           # Set to true enable resizing windows by clicking and dragging on borders and gaps
@@ -213,8 +196,10 @@ with lib;
           inactive_opacity = 0.9;
 
           drop_shadow = true;
-          shadow_range = 4;
-          shadow_render_power = 3;
+          shadow_range = 6;
+          shadow_render_power = 1;
+          #shadow_offset = "3 3";
+          
           "col.shadow" = "rgba(1a1a1aee)";
 
           # https://wiki.hyprland.org/Configuring/Variables/#blur
@@ -235,14 +220,15 @@ with lib;
 
           # Default animations, see https://wiki.hyprland.org/Configuring/Animations/ for more
 
-          bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+          bezier = ["myBezier, 0.05, 0.9, 0.1, 1.05"
+           "linearBezier, 0, 0, 1, 1"];
 
           animation =
             [
               "windows, 1, 7, myBezier"
               "windowsOut, 1, 7, default, popin 80%"
               "border, 1, 10, default"
-              "borderangle, 1, 8, default"
+              "borderangle, 1, 40, linearBezier, loop"
               "fade, 1, 7, default"
               "workspaces, 1, 6, default"
             ];
@@ -263,6 +249,9 @@ with lib;
         misc = {
           force_default_wallpaper = 1; # Set to 0 or 1 to disable the anime mascot wallpapers
           disable_hyprland_logo = false; # If true disables the random hyprland logo / anime girl background. :(
+          animate_manual_resizes = true;
+          animate_mouse_windowdragging = true;
+          #enable_swallow = true;
         };
 
 

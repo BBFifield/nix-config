@@ -9,5 +9,6 @@
   ./hyprland/hyprlock.nix
   ./waybar
   ./gBar
+  ./ags
   ./wpaperd
 ]

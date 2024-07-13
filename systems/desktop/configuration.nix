@@ -8,7 +8,7 @@
 
   desktopEnv = {
     enable = true;
-    choice = "hyprland";
+    session = "hyprland";
   };
 
 

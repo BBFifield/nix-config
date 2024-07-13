@@ -37,7 +37,7 @@ in {
   imports = (lib.concatMap import [./programs]) ++ [./fonts];
 
   hm =
-    lib.optionalAttrs (osConfig.desktopEnv.choice == "plasma") {
+    lib.optionalAttrs (osConfig.desktopEnv.session == "plasma") {
 
       firefox = {
         enable = true;
@@ -48,25 +48,21 @@ in {
       klassy.enable = true;
       kate.enable = true;
     }
-    // lib.optionalAttrs (osConfig.desktopEnv.choice == "gnome") {
+    // lib.optionalAttrs (osConfig.desktopEnv.session == "gnome") {
       firefox = {
         enable = true;
         style = "gnome";
       };
       dconf.enable = true;
     }
-    // lib.optionalAttrs (osConfig.desktopEnv.choice == "hyprland") {
+    // lib.optionalAttrs (osConfig.desktopEnv.session == "hyprland") {
       firefox = {
         enable = true;
         style = "gnome";
       };
-      #dconf.enable = true;
-      #waybar.enable = true;
-      gBar.enable = true;
-      #kate.enable = true;
-      hyprland = {
-        enable = true;
-      };
+      gBar.enable =true;
+      hyprland.enable = true;
+      ags.enable = true;
     };
 
   programs.home-manager.enable = true;
@@ -76,7 +72,7 @@ in {
     stateVersion = "24.11";
     packages =
       defaultPkgs
-      ++ lib.optionals (osConfig.desktopEnv.choice == "gnome")
+      ++ lib.optionals (osConfig.desktopEnv.session == "gnome")
       gnomePkgs;
   };
 

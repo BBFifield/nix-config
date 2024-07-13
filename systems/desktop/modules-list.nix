@@ -16,9 +16,12 @@ with inputs; {
       home-manager.backupFileExtension = "backup";
       home-manager.users.brandon = import ../../home/home.nix;
 
+      # This is basically the same as having imports = [...] inside
+      # home.nix, except these modules are imported into all home-manager configs
       home-manager.sharedModules = [
         plasma-manager.homeManagerModules.plasma-manager
         gBar.homeManagerModules.x86_64-linux.default
+        ags.homeManagerModules.default 
         sops-nix.homeManagerModules.sops
       ];
     }

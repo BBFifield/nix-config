@@ -32,13 +32,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    Hyprspace = {
-      url = "github:KZDKM/Hyprspace";
-    };
+    Hyprspace.url = "github:KZDKM/Hyprspace";
 
-    gBar = {
-      url = "github:scorpion-26/gBar";
-    };
+    gBar.url = "github:scorpion-26/gBar";
+
+    ags.url = "github:Aylur/ags";
   };
 
   outputs = {
