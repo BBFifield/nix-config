@@ -1,4 +1,5 @@
 import { applauncher } from "./applauncher.js"
+import { Volume, quickSettings } from "./quickSettings.js"
 
 const hyprland = await Service.import("hyprland")
 const notifications = await Service.import("notifications")
@@ -85,58 +86,6 @@ function Media() {
     })
 }
 
-
-
-
-function Volume() {
-    const volumeIndicator = Widget.Button({
-        on_clicked: () => audio.speaker.is_muted = !audio.speaker.is_muted,
-        child: Widget.Icon().hook(audio.speaker, self => {
-            const vol = audio.speaker.volume * 100;
-            const icons = {
-                101: "overamplified",
-                67: "high",
-                34: "medium",
-                1: "low",
-                0: "muted",
-            }
-            const icon = audio.speaker.is_muted ? 0 : [101, 67, 34, 1, 0].find(
-                threshold => threshold <= vol)
-            self.icon = `audio-volume-${icons[icon]}-symbolic`
-            self.tooltip_text = `Volume ${Math.floor(vol)}%`;
-        })
-        
-            
-    
-            
-        }
-    )
-
-    
-
-    
-/*
-    const icon = Widget.Icon({
-        icon: Utils.watch(getIcon(), audio.speaker, getIcon),
-    })
-
-    const slider = Widget.Slider({
-        hexpand: true,
-        draw_value: false,
-        on_change: ({ value }) => audio.speaker.volume = value,
-        setup: self => self.hook(audio.speaker, () => {
-            self.value = audio.speaker.volume || 0
-        }),
-    })
-
-    return Widget.Box({
-        class_name: "volume",
-        css: "min-width: 180px",
-        children: [icon, slider],
-    })*/
-}
-
-
 function BatteryLabel() {
     const value = battery.bind("percent").as(p => p > 0 ? p / 100 : 0)
     const icon = battery.bind("percent").as(p =>
@@ -187,7 +136,7 @@ function Center() {
     return Widget.Box({
         spacing: 8,
         children: [
-            Media(),
+            Clock(),
             Notification(),
         ],
     })
@@ -226,9 +175,7 @@ App.config({
     windows: [
         Bar(),
         applauncher,
-        // you can call it, for each monitor
-        // Bar(0),
-        // Bar(1)
+        quickSettings,
     ],
 })
 

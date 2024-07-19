@@ -98,6 +98,7 @@ in {
         security.pam.services.hyprlock = {};
 
         environment.systemPackages = with pkgs; [
+          bun
           gnome-tweaks
           sddm-chili-theme
           kdePackages.qtwayland #QT apps will not open under wayland mode otherwise

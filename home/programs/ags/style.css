@@ -1,4 +1,4 @@
-/*window.bar {
+window.bar {
     background-color: @theme_bg_color;
     color: @theme_fg_color;
 }
@@ -34,7 +34,11 @@ label {
     color: yellow;
 }
 
+/*.slider scale.position {
+    all: unset;
+}*/
+
 levelbar block,
 highlight {
     min-height: 10px;
-}*/
+}

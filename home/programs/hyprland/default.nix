@@ -13,10 +13,12 @@ with lib;
     home.packages = with pkgs; [
       walker
       alacritty
-      xfce.thunar
       swaynotificationcenter
       alacritty-theme
       tela-icon-theme
+      awf
+      nautilus
+      fuzzel
     ];
 
     services.hypridle =  {
@@ -107,9 +109,9 @@ with lib;
 
         # Set programs that you use
         "$terminal" = "alacritty";
-        "$fileManager" = "thunar";
+        "$fileManager" = "nautilus";
         "$wallpaperUtils" = "waypaper";
-        "$menu" = "ags -t applauncher";
+        "$menu" = "walker";
 
 
         #################
