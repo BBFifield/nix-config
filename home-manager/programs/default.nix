@@ -1,0 +1,14 @@
+[
+  ./browsers/firefox
+  ./konsole
+  ./plasma
+  ./klassy
+  ./kate
+  ./dconf
+  ./hyprland
+  ./hyprland/hyprlock.nix
+  ./waybar
+  ./gBar
+  ./ags
+  ./wpaperd
+]

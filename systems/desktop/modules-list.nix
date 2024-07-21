@@ -14,7 +14,7 @@ with inputs; {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
       home-manager.backupFileExtension = "backup";
-      home-manager.users.brandon = import ../../home/home.nix;
+      home-manager.users.brandon = import ../../home-manager/home.nix;
 
       # This is basically the same as having imports = [...] inside
       # home.nix, except these modules are imported into all home-manager configs

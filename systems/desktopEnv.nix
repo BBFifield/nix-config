@@ -46,7 +46,7 @@ in {
           kdbusaddons
           isoimagewriter
         ]
-        ++ (with (callPackage ../pkgs/icons {}); [breezeXcursor]); # Needs to be installed system-wide so sddm has access to it
+        ++ [pkgs.icons.breezeXcursor]; # custom # Needs to be installed system-wide so sddm has access to it
       })
 
       (mkIf (cfg.session == "gnome") {
@@ -95,7 +95,7 @@ in {
         };
         
         services.gvfs.enable = true; # Need this to see trash folder
-        security.pam.services.hyprlock = {};
+        security.pam.services.hyprlock = {}; # Need this for hyprlock to work
 
         environment.systemPackages = with pkgs; [
           bun
@@ -103,8 +103,8 @@ in {
           sddm-chili-theme
           kdePackages.qtwayland #QT apps will not open under wayland mode otherwise
           kdePackages.qt6ct
+          icons.breezeXcursor # custom # Needs to be installed system-wide to be accessible to sddm
         ]
-        ++ (with (callPackage ../pkgs/icons {}); [breezeXcursor]); # Needs to be installed system-wide to be accessible to sddm
       })
     ]
   ));

@@ -22,6 +22,12 @@
     });
   };
 
+  customPkgs = final: prev: {
+    icons = prev.callPackage ../pkgs/icons {};
+    plasmoids = prev.callPackage ../pkgs/plasmoids/plasmoids.nix {};
+    klassy = prev.kdePackages.callPackage ../pkgs/klassy/klassy.nix {};
+  };
+
   defaults = [
     inputs.nurpkgs.overlay
   ];
@@ -34,4 +40,7 @@
       nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [prev.kdePackages.wrapQtAppsHook];
     });
   };
+
+  
 }
+

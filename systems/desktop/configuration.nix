@@ -33,7 +33,11 @@
   ];
 
   nixpkgs = {
-    overlays = outputs.overlays.defaults ++ [outputs.overlays.vivaldiFixed];
+    overlays = outputs.overlays.defaults 
+      ++ (with outputs.overlays; [
+        vivaldiFixed 
+        customPkgs
+      ]);
     config.allowUnfree = true;
   };
 

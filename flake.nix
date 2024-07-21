@@ -1,10 +1,4 @@
 {
-  nixConfig = {
-    extra-substitutors = ["https://app.cachix.org/cache/bbfifield"];
-
-    extra-trusted-public-keys = ["bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg="];
-  };
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -25,6 +19,7 @@
 
     sops-nix = {
       url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nixos-generators = {
@@ -34,9 +29,15 @@
 
     Hyprspace.url = "github:KZDKM/Hyprspace";
 
-    gBar.url = "github:scorpion-26/gBar";
+    gBar = {
+      url = "github:scorpion-26/gBar";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    ags.url = "github:Aylur/ags";
+    ags = {
+      url = "github:Aylur/ags";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -92,4 +93,12 @@
       desktop = nixosConfigurations.desktop.config.formats.install-iso;
     };
   };
+
+  nixConfig = {
+    extra-substitutors = ["https://app.cachix.org/cache/bbfifield"];
+
+    extra-trusted-public-keys = ["bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg="];
+  };
+
+  
 }
