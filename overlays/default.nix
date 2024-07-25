@@ -22,11 +22,15 @@
     });
   };
 
-  customPkgs = final: prev: {
-    icons = prev.callPackage ../pkgs/icons {};
-    plasmoids = prev.callPackage ../pkgs/plasmoids/plasmoids.nix {};
-    klassy = prev.kdePackages.callPackage ../pkgs/klassy/klassy.nix {};
-  };
+  customPkgs = let
+    pkgNames = builtins.attrNames (builtins.readDir ../pkgs);
+  in
+    final: prev:
+      builtins.listToAttrs (builtins.map (pkgName: {
+          name = pkgName;
+          value = prev.callPackage ../pkgs/${pkgName} {};
+        })
+        pkgNames);
 
   defaults = [
     inputs.nurpkgs.overlay
@@ -40,7 +44,4 @@
       nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [prev.kdePackages.wrapQtAppsHook];
     });
   };
-
-  
 }
-

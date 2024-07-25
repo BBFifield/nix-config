@@ -229,15 +229,20 @@ in {
             ---- EXTENSIONS ----
             */
 
-            /* https://discourse.nixos.org/t/optionalattrs-in-module-infinite-recursion-with-config/27876
-               I think mkIf and mkMerge don't work inside ExtensionSettings because it's not part of the module system, but merely
-               nix syntax which is converted to json. That's what I gathered from the above discussion.
+            /*
+            https://discourse.nixos.org/t/optionalattrs-in-module-infinite-recursion-with-config/27876
+            I think mkIf and mkMerge don't work inside ExtensionSettings because it's not part of the module system, but merely
+            nix syntax which is converted to json. That's what I gathered from the above discussion.
             */
-            ExtensionSettings = ExtensionSettings //
-              {
+            ExtensionSettings =
+              ExtensionSettings
+              // {
                 "{4e507435-d65f-4467-a2c0-16dbae24f288}" = {
                   install_url = "https://addons.mozilla.org/firefox/downloads/latest/breezedarktheme/latest.xpi";
-                  installation_mode = if (config.hm.firefox.style == "plasma") then "normal_installed" else "blocked";
+                  installation_mode =
+                    if (config.hm.firefox.style == "plasma")
+                    then "normal_installed"
+                    else "blocked";
                 };
               };
 

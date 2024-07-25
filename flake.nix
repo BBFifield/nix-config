@@ -61,7 +61,7 @@
     # forAllSystems is called
     forAllSystems = nixpkgs.lib.genAttrs systems;
 
-    hostnames = builtins.attrNames (builtins.readDir ./systems);
+    hostnames = builtins.attrNames (builtins.readDir ./hosts);
   in rec
   {
     # Your custom packages
@@ -81,7 +81,7 @@
         name = hostname;
         value = nixpkgs.lib.nixosSystem {
           specialArgs = {inherit inputs outputs hostname;};
-          modules = [./systems/${hostname}/modules-list.nix];
+          modules = [./hosts/${hostname}/modules-list.nix];
         };
       })
       hostnames);
@@ -99,6 +99,4 @@
 
     extra-trusted-public-keys = ["bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg="];
   };
-
-  
 }
