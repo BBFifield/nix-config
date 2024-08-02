@@ -1,4 +1,8 @@
-{...}: {
+{ pkgs, config, lib, ...}: with lib; {
+  options.hm.gnome-shell = {
+    enable = mkEnableOption "Enable Gnome-Shell packages.";
+  };
+  config = mkIf config.hm.gnome-shell.enable {
   home.packages = with pkgs;
     [
       adw-gtk3
@@ -8,5 +12,7 @@
       tela-icon-theme
       orchis-theme
     ]
-    ++ (icons.breezeXcursor); #For the cursor
+    ++ [icons.breezeXcursor]; 
+  };
 }
+

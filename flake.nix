@@ -27,8 +27,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    Hyprspace.url = "github:KZDKM/Hyprspace";
-
     gBar = {
       url = "github:scorpion-26/gBar";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -37,6 +35,14 @@
     ags = {
       url = "github:Aylur/ags";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    matugen.url = "github:InioX/matugen?ref=v2.2.0";
+
+    asztal = {
+      url = "github:Aylur/dotfiles";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
     };
   };
 
@@ -66,7 +72,15 @@
   {
     # Your custom packages
     # Accessible through 'nix build', 'nix shell', etc
-    packages = forAllSystems (system: nixpkgs.legacyPackages.${system});
+    packages = 
+      let
+        pkgNames = builtins.attrNames (builtins.readDir ./pkgs);
+      in 
+      builtins.listToAttrs (builtins.map (pkgName: {
+        name = pkgName;
+        value = forAllSystems (system: 
+          nixpkgs.legacyPackages.${system}.callPackage ./pkgs/${pkgName} {});
+      }) pkgNames);
 
     # Formatter for your nix files, available through 'nix fmt'
     # Other options beside 'alejandra' include 'nixpkgs-fmt'
@@ -96,7 +110,6 @@
 
   nixConfig = {
     extra-substitutors = ["https://app.cachix.org/cache/bbfifield"];
-
     extra-trusted-public-keys = ["bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg="];
   };
 }

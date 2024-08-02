@@ -1,6 +1,9 @@
-{ config, lib, ...}:
-with lib;
 {
+  config,
+  lib,
+  ...
+}:
+with lib; {
   config = mkIf config.hm.hyprland.enable {
     programs.wpaperd = {
       enable = true;
@@ -20,5 +23,4 @@ with lib;
       };
     };
   };
-
 }

@@ -1,17 +1,19 @@
-{ lib, ... }: 
-let
+{
+  config,
+  lib,
+  ...
+}: let
   cfg = config.features;
   featuresDir = ../features/nixos;
-in
-{
+in {
   options.features = {
-    enabled = {
-      type = lib.types List;
+    enabled = lib.mkOption {
+      type = with lib.types; listOf str;
       default = [];
-      description = "Select which features to enable for the host."
-    }
+      description = "Select which features to enable for the host.";
+    };
   };
-  config = mkIf cfg.enabled != [] {
-    imports = lib.concatMap (feature: import ${featuresDir}++feature cfg.enabled);
+  config = lib.mkIf (cfg.enabled != []) {
+    imports = lib.concatMap (feature: (import featuresDir + feature) cfg.enabled);
   };
 }

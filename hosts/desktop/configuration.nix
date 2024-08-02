@@ -11,9 +11,9 @@
     "base"
     "cups"
     "nvidia"
-    "sddm"
     "home-manager"
     "desktop"
+    "display-manager"
   ];
 
   imports = builtins.map (feature: featuresDir + ("/" + feature + ".nix")) features;
@@ -23,6 +23,7 @@ in {
   desktop = {
     enable = true;
     session = "hyprland";
+    displayManager = "greetd";
   };
 
   # Bootloader.
@@ -54,6 +55,7 @@ in {
       ++ (with outputs.overlays; [
         vivaldiFixed
         customPkgs
+        asztalOverlay
       ]);
     config.allowUnfree = true;
   };

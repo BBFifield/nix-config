@@ -6,9 +6,10 @@
   ./kate
   ./dconf
   ./hyprland
-  ./hyprland/hyprlock.nix
+  #./hyprland/hyprlock.nix
   ./waybar
   ./gBar
-  ./ags
   ./wpaperd
+  ./gnome-shell
+  ./starship
 ]

@@ -1,377 +1,352 @@
-{ pkgs, config, lib, ... }:
-
-with lib;
 {
+  pkgs,
+  config,
+  lib,
+  ...
+}: with lib; let
 
+  yt = pkgs.writeShellScript "yt" ''
+    notify-send "Opening video" "$(wl-paste)"
+    mpv "$(wl-paste)"
+  '';
+
+  playerctl = "${pkgs.playerctl}/bin/playerctl";
+  brightnessctl = "${pkgs.brightnessctl}/bin/brightnessctl";
+  pactl = "${pkgs.pulseaudio}/bin/pactl";
+
+  theme = {
+    package = pkgs.adw-gtk3;
+    name = "adw-gtk3-dark";
+  };
+  cursorTheme = {
+    name = "BreezeX-Dark";
+    size = 28;
+    package = pkgs.qogir-icon-theme;
+  };
+  iconTheme = {
+    name = "MoreWaita";
+  };
+  font = {
+    name = "Sans";
+    size = lib.mkForce 10;
+  };
+
+in {
   options.hm.hyprland = {
-	  enable = mkEnableOption "Enable hyprland configuration via home-manager";
+    enable = mkEnableOption "Enable hyprland configuration via home-manager";
   };
 
   config = mkIf config.hm.hyprland.enable {
-    programs.qutebrowser.enable = true;
 
-    home.packages = with pkgs; [
-      walker
-      alacritty
-      swaynotificationcenter
-      alacritty-theme
-      tela-icon-theme
-      awf
-      nautilus
-      fuzzel
-    ];
-
-    services.hypridle =  {
-      enable = true;
-      settings = {
-        general = {
-          lock_cmd = "pidof hyprlock || hyprlock";      # avoid starting multiple hyprlock instances.
-          before_sleep_cmd = "loginctl lock-session";    # lock before suspend.
-          after_sleep_cmd = "hyprctl dispatch dpms on";  # to avoid having to press a key twice to turn on the display.
-        };
-
-        listener = [
-          {
-            timeout = 600  ;                          # 5min
-            on-timeout = "loginctl lock-session";    # lock screen when timeout has passed
-          }
-          {
-            timeout = 1200;
-            on-timeout = "hyprctl dispatch dpms off";
-            on-resume = "hyprctl dispatch dpms on";
-          }
-        ];
+    xdg.desktopEntries = {
+      "org.gnome.Settings" = {
+        name = "Settings";
+        comment = "Gnome Control Center";
+        icon = "org.gnome.Settings";
+        exec = "env XDG_CURRENT_DESKTOP=gnome ${pkgs.gnome.gnome-control-center}/bin/gnome-control-center";
+        categories = ["X-Preferences"];
+        terminal = false;
+      };
+      "org.gnome.Tweaks" = {
+        name = "Tweaks";
+        comment = "Gnome Tweaks";
+        icon = "org.gnome.tweaks";
+        exec = "env XDG_CURRENT_DESKTOP=gnome ${pkgs.gnome-tweaks}/bin/gnome-tweaks";
+        categories = ["X-Preferences"];
+        terminal = false;
       };
     };
 
-    xdg.portal = { 
+    home = {
+      packages = with pkgs; [
+        alacritty
+        alacritty-theme
+        nautilus
+        asztal
+        morewaita-icon-theme
+        adwaita-icon-theme
+        qogir-icon-theme
+        loupe
+        baobab
+        gnome-system-monitor
+        icons.breezeXcursor
+        wl-gammactl
+      ];
+      sessionVariables = {
+        XCURSOR_THEME = cursorTheme.name;
+        XCURSOR_SIZE = "${toString cursorTheme.size}";
+      };
+      pointerCursor = cursorTheme // {gtk.enable = true;};
+    };
+
+    gtk = {
       enable = true;
-      extraPortals = [ 
-        pkgs.xdg-desktop-portal-gtk 
+      inherit theme cursorTheme iconTheme font;
+    };
+
+    xdg.portal = {
+      enable = true;
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
         pkgs.xdg-desktop-portal-hyprland
       ];
       config = {
         common = {
           default = [
-            "hyprland"
             "gtk"
+            "hyprland"
           ];
         };
-      }; 
-    };
-    
-    home.pointerCursor = {
-      gtk.enable = true;
-      package = pkgs.icons.breezeXcursor; # custom
-      name = "BreezeX-Dark";
-      size = 28;
+      };
     };
 
-    gtk = {
+    wayland.windowManager.hyprland = {
       enable = true;
-      theme = {
-        package = pkgs.adw-gtk3;
-        name = "adw-gtk3-dark";
-      };
-      iconTheme = {
-        name = "Tela";
-      };
-      font = {
-        name = "Sans";
-        size = lib.mkForce 10;
-      };
-    };
-  
-	  wayland.windowManager.hyprland = {
-      enable = true;
-      /*plugins = [
-        inputs.packages.${pkgs.system}.Hyprspace
-      ];*/
+      #package = hyprland;
+      systemd.enable = true;
+      xwayland.enable = true;
+      plugins = [
+        # inputs.hyprland-hyprspace.packages.${pkgs.system}.default
+        # plugins.hyprexpo
+        # plugins.hyprbars
+        # plugins.borderspp
+      ];
 
       settings = {
-        ################
-        ### MONITORS ###
-        ################
-
-        # See https://wiki.hyprland.org/Configuring/Monitors/
-        monitor = ",preferred,auto,2";
-
-
-        ###################
-        ### MY PROGRAMS ###
-        ###################
-
-        # See https://wiki.hyprland.org/Configuring/Keywords/
-
-        # Set programs that you use
-        "$terminal" = "alacritty";
-        "$fileManager" = "nautilus";
-        "$wallpaperUtils" = "waypaper";
-        "$menu" = "walker";
-
-
-        #################
-        ### AUTOSTART ###
-        #################
-
-        # Autostart necessary processes (like notifications daemons, status bars, etc.)
-        # Or execute your favorite apps at launch like this:
-
-        # exec-once = nm-applet &
         exec-once = [
-                      "gBar bar HDMI-A-1"
-                      #"ags"
-                      "wpaperd"
-                      "swaynotificationcenter"     
-                    ];
+          "asztal -b hypr"
+        ];
 
+        monitor = [
+          ",preferred,auto,2"
+        ];
 
-        #############################
-        ### ENVIRONMENT VARIABLES ###
-        #############################
+        env = [
+          "XCURSOR_SIZE,${toString cursorTheme.size}"
+          "HYPRCURSOR_SIZE,${toString cursorTheme.size}"
+          "HYPRCURSOR_THEME,${cursorTheme.name}"
+          "XCURSOR_THEME,${cursorTheme.name}"
 
-        # See https://wiki.hyprland.org/Configuring/Environment-variables/
+          "GDK_BACKEND,wayland,x11,*"
+          "GDK_SCALE,2"
 
-        env =
-          [
-            "XCURSOR_SIZE,28"
-            "HYPRCURSOR_SIZE,28"
-            "HYPRCURSOR_THEME,BreezeX-Dark"
-            "XCURSOR_THEME,BreezeX-Dark"
+          "XDG_CURRENT_DESKTOP,Hyprland"
+          "XDG_SESSION_TYPE,wayland"
+          "XDG_SESSION_DESKTOP,Hyprland"
 
-            "GDK_BACKEND,wayland,x11,*"
-            "GDK_SCALE,2"
+          "QT_QPA_PLATFORM,wayland;xcb"
+          "QT_QPA_PLATFORMTHEME,qt6ct"
 
-            "XDG_CURRENT_DESKTOP,Hyprland"
-            "XDG_SESSION_TYPE,wayland"
-            "XDG_SESSION_DESKTOP,Hyprland"
-
-            
-            "QT_QPA_PLATFORM,wayland;xcb"
-            "QT_QPA_PLATFORMTHEME,qt6ct"
-           
-            #"QT_PLUGIN_PATH,${pkgs.kdePackages.qtbase}/${pkgs.kdePackages.qtbase.qtPluginPrefix}"
-            #"QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
-          ];
-
-
-        #####################
-        ### LOOK AND FEEL ###
-        #####################
-
-        # Refer to https://wiki.hyprland.org/Configuring/Variables/
-
-        # https://wiki.hyprland.org/Configuring/Variables/#general
-        general = {
-          gaps_in = 3;
-          gaps_out = 8;
-
-          border_size = 2;
-
-          # https://wiki.hyprland.org/Configuring/Variables/#variable-types for info about colors
-          "col.active_border" = "rgba(ca9ee6ff) rgba(f2d5cfff) 45deg";
-          "col.inactive_border" = "rgba(b4befecc) rgba(6c7086cc) 45deg";
-
-          # Set to true enable resizing windows by clicking and dragging on borders and gaps
-          resize_on_border = true;
-
-          # Please see https://wiki.hyprland.org/Configuring/Tearing/ before you turn this on
-          allow_tearing = false;
-
-          layout = "dwindle";
-        };
-
-        group = {
-          "col.border_active" = "rgba(ca9ee6ff) rgba(f2d5cfff) 45deg";
-          "col.border_inactive" = "rgba(b4befecc) rgba(6c7086cc) 45deg";
-          "col.border_locked_active" = "rgba(ca9ee6ff) rgba(f2d5cfff) 45deg";
-          "col.border_locked_inactive" = "rgba(b4befecc) rgba(6c7086cc) 45deg";
-        };
+          #"QT_PLUGIN_PATH,${pkgs.kdePackages.qtbase}/${pkgs.kdePackages.qtbase.qtPluginPrefix}"
+          #"QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
+        ];
 
         xwayland = {
           force_zero_scaling = true;
         };
 
-        # https://wiki.hyprland.org/Configuring/Variables/#decoration
+        general = {
+          layout = "dwindle";
+          resize_on_border = true;
+        };
+
+        misc = {
+          disable_splash_rendering = true;
+          force_default_wallpaper = 1;
+        };
+
+        input = {
+          follow_mouse = 1;
+          touchpad = {
+            natural_scroll = "yes";
+            disable_while_typing = true;
+            drag_lock = true;
+          };
+          sensitivity = 0;
+          float_switch_override_focus = 2;
+        };
+
+        binds = {
+          allow_workspace_cycles = true;
+        };
+
+        dwindle = {
+          pseudotile = "yes";
+          preserve_split = "yes";
+          # no_gaps_when_only = "yes";
+        };
+
+        gestures = {
+          workspace_swipe = true;
+          workspace_swipe_use_r = true;
+        };
+
+        windowrule = let
+          f = regex: "float, ^(${regex})$";
+        in [
+          (f "org.gnome.Calculator")
+          #(f "org.gnome.Nautilus")
+          (f "pavucontrol")
+          (f "nm-connection-editor")
+          (f "blueberry.py")
+          #(f "org.gnome.Settings")
+          (f "org.gnome.design.Palette")
+          (f "Color Picker")
+          (f "xdg-desktop-portal")
+          (f "xdg-desktop-portal-gnome")
+          (f "de.haeckerfelix.Fragments")
+          (f "com.github.Aylur.ags")
+          "workspace 7, title:Spotify"
+        ];
+
+        #windowrulev2 = "opacity 0.90 0.85,class:^(Alacritty)$";
+
+        bind = let
+          binding = mod: cmd: key: arg: "${mod}, ${key}, ${cmd}, ${arg}";
+          mvfocus = binding "SUPER" "movefocus";
+          ws = binding "SUPER" "workspace";
+          resizeactive = binding "SUPER CTRL" "resizeactive";
+          mvactive = binding "SUPER ALT" "moveactive";
+          mvtows = binding "SUPER SHIFT" "movetoworkspace";
+          e = "exec, asztal -b hypr";
+          arr = [1 2 3 4 5 6 7];
+        in
+          [
+            "CTRL SHIFT, R,  ${e} quit; asztal -b hypr"
+            "SUPER, R,       ${e} -t launcher"
+            "SUPER, Tab,     ${e} -t overview"
+            ",XF86PowerOff,  ${e} -r 'powermenu.shutdown()'"
+            ",XF86Launch4,   ${e} -r 'recorder.start()'"
+            ",Print,         ${e} -r 'recorder.screenshot()'"
+            "SHIFT,Print,    ${e} -r 'recorder.screenshot(true)'"
+            "SUPER, Return, exec, xterm" # xterm is a symlink, not actually xterm
+            "SUPER, W, exec, firefox"
+            "SUPER, E, exec, alacritty"
+
+            # youtube
+            ", XF86Launch1,  exec, ${yt}"
+
+            "ALT, Tab, focuscurrentorlast"
+            "CTRL ALT, Delete, exit"
+            "ALT, Q, killactive"
+            "SUPER, F, togglefloating"
+            "SUPER, G, fullscreen"
+            "SUPER, O, fakefullscreen"
+            "SUPER, P, togglesplit"
+
+            (mvfocus "k" "u")
+            (mvfocus "j" "d")
+            (mvfocus "l" "r")
+            (mvfocus "h" "l")
+            (ws "left" "e-1")
+            (ws "right" "e+1")
+            (mvtows "left" "e-1")
+            (mvtows "right" "e+1")
+            (resizeactive "k" "0 -20")
+            (resizeactive "j" "0 20")
+            (resizeactive "l" "20 0")
+            (resizeactive "h" "-20 0")
+            (mvactive "k" "0 -20")
+            (mvactive "j" "0 20")
+            (mvactive "l" "20 0")
+            (mvactive "h" "-20 0")
+          ]
+          ++ (map (i: ws (toString i) (toString i)) arr)
+          ++ (map (i: mvtows (toString i) (toString i)) arr);
+
+        bindle = [
+          ",XF86MonBrightnessUp,   exec, ${brightnessctl} set +5%"
+          ",XF86MonBrightnessDown, exec, ${brightnessctl} set  5%-"
+          ",XF86KbdBrightnessUp,   exec, ${brightnessctl} -d asus::kbd_backlight set +1"
+          ",XF86KbdBrightnessDown, exec, ${brightnessctl} -d asus::kbd_backlight set  1-"
+          ",XF86AudioRaiseVolume,  exec, ${pactl} set-sink-volume @DEFAULT_SINK@ +5%"
+          ",XF86AudioLowerVolume,  exec, ${pactl} set-sink-volume @DEFAULT_SINK@ -5%"
+        ];
+
+        bindl = [
+          ",XF86AudioPlay,    exec, ${playerctl} play-pause"
+          ",XF86AudioStop,    exec, ${playerctl} pause"
+          ",XF86AudioPause,   exec, ${playerctl} pause"
+          ",XF86AudioPrev,    exec, ${playerctl} previous"
+          ",XF86AudioNext,    exec, ${playerctl} next"
+          ",XF86AudioMicMute, exec, ${pactl} set-source-mute @DEFAULT_SOURCE@ toggle"
+        ];
+
+        bindm = [
+          "SUPER, mouse:273, resizewindow"
+          "SUPER, mouse:272, movewindow"
+        ];
+
         decoration = {
-          rounding = 10;
+          drop_shadow = "yes";
+          shadow_range = 8;
+          shadow_render_power = 2;
+          "col.shadow" = "rgba(00000044)";
 
           # Change transparency of focused and unfocused windows
-          active_opacity = 1.0;
+          active_opacity = 0.95;
           inactive_opacity = 0.9;
 
-          drop_shadow = false;
-          shadow_range = 6;
-          shadow_render_power = 1;
-          #shadow_offset = "3 3";
-          
-          "col.shadow" = "rgba(1a1a1aee)";
+          dim_inactive = false;
 
-          # https://wiki.hyprland.org/Configuring/Variables/#blur
           blur = {
             enabled = true;
-            size = 6;
+            size = 8;
             passes = 3;
             new_optimizations = "on";
-            ignore_opacity = "on";
-            xray = false;
-            vibrancy = 0.1696;
-
+            noise = 0.01;
+            contrast = 0.9;
+            brightness = 0.8;
             popups = true;
           };
         };
 
-        # https://wiki.hyprland.org/Configuring/Variables/#animations
         animations = {
-          enabled = true;
-
-          # Default animations, see https://wiki.hyprland.org/Configuring/Animations/ for more
-
-          ### Taken from https://github.com/prasanthrangan/hyprdots/blob/main/Configs/.config/hypr/animations.conf
-          ### because I don't have the patience to configure such things
-          bezier = 
-            [
-              "wind, 0.05, 0.9, 0.1, 1.05"
-              "winIn, 0.1, 1.1, 0.1, 1.1"
-              "winOut, 0.3, -0.3, 0, 1"
-              "liner, 1, 1, 1, 1"
-            ];
-
-          animation =
-            [
-              "windows, 1, 6, wind, slide"
-              "windowsIn, 1, 6, winIn, slide"
-              "windowsOut, 1, 5, winOut, slide"
-              "windowsMove, 1, 5, wind, slide"
-              "borderangle, 1, 30, liner, loop"
-              "fade, 1, 10, default"
-              "workspaces, 1, 5, wind"
-            ];
-        };
-
-        # See https://wiki.hyprland.org/Configuring/Dwindle-Layout/ for more
-        dwindle = {
-          pseudotile = true; # Master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
-          preserve_split = true; # You probably want this
-        };
-
-        # See https://wiki.hyprland.org/Configuring/Master-Layout/ for more
-        master = {
-          new_status = "master";
-        };
-
-        # https://wiki.hyprland.org/Configuring/Variables/#misc
-        misc = {
-          force_default_wallpaper = 1; # Set to 0 or 1 to disable the anime mascot wallpapers
-          disable_hyprland_logo = false; # If true disables the random hyprland logo / anime girl background. :(
-          animate_manual_resizes = true;
-          animate_mouse_windowdragging = true;
-          #enable_swallow = true;
-        };
-
-
-        #############
-        ### INPUT ###
-        #############
-
-        # https://wiki.hyprland.org/Configuring/Variables/#input
-        input = {
-          # This changes window focus
-          follow_mouse = 2;
-          
-
-          sensitivity = 0; # -1.0 - 1.0, 0 means no modification.
-        };
-
-        # Example per-device config
-        # See https://wiki.hyprland.org/Configuring/Keywords/#per-device-input-configs for more
-        /*device = {
-          name = "epic-mouse-v1";
-          sensitivity = -0.5;
-        };*/
-
-        ####################
-        ### KEYBINDINGSS ###
-        ####################
-
-        # See https://wiki.hyprland.org/Configuring/Keywords/
-        "$mainMod" = "SUPER"; # Sets "Windows" key as main modifier
-
-        # Example binds, see https://wiki.hyprland.org/Configuring/Binds/ for more
-        bind =
-          [
-            "$mainMod, T, exec, $terminal"
-            "$mainMod, F, exec, $fileManager"
-            "$mainMod, W, exec, $wallpaperUtils"
-            "$mainMod, R, exec, $menu"
-
-            "$mainMod, K, killactive,"
-            "$mainMod, Q, exit,"
-            
-            "$mainMod, V, togglefloating,"
-            "$mainMod, P, pseudo," # dwindle
-            "$mainMod, J, togglesplit," # dwindle
-
-        # Move focus with mainMod + arrow keys
-            "$mainMod, left, movefocus, l"
-            "$mainMod, right, movefocus, r"
-            "$mainMod, up, movefocus, u"
-            "$mainMod, down, movefocus, d"
-
-        # Cycle to next or previous wallpaper with wpaperd
-            "$mainMod SHIFT, right, exec, wpaperctl next"
-            "$mainMod SHIFT, left, exec, wpaperctl previous" # Doesn't work for some reason
-          ]
-
-        # workspaces
-        # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
-      ++ (
-            builtins.concatLists (builtins.genList (
-              x: let
-                ws = let
-                  c = (x + 1) / 10;
-                in
-                  builtins.toString (x + 1 - (c * 10));
-              in [
-                "$mainMod, ${ws}, workspace, ${toString (x + 1)}"
-                "$mainMod SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
-              ]
-            )
-            10)
-          )
-
-      ++ [
-        # Example special workspace (scratchpad)
-            "$mainMod, S, togglespecialworkspace, magic"
-            "$mainMod SHIFT, S, movetoworkspace, special:magic"
-          
-        # Scroll through existing workspaces with mainMod + scroll
-            "$mainMod, mouse_down, workspace, e+1"
-            "$mainMod, mouse_up, workspace, e-1"
-      ];
-      
-      bindm = [  
-        # Move/resize windows with mainMod + LMB/RMB and dragging
-            "$mainMod, mouse:272, movewindow"
-            "$mainMod, mouse:273, resizewindow"
+          enabled = "yes";
+          bezier = [
+            "wind, 0.05, 0.9, 0.1, 1.05"
+            "winIn, 0.1, 1.1, 0.1, 1.1"
+            "winOut, 0.3, -0.3, 0, 1"
+            "liner, 1, 1, 1, 1"
           ];
+          animation = [
+            "windows, 1, 6, wind, slide"
+            "windowsIn, 1, 6, winIn, slide"
+            "windowsOut, 1, 5, winOut, slide"
+            "windowsMove, 1, 5, wind, slide"
+            "border, 1, 1, liner"
+            "borderangle, 1, 30, liner, loop"
+            "fade, 1, 10, default"
+            "workspaces, 1, 5, wind"
+          ];
+        };
 
+        plugin = {
+          overview = {
+            centerAligned = true;
+            hideTopLayers = true;
+            hideOverlayLayers = true;
+            showNewWorkspace = true;
+            exitOnClick = true;
+            exitOnSwitch = true;
+            drawActiveWorkspace = true;
+            reverseSwipe = true;
+          };
+          hyprbars = {
+            bar_color = "rgb(2a2a2a)";
+            bar_height = 28;
+            col_text = "rgba(ffffffdd)";
+            bar_text_size = 11;
+            bar_text_font = "Ubuntu Nerd Font";
 
-        ##############################
-        ### WINDOWS AND WORKSPACES ###
-        ##############################
-
-        # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
-        # See https://wiki.hyprland.org/Configuring/Workspace-Rules/ for workspace rules
-
-        # Example windowrule v1
-        # windowrule = float, ^(kitty)$
-
-        # Example windowrule v2
-        # windowrulev2 = float,class:^(kitty)$,title:^(kitty)$
-
-        windowrulev2 = "suppressevent maximize, class:.*"; # You'll probably like this.
+            buttons = {
+              button_size = 0;
+              "col.maximize" = "rgba(ffffff11)";
+              "col.close" = "rgba(ff111133)";
+            };
+          };
+        };
       };
-	  };
+    };
   };
 }

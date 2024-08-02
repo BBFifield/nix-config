@@ -12,11 +12,14 @@ with lib; let
   userIconsPath = "/etc/user-icons";
 
   usersWithIcons = lib.filterAttrs (_: value: value.icon != null) config.users.users;
-  iconLinks = lib.mapAttrsToList (name: value: "ln -s ${value.icon} ${name}") usersWithIcons;
+  # First covers the sddm use-case, and the second is for asztal greetd.
+  iconLinks = lib.mapAttrsToList (name: value: "ln -s ${value.icon} ${name}.face.icon") usersWithIcons;
+  iconLinks2 = lib.mapAttrsToList (name: value: "ln -s ${value.icon} ${name}") usersWithIcons;
   icons = pkgs.runCommand "user-icons" {} ''
     mkdir -p $out${userIconsPath}
     cd $out${userIconsPath}
     ${concatStringsSep "\n" iconLinks}
+    ${concatStringsSep "\n" iconLinks2}
   '';
 in {
   options.users.users = mkOption {
@@ -37,5 +40,13 @@ in {
     environment.pathsToLink = [userIconsPath];
 
     environment.systemPackages = [icons];
+
+    system.activationScripts = {
+      user_Icons = {
+        text = ''
+          cp -rf /run/current-system/sw${userIconsPath}/* /var/lib/AccountsService/icons/
+        '';
+      };
+    };
   };
 }

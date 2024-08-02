@@ -3,9 +3,7 @@
   config,
   lib,
   ...
-}:
-
-{
+}: {
   options.hm.kate = {
     enable = lib.mkEnableOption "Enable kate configuration";
   };

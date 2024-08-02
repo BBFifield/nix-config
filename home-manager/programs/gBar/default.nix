@@ -1,5 +1,8 @@
-{ config, lib, ... }:
 {
+  config,
+  lib,
+  ...
+}: {
   options.hm.gBar = {
     enable = lib.mkEnableOption "Enable gBar";
   };

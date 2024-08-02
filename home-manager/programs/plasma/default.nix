@@ -3,12 +3,37 @@
   lib,
   config,
   ...
-}: {
+}: let
+  theme = {
+    package = pkgs.kdePackages.breeze;
+    name = "breeze-dark";
+  };
+  iconTheme ={
+    name = ''"Breeze-Round-Chameleon Dark Icons"''; # Needed to encase in double single quotes because of the spaces in directory/theme name
+  };
+  cursor = {
+    theme = "BreezeX-Dark";
+    size = 28;
+  };
+  colorScheme = "BreezeDark";
+  windowDecorations = {
+    library = "org.kde.klassy";
+    theme = "Klassy";
+  };
+in {
   options.hm.plasma = {
     enable = lib.mkEnableOption "Enable plasma configuration";
   };
 
   config = lib.mkIf config.hm.plasma.enable {
+    gtk = {
+      enable = true;
+      theme = {
+        package = theme.package;
+        name = theme.name;
+      };
+      iconTheme.name = iconTheme.name;
+    };
 
     home.packages = with pkgs;
       [
@@ -17,7 +42,8 @@
         icons.breezeChameleon # defined in overlays from ./pkgs
         klassy # defined in overlays from ./pkgs
       ]
-      ++ (with plasmoids; [ # defined in overlays from ./pkgs
+      ++ (with plasmoids; [
+        # defined in overlays from ./pkgs
         gnomeDesktopIndicatorApplet
         windowTitleApplet
         windowButtonsApplet
@@ -29,20 +55,19 @@
       overrideConfig = true;
 
       workspace = {
-        #lookAndFeel = "org.kde.breezedark.desktop";
-        theme = "breeze-dark";
-        colorScheme = "BreezeDark";
+        inherit colorScheme;
+        theme = theme.name;
         cursor = {
-          theme = "BreezeX-Dark";
-          size = 28;
+          theme = cursor.theme;
+          size = cursor.size;
         };
-        iconTheme = ''"Breeze-Round-Chameleon Dark Icons"''; # Needed to encase in double single quotes because of the spaces in directory/theme name
+        iconTheme = iconTheme.name; 
         wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Next/contents/images_dark/3840x2160.png";
 
         # kwinrc
         windowDecorations = {
-          library = "org.kde.klassy";
-          theme = "Klassy";
+          library = windowDecorations.library;
+          theme = windowDecorations.theme;
         };
 
         splashScreen = {
@@ -81,7 +106,7 @@
               applicationTitleBar = {
                 windowControlButtons.iconSource = "Breeze";
                 layout = {
-                  elements = [ "windowMinimizeButton" "windowMaximizeButton" "windowCloseButton" ];
+                  elements = ["windowMinimizeButton" "windowMaximizeButton" "windowCloseButton"];
                   showDisabledElements = "HideKeepSpace";
                   horizontalAlignment = "right";
                   widgetMargins = 0;
@@ -89,7 +114,7 @@
                 };
                 overrideForMaximized = {
                   enable = true;
-                  elements = [ "windowMinimizeButton" "windowMaximizeButton" "windowCloseButton" ];
+                  elements = ["windowMinimizeButton" "windowMaximizeButton" "windowCloseButton"];
                 };
                 behavior.disableForNotMaximized = true;
               };
@@ -217,7 +242,8 @@
       };
     };
 
-   /* # This is required so the firefox gtk theme is properly switched back to breeze when switching from gnome to kde
+    /*
+      # This is required so the firefox gtk theme is properly switched back to breeze when switching from gnome to kde
     home.file.".gtkrc-2.0" = {
       text = ''
         gtk-enable-animations=1
@@ -233,8 +259,7 @@
         gtk-font-name="Noto Sans,  10"
         gtk-modules=appmenu-gtk-module
       '';
-    };*/
+    };
+    */
   };
 }
-
-

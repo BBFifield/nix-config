@@ -20,18 +20,19 @@
       extraConfig = {
         TabBar.CloseTabOnMiddleMouseButton = true;
       };
-      customColorSchemes = { BreezeBlur = ./BreezeBlur.colorscheme; };
-
+      customColorSchemes = {BreezeBlur = ./BreezeBlur.colorscheme;};
     };
 
     # Doesn't seem possible to merge/replace keys in a file?
-   /* programs.plasma.dataFile."konsole/Breeze.colorscheme".General = {
+    /*
+      programs.plasma.dataFile."konsole/Breeze.colorscheme".General = {
       Blur = {
         value = true;
       };
       Opacity = {
         value = 0.7;
       };
-    };*/
+    };
+    */
   };
 }

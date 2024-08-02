@@ -1,4 +1,4 @@
-# Credit goes to github:Cu3P042 for this module which works in conjunction with the declarative-user-icons module to change the sddm user avatar.
+# Credit goes to github:Cu3P042 for this module which works in conjunction with the declarative-user-icons module to change the gdm user avatar.
 
 {
   config,
@@ -10,10 +10,10 @@ with lib; let
   cfg = config.services.accounts-daemon.defaultSettings;
 
   templateFile = pkgs.writeText "user-template" (generators.toINI {} cfg);
-  templateDir = "share/accountsservice/user-templates";
+  templateDir = "/share/accountsservice/user-templates";
   templates = pkgs.runCommand "user-templates" {} ''
-    mkdir -p $out/${templateDir}
-    cd $out/${templateDir}
+    mkdir -p $out${templateDir}
+    cd $out${templateDir}
 
     ln -s ${templateFile} administrator
     ln -s ${templateFile} standard
@@ -28,5 +28,7 @@ in {
     '';
   };
 
-  config.environment.systemPackages = [templates];
+  config = {
+    environment.systemPackages = [templates];
+  };
 }

@@ -32,9 +32,7 @@
         })
         pkgNames);
 
-  defaults = [
-    inputs.nurpkgs.overlay
-  ];
+  
 
   # See https://github.com/NixOS/nixpkgs/issues/310755
   vivaldiFixed = final: prev: {
@@ -44,4 +42,56 @@
       nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [prev.kdePackages.wrapQtAppsHook];
     });
   };
+
+  # We use `overrideAttrs` instead of defining a new `mkDerivation` to keep
+  # the original package's `output`, `passthru`, and so on.
+  # Thanks to user:wenjinnn https://github.com/Aylur/dotfiles/issues/179 for the
+  # wlr-randr solution to scale cage correctly at hidpi.
+  asztalOverlay = final: prev: let
+    asztal = inputs.asztal.packages.x86_64-linux.default;
+    name = "asztal";
+    ags = inputs.ags.packages.x86_64-linux.default.override {
+      extraPackages = [prev.accountsservice];
+    };
+
+    dependencies = with prev; [which
+    dart-sass
+    fd
+    fzf
+    brightnessctl
+    swww
+    inputs.matugen.packages.${system}.default
+    slurp
+    wf-recorder
+    wl-clipboard
+    wayshot
+    swappy
+    hyprpicker
+    pavucontrol
+    networkmanager
+    gtk3]; # not sure why this can be left empty
+    addBins = list: builtins.concatStringsSep ":" (builtins.map (p: "${p}/bin") list);
+  in
+    {asztal = asztal.overrideAttrs (oldAttrs: {
+      installPhase = let
+        greeter = prev.writeShellScript "greeter" ''
+          export PATH=$PATH:${addBins dependencies}
+          ${prev.cage}/bin/cage -ds -m last -- ${prev.bash}/bin/bash -c "${prev.wlr-randr}/bin/wlr-randr --output HDMI-A-1 --scale 2 && ${ags}/bin/ags -c ${asztal}/greeter.js"
+        '';
+        desktop = prev.writeShellScript name ''
+          export PATH=$PATH:${addBins dependencies}
+          ${ags}/bin/ags -b ${name} -c ${asztal}/config.js $@
+        '';
+      in 
+      ''
+        mkdir -p $out/bin
+        cp -r . $out
+        cp ${greeter} $out/bin/greeter
+        cp ${desktop} $out/bin/${name}
+      '';
+  });};
+
+  defaults = [
+    inputs.nurpkgs.overlay
+  ];
 }

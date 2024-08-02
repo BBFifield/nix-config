@@ -1,7 +1,9 @@
-{ config, lib, ... }:
-
-with lib;
 {
+  config,
+  lib,
+  ...
+}:
+with lib; {
   config = mkIf config.hm.hyprland.enable {
     programs.hyprlock = {
       enable = true;
@@ -11,7 +13,7 @@ with lib;
           grace = 10;
         };
         background = {
-          path = "/home/$USER/Pictures/wallpapers/Bonsai-Plant.png";   # supports png, jpg, webp (no animations, though)
+          path = "/home/$USER/Pictures/wallpapers/Bonsai-Plant.png"; # supports png, jpg, webp (no animations, though)
           color = "rgba(25, 20, 20, 1.0)";
 
           # all these options are taken from hyprland, see https://wiki.hyprland.org/Configuring/Variables/#blur for explanations
@@ -23,7 +25,8 @@ with lib;
           vibrancy = 0.1696;
           vibrancy_darkness = 0.0;
         };
-        /*image = {
+        /*
+          image = {
           #path = "/home/$USER/cutie.png";
           size = 150; # lesser side if not 1:1 ratio
           rounding = -1; # negative values mean circle
@@ -36,7 +39,8 @@ with lib;
           position = "0, 200";
           halign = "center";
           valign = "center";
-        };*/
+        };
+        */
         input-field = {
           size = "200, 50";
           outline_thickness = 1;
