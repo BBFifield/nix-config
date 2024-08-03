@@ -31,10 +31,12 @@ in {
       mkMerge [
         (mkIf (cfg.session == "plasma") {
           warnings =
-            if !cfg.displayManager == "sddm" 
-            then [ ''You have set the display-manager to ${cfg.displayManager}. It is recommended to set it to
-                    "sddm" when session = "plasma".
-                    '' ]
+            if !cfg.displayManager == "sddm"
+            then [
+              ''                You have set the display-manager to ${cfg.displayManager}. It is recommended to set it to
+                                    "sddm" when session = "plasma".
+              ''
+            ]
             else [];
 
           # Enable the KDE Plasma 6 Desktop Environment.
@@ -56,10 +58,12 @@ in {
 
         (mkIf (cfg.session == "gnome") {
           warnings =
-            if !cfg.displayManager == "gdm" 
-            then [ ''You have set the display-manager to ${cfg.displayManager}. It is recommended to set it to
-                    "gdm" when session = "gnome", otherwise problems with the lockscreen may occur.
-                    '' ]
+            if !cfg.displayManager == "gdm"
+            then [
+              ''                You have set the display-manager to ${cfg.displayManager}. It is recommended to set it to
+                                    "gdm" when session = "gnome", otherwise problems with the lockscreen may occur.
+              ''
+            ]
             else [];
 
           # Enable the Gnome desktop environment
@@ -74,9 +78,11 @@ in {
 
         (mkIf (cfg.session == "hyprland") {
           warnings =
-            if cfg.displayManager == "gdm" 
-            then [ ''You have set the display-manager to ${cfg.displayManager}. GDM may cause hyprland to crash on first launch. 
-                    '' ]
+            if cfg.displayManager == "gdm"
+            then [
+              ''                You have set the display-manager to ${cfg.displayManager}. GDM may cause hyprland to crash on first launch.
+              ''
+            ]
             else [];
 
           # Enable the hyprland "desktop environment"
@@ -131,9 +137,6 @@ in {
               tracker.enable = true;
             };
           };
-
-
-
         })
       ]
     ));

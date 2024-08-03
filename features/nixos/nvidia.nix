@@ -52,22 +52,12 @@
 
       # Enable the Nvidia settings menu,
       # accessible via `nvidia-settings`.
-      nvidiaSettings = true;
+      nvidiaSettings = false;
 
       # Optionally, you may need to select the appropriate driver version for your specific GPU.
-      package = config.boot.kernelPackages.nvidiaPackages.production;
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
   };
-
-  # This is the "beta" driver
-  /*hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-    version = "555.58";
-    sha256_64bit = "sha256-bXvcXkg2kQZuCNKRZM5QoTaTjF4l2TtrsKUvyicj5ew=";
-    sha256_aarch64 = "sha256-7XswQwW1iFP4ji5mbRQ6PVEhD4SGWpjUJe1o8zoXYRE=";
-    openSha256 = "sha256-hEAmFISMuXm8tbsrB+WiUcEFuSGRNZ37aKWvf0WJ2/c=";
-    settingsSha256 = "sha256-vWnrXlBCb3K5uVkDFmJDVq51wrCoqgPF03lSjZOuU8M="; #"sha256-m2rNASJp0i0Ez2OuqL+JpgEF0Yd8sYVCyrOoo/ln2a4=";
-    persistencedSha256 = lib.fakeHash; #"sha256-XaPN8jVTjdag9frLPgBtqvO/goB5zxeGzaTU0CdL6C4=";
-  };*/
 
   environment.systemPackages = with pkgs; [nvidia-vaapi-driver];
 }

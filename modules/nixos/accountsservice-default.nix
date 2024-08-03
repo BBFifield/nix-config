@@ -1,5 +1,4 @@
 # Credit goes to github:Cu3P042 for this module which works in conjunction with the declarative-user-icons module to change the gdm user avatar.
-
 {
   config,
   lib,

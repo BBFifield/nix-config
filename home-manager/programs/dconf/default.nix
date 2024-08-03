@@ -129,13 +129,15 @@ with lib.hm.gvariant; {
             power-button-action = "interactive";
             sleep-inactive-ac-timeout = 3600;
           };
-      };})
+        };
+      })
       (lib.mkIf (osConfig.desktop.session == "hyprland") {
         dconf.settings = {
           "org/gnome/desktop/wm/preferences" = {
             button-layout = "";
           };
-      };})
+        };
+      })
     ]
   );
 }

@@ -53,6 +53,7 @@ in {
     overlays =
       outputs.overlays.defaults
       ++ (with outputs.overlays; [
+        firefoxGnomeTheme
         vivaldiFixed
         customPkgs
         asztalOverlay
@@ -67,7 +68,6 @@ in {
   };
 
   # Enable sound with pipewire.
-  sound.enable = true;
   hardware.pulseaudio.enable = lib.mkForce false;
   security.rtkit.enable = true;
   services.pipewire = {

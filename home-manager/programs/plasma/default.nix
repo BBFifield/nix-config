@@ -8,7 +8,7 @@
     package = pkgs.kdePackages.breeze;
     name = "breeze-dark";
   };
-  iconTheme ={
+  iconTheme = {
     name = ''"Breeze-Round-Chameleon Dark Icons"''; # Needed to encase in double single quotes because of the spaces in directory/theme name
   };
   cursor = {
@@ -61,7 +61,7 @@ in {
           theme = cursor.theme;
           size = cursor.size;
         };
-        iconTheme = iconTheme.name; 
+        iconTheme = iconTheme.name;
         wallpaper = "${pkgs.kdePackages.plasma-workspace-wallpapers}/share/wallpapers/Next/contents/images_dark/3840x2160.png";
 
         # kwinrc

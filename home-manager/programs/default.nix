@@ -12,4 +12,5 @@
   ./wpaperd
   ./gnome-shell
   ./starship
+  ./alacritty
 ]

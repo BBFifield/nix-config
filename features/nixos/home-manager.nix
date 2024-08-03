@@ -1,4 +1,5 @@
-{inputs, ...}: with inputs; let
+{inputs, ...}:
+with inputs; let
   userList = builtins.attrNames (builtins.readDir ../../users);
 in {
   home-manager.useGlobalPkgs = true;

@@ -3,8 +3,8 @@
   config,
   lib,
   ...
-}: with lib; let
-
+}:
+with lib; let
   yt = pkgs.writeShellScript "yt" ''
     notify-send "Opening video" "$(wl-paste)"
     mpv "$(wl-paste)"
@@ -30,14 +30,12 @@
     name = "Sans";
     size = lib.mkForce 10;
   };
-
 in {
   options.hm.hyprland = {
     enable = mkEnableOption "Enable hyprland configuration via home-manager";
   };
 
   config = mkIf config.hm.hyprland.enable {
-
     xdg.desktopEntries = {
       "org.gnome.Settings" = {
         name = "Settings";
@@ -59,8 +57,7 @@ in {
 
     home = {
       packages = with pkgs; [
-        alacritty
-        alacritty-theme
+        #alacritty
         nautilus
         asztal
         morewaita-icon-theme

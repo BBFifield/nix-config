@@ -48,7 +48,7 @@ in {
       dconf.enable = true;
       #gBar.enable = true;
       hyprland.enable = true;
-     # ags.enable = true;
+      # ags.enable = true;
     };
 
   programs.home-manager.enable = true;
