@@ -206,6 +206,19 @@ in {
   };
 
   config = lib.mkIf config.hm.firefox.enable {
+    home.file."${profilesPath}/default/chrome" = lib.mkMerge [
+      {
+        recursive = true;
+        force = true;
+      }
+      (lib.mkIf (config.hm.firefox.style == "plasma") {
+        source = pkgs.nur.repos.slaier.wavefox;
+      })
+
+      (lib.mkIf (config.hm.firefox.style == "gnome") {
+        source = pkgs.firefox-gnome-theme;
+      })
+    ];
     programs = {
       firefox = {
         enable = true;
@@ -319,24 +332,5 @@ in {
         };
       };
     };
-
-    home.file."${profilesPath}/default/chrome" = lib.mkMerge [
-      (lib.mkIf (config.hm.firefox.style == "plasma") {
-        source = pkgs.nur.repos.slaier.wavefox;
-        recursive = true;
-        force = true;
-      })
-
-      (lib.mkIf (config.hm.firefox.style == "gnome") {
-        source = pkgs.fetchFromGitHub {
-          owner = "rafaelmardojai";
-          repo = "firefox-gnome-theme";
-          rev = "9b04085";
-          hash = "sha256-7bzYqMpjxORueIt8F3zC8KNygKaXUmnPzFWSXwOWnvI=";
-        };
-        recursive = true;
-        force = true;
-      })
-    ];
   };
 }

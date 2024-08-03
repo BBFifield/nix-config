@@ -44,6 +44,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+
+    firefox-gnome-theme = {
+      url = "github:rafaelmardojai/firefox-gnome-theme";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -72,15 +77,16 @@
   {
     # Your custom packages
     # Accessible through 'nix build', 'nix shell', etc
-    packages = 
-      let
-        pkgNames = builtins.attrNames (builtins.readDir ./pkgs);
-      in 
+    packages = let
+      pkgNames = builtins.attrNames (builtins.readDir ./pkgs);
+    in
       builtins.listToAttrs (builtins.map (pkgName: {
-        name = pkgName;
-        value = forAllSystems (system: 
-          nixpkgs.legacyPackages.${system}.callPackage ./pkgs/${pkgName} {});
-      }) pkgNames);
+          name = pkgName;
+          value =
+            forAllSystems (system:
+              nixpkgs.legacyPackages.${system}.callPackage ./pkgs/${pkgName} {});
+        })
+        pkgNames);
 
     # Formatter for your nix files, available through 'nix fmt'
     # Other options beside 'alejandra' include 'nixpkgs-fmt'
