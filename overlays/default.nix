@@ -1,4 +1,9 @@
-{inputs, ...}: {
+{
+  self,
+  outputs,
+  inputs,
+  ...
+}: {
   # When applied, the stable nixpkgs set (declared in the flake inputs) will
   # be accessible through 'pkgs.stable'
   stable-packages = f: _p: {
@@ -22,15 +27,8 @@
     });
   };
 
-  customPkgs = let
-    pkgNames = builtins.attrNames (builtins.readDir ../pkgs);
-  in
-    f: p:
-      builtins.listToAttrs (builtins.map (pkgName: {
-          name = pkgName;
-          value = p.callPackage ../pkgs/${pkgName} {};
-        })
-        pkgNames);
+  customPkgs = f: p:
+    outputs.lib.pathToAttrs "${self}/pkgs" (full_path: _: p.callPackage full_path {});
 
   firefoxGnomeTheme = f: p: {
     inherit (inputs) firefox-gnome-theme;

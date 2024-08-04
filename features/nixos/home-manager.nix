@@ -1,16 +1,15 @@
-{inputs, ...}:
-with inputs; let
-  userList = builtins.attrNames (builtins.readDir ../../users);
-in {
+{
+  self,
+  inputs,
+  outputs,
+  ...
+}:
+with inputs; {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.backupFileExtension = "backup";
 
-  home-manager.users = builtins.listToAttrs (builtins.map (user: {
-      name = user;
-      value = import ../../users/${user};
-    })
-    userList);
+  home-manager.users = outputs.lib.pathToAttrs "${self}/users" (full_path: _: import full_path);
 
   # These modules are imported into all home-manager configs
   home-manager.sharedModules = [

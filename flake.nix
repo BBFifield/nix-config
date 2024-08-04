@@ -71,40 +71,31 @@
     # an argument, but it also needs a function as an argument to execute, which is what will be provide when
     # forAllSystems is called
     forAllSystems = nixpkgs.lib.genAttrs systems;
-
-    hostnames = builtins.attrNames (builtins.readDir ./hosts);
+    #hostnames = builtins.attrNames (builtins.readDir ./hosts);
   in rec
   {
-    # Your custom packages
+    # My custom libraries
+    lib = import ./lib {};
+
+    # My custom packages
     # Accessible through 'nix build', 'nix shell', etc
-    packages = let
-      pkgNames = builtins.attrNames (builtins.readDir ./pkgs);
-    in
-      builtins.listToAttrs (builtins.map (pkgName: {
-          name = pkgName;
-          value =
-            forAllSystems (system:
-              nixpkgs.legacyPackages.${system}.callPackage ./pkgs/${pkgName} {});
-        })
-        pkgNames);
+    packages =
+      lib.pathToAttrs "${self}/pkgs" (full_path: _: (forAllSystems (system:
+          nixpkgs.legacyPackages.${system}.callPackage "${full_path}" {})));
 
     # Formatter for your nix files, available through 'nix fmt'
     # Other options beside 'alejandra' include 'nixpkgs-fmt'
-    formatter =
-      forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-    overlays = import ./overlays {inherit inputs;};
+    overlays = import ./overlays {inherit self outputs inputs;};
 
     # Explanation: Hostnames and nixosSystems are mapped to name and value attributes respectively to create a list of sets,
     # from which attributes of hostname = nixosSystem are created
-    nixosConfigurations = builtins.listToAttrs (builtins.map (hostname: {
-        name = hostname;
-        value = nixpkgs.lib.nixosSystem {
-          specialArgs = {inherit inputs outputs hostname;};
-          modules = [./hosts/${hostname}/modules-list.nix];
-        };
-      })
-      hostnames);
+    nixosConfigurations = lib.pathToAttrs "${self}/hosts" (full_path: hostname:
+      nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit self inputs outputs hostname;};
+        modules = ["${full_path}/modules-list.nix"];
+      });
 
     images = {
       # nix build .#images.pi2
