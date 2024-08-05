@@ -71,7 +71,6 @@
     # an argument, but it also needs a function as an argument to execute, which is what will be provide when
     # forAllSystems is called
     forAllSystems = nixpkgs.lib.genAttrs systems;
-    #hostnames = builtins.attrNames (builtins.readDir ./hosts);
   in rec
   {
     # My custom libraries
@@ -79,9 +78,11 @@
 
     # My custom packages
     # Accessible through 'nix build', 'nix shell', etc
-    packages =
-      lib.pathToAttrs "${self}/pkgs" (full_path: _: (forAllSystems (system:
-          nixpkgs.legacyPackages.${system}.callPackage "${full_path}" {})));
+    # Ex: nix shell packages.x86_64-linux.klassy
+    packages = 
+      forAllSystems (system:
+        lib.pathToAttrs "${self}/pkgs" (full_path: _: 
+          nixpkgs.legacyPackages.${system}.callPackage "${full_path}" {}));
 
     # Formatter for your nix files, available through 'nix fmt'
     # Other options beside 'alejandra' include 'nixpkgs-fmt'
@@ -89,8 +90,6 @@
 
     overlays = import ./overlays {inherit self outputs inputs;};
 
-    # Explanation: Hostnames and nixosSystems are mapped to name and value attributes respectively to create a list of sets,
-    # from which attributes of hostname = nixosSystem are created
     nixosConfigurations = lib.pathToAttrs "${self}/hosts" (full_path: hostname:
       nixpkgs.lib.nixosSystem {
         specialArgs = {inherit self inputs outputs hostname;};
