@@ -31,7 +31,7 @@ in {
       mkMerge [
         (mkIf (cfg.session == "plasma") {
           warnings =
-            if !cfg.displayManager == "sddm"
+            if cfg.displayManager != "sddm"
             then [
               ''                You have set the display-manager to ${cfg.displayManager}. It is recommended to set it to
                                     "sddm" when session = "plasma".
@@ -58,7 +58,7 @@ in {
 
         (mkIf (cfg.session == "gnome") {
           warnings =
-            if !cfg.displayManager == "gdm"
+            if cfg.displayManager != "gdm"
             then [
               ''                You have set the display-manager to ${cfg.displayManager}. It is recommended to set it to
                                     "gdm" when session = "gnome", otherwise problems with the lockscreen may occur.

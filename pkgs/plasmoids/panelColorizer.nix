@@ -25,7 +25,6 @@ stdenv.mkDerivation (finalAttrs: {
 
   buildInputs = with kdePackages; [
     libplasma
-    plasma5support
     qtbase
     qtdeclarative
   ];

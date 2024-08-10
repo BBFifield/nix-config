@@ -13,4 +13,7 @@
   ./gnome-shell
   ./starship
   ./alacritty
+  #./ags
+  ./vscodium
+  ./neovim
 ]

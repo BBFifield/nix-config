@@ -17,7 +17,7 @@
   boot.extraModulePackages = [];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/e98810da-b2ed-443e-9e6a-57daea8c0d8d";
+    device = "/dev/disk/by-label/NixOS";
     fsType = "btrfs";
     options = ["subvol=@"];
   };

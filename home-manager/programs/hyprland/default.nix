@@ -53,6 +53,13 @@ in {
         categories = ["X-Preferences"];
         terminal = false;
       };
+      "lunarvim" = {
+        name = "LunarVim";
+        #comment = "LunarVim";
+        exec = "env XDG_CURRENT_DESKTOP=Hyprland ${pkgs.lunarvim}/bin/lvim";
+        categories = ["Development"];
+        terminal = true;
+      };
     };
 
     home = {
@@ -87,14 +94,10 @@ in {
         pkgs.xdg-desktop-portal-gtk
         pkgs.xdg-desktop-portal-hyprland
       ];
-      config = {
-        common = {
-          default = [
-            "gtk"
-            "hyprland"
-          ];
-        };
-      };
+      config.common.default = [
+        "gtk"
+        "hyprland"
+      ];
     };
 
     wayland.windowManager.hyprland = {
@@ -119,6 +122,7 @@ in {
         ];
 
         env = [
+          "TERMINAL,alacritty"
           "XCURSOR_SIZE,${toString cursorTheme.size}"
           "HYPRCURSOR_SIZE,${toString cursorTheme.size}"
           "HYPRCURSOR_THEME,${cursorTheme.name}"
@@ -194,6 +198,9 @@ in {
           (f "de.haeckerfelix.Fragments")
           (f "com.github.Aylur.ags")
           "workspace 7, title:Spotify"
+          "workspace 2, title:Firefox"
+          "workspace 1, title:VSCodium"
+          
         ];
 
         #windowrulev2 = "opacity 0.90 0.85,class:^(Alacritty)$";
@@ -219,6 +226,7 @@ in {
             "SUPER, Return, exec, xterm" # xterm is a symlink, not actually xterm
             "SUPER, W, exec, firefox"
             "SUPER, E, exec, alacritty"
+            "SUPER, C, exec, alacritty -e lvim"
 
             # youtube
             ", XF86Launch1,  exec, ${yt}"

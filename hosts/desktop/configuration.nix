@@ -20,10 +20,27 @@
 in {
   inherit imports;
 
-  desktop = {
-    enable = true;
-    session = "hyprland";
-    displayManager = "greetd";
+  desktop.enable = true;
+  desktop.session = lib.mkDefault "hyprland";
+  desktop.displayManager = lib.mkDefault "greetd";
+
+  specialisation = {
+    plasma = {
+      inheritParentConfig = true;
+      configuration = {
+        system.nixos.tags = [ "plasma" ];
+        desktop.session = "plasma";
+        desktop.displayManager = "sddm";
+      };
+    };
+    gnome = {
+      inheritParentConfig = true;
+      configuration = {
+        system.nixos.tags = [ "gnome" ];
+        desktop.session = "gnome";
+        desktop.displayManager = "gdm";
+      };
+    };
   };
 
   # Bootloader.
@@ -37,17 +54,20 @@ in {
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-  programs.neovim.enable = true;
+  #programs.neovim.enable = true;
 
   environment.systemPackages = with pkgs; [
     nil
     cachix
-    ssh-to-age
-    age
-    sops
+    #ssh-to-age
+    #age
+    #sops
     htop
-    nix-output-monitor
+    #nix-output-monitor
+    #nix-du
   ];
+
+  #environment.variables = {EDITOR = "neovim";};
 
   nixpkgs = {
     overlays =

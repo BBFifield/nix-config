@@ -6,7 +6,7 @@
 }: let
   theme = {
     package = pkgs.kdePackages.breeze;
-    name = "breeze-dark";
+    name = "Breeze";
   };
   iconTheme = {
     name = ''"Breeze-Round-Chameleon Dark Icons"''; # Needed to encase in double single quotes because of the spaces in directory/theme name
@@ -41,13 +41,14 @@ in {
         kde-rounded-corners
         icons.breezeChameleon # defined in overlays from ./pkgs
         klassy # defined in overlays from ./pkgs
+        plasma-panel-colorizer
       ]
       ++ (with plasmoids; [
         # defined in overlays from ./pkgs
         gnomeDesktopIndicatorApplet
         windowTitleApplet
         windowButtonsApplet
-        panelColorizer
+        #panelColorizer # Now included in nixpkgs
       ]);
 
     programs.plasma = {
@@ -104,10 +105,10 @@ in {
             }
             {
               applicationTitleBar = {
-                windowControlButtons.iconSource = "Breeze";
+                windowControlButtons.iconSource = "breeze";
                 layout = {
                   elements = ["windowMinimizeButton" "windowMaximizeButton" "windowCloseButton"];
-                  showDisabledElements = "HideKeepSpace";
+                  showDisabledElements = "hideKeepSpace";
                   horizontalAlignment = "right";
                   widgetMargins = 0;
                   spacingBetweenElements = 1;

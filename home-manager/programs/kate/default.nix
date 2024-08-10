@@ -80,7 +80,7 @@
       "KTextEditor Renderer" = {
         "Line Height Multiplier" = 1;
         "Show Whole Bracket Expression" = false;
-        "Text Font" = "Hack,10,-1,7,400,0,0,0,0,0,0,0,0,0,0,1";
+        #"Text Font" = "Hack,10,-1,7,400,0,0,0,0,0,0,0,0,0,0,1";
         "Word Wrap Marker" = false;
       };
       "KTextEditor View" = {

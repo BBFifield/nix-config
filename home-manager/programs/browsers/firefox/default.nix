@@ -15,6 +15,7 @@
     istilldontcareaboutcookies
     privacy-badger
     unpaywall
+    vimium
   ];
 
   #System-wide extensions. Will probably update to a list to concatenate with ${extensions} if I can figure out a way.
