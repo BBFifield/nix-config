@@ -1,5 +1,9 @@
-{ config, pkgs, lib, ... }:
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   options.hm.vscodium = {
     enable = lib.mkEnableOption "Enable VSCodium";
     theme = lib.mkOption {
@@ -11,12 +15,12 @@
     programs.vscode = {
       enable = true;
       package = pkgs.vscodium;
-      extensions = with pkgs.vscode-extensions; 
+      extensions = with pkgs.vscode-extensions;
         [
           jnoortheen.nix-ide
-        ] 
-        ++ lib.optionals (config.hm.vscodium.theme == "gnome") [ 
-          piousdeer.adwaita-theme 
+        ]
+        ++ lib.optionals (config.hm.vscodium.theme == "gnome") [
+          piousdeer.adwaita-theme
         ];
       userSettings = {
         "nix.enableLanguageServer" = true;

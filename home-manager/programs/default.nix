@@ -6,14 +6,13 @@
   ./kate
   ./dconf
   ./hyprland
-  #./hyprland/hyprlock.nix
+  ./hyprland/hyprlock
   ./waybar
   ./gBar
   ./wpaperd
   ./gnome-shell
   ./starship
   ./alacritty
-  #./ags
   ./vscodium
   ./neovim
 ]

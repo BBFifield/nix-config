@@ -29,25 +29,31 @@ in {
     {
       firefox.enable = true;
       vscodium.enable = true;
-    } (lib.optionalAttrs (osConfig.desktop.session == "plasma") {
+    }
+    (lib.optionalAttrs (osConfig.desktop.plasma.enable == true) {
       firefox.style = "plasma";
       plasma.enable = true;
       konsole.enable = true;
       klassy.enable = true;
       kate.enable = true;
-    }) (lib.optionalAttrs (osConfig.desktop.session == "gnome") {
+    })
+    (lib.optionalAttrs (osConfig.desktop.gnome.enable) {
       firefox.style = "gnome";
       gnome-shell.enable = true;
       dconf.enable = true;
       vscodium.theme = "gnome";
-    }) (lib.optionalAttrs (osConfig.desktop.session == "hyprland") {
+    })
+    (lib.optionalAttrs (osConfig.desktop.hyprland.enable) {
       firefox.style = "gnome";
       dconf.enable = true;
-      #gBar.enable = true;
-      hyprland.enable = true;
-      #ags.enable = true;
+      hyprland = lib.mkMerge [
+        {enable = true;}
+        (lib.optionalAttrs (osConfig.desktop.hyprland.shell == "vanilla") {shell = "vanilla";})
+        (lib.optionalAttrs (osConfig.desktop.hyprland.shell == "asztal") {shell = "asztal";})
+      ];
       vscodium.theme = "gnome";
-    })];
+    })
+  ];
 
   programs.home-manager.enable = true;
 

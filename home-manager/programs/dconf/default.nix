@@ -3,7 +3,6 @@
   pkgs,
   lib,
   config,
-  osConfig,
   ...
 }:
 with lib.hm.gvariant; {
@@ -13,7 +12,7 @@ with lib.hm.gvariant; {
 
   config = lib.mkIf config.hm.dconf.enable (
     lib.mkMerge [
-      (lib.mkIf (osConfig.desktop.session == "gnome") {
+      (lib.mkIf (config.hm.gnome-shell.enable) {
         dconf.settings = {
           "ca/desrt/dconf-editor" = {
             show-warning = false;
@@ -131,7 +130,7 @@ with lib.hm.gvariant; {
           };
         };
       })
-      (lib.mkIf (osConfig.desktop.session == "hyprland") {
+      (lib.mkIf (config.hm.hyprland.enable) {
         dconf.settings = {
           "org/gnome/desktop/wm/preferences" = {
             button-layout = "";

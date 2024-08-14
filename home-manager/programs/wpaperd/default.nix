@@ -4,7 +4,11 @@
   ...
 }:
 with lib; {
-  config = mkIf config.hm.hyprland.enable {
+  options.hm.wpaperd = {
+    enable = mkEnableOption "Enable wpaperd.";
+  };
+
+  config = mkIf config.hm.wpaperd.enable {
     programs.wpaperd = {
       enable = true;
       settings = {

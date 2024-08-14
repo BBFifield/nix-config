@@ -31,8 +31,18 @@ with lib; let
     size = lib.mkForce 10;
   };
 in {
+  imports = [
+    ./shell
+  ];
+
   options.hm.hyprland = {
     enable = mkEnableOption "Enable hyprland configuration via home-manager";
+
+    shell = mkOption {
+      type = types.enum ["vanilla" "asztal" null];
+      default = null;
+      description = "Choose a customized shell.";
+    };
   };
 
   config = mkIf config.hm.hyprland.enable {
@@ -53,20 +63,11 @@ in {
         categories = ["X-Preferences"];
         terminal = false;
       };
-      "lunarvim" = {
-        name = "LunarVim";
-        #comment = "LunarVim";
-        exec = "env XDG_CURRENT_DESKTOP=Hyprland ${pkgs.lunarvim}/bin/lvim";
-        categories = ["Development"];
-        terminal = true;
-      };
     };
 
     home = {
       packages = with pkgs; [
-        #alacritty
         nautilus
-        asztal
         morewaita-icon-theme
         adwaita-icon-theme
         qogir-icon-theme
@@ -114,7 +115,6 @@ in {
 
       settings = {
         exec-once = [
-          "asztal -b hypr"
         ];
 
         monitor = [
@@ -122,7 +122,6 @@ in {
         ];
 
         env = [
-          "TERMINAL,alacritty"
           "XCURSOR_SIZE,${toString cursorTheme.size}"
           "HYPRCURSOR_SIZE,${toString cursorTheme.size}"
           "HYPRCURSOR_THEME,${cursorTheme.name}"
@@ -137,9 +136,6 @@ in {
 
           "QT_QPA_PLATFORM,wayland;xcb"
           "QT_QPA_PLATFORMTHEME,qt6ct"
-
-          #"QT_PLUGIN_PATH,${pkgs.kdePackages.qtbase}/${pkgs.kdePackages.qtbase.qtPluginPrefix}"
-          #"QT_WAYLAND_DISABLE_WINDOWDECORATION,1"
         ];
 
         xwayland = {
@@ -197,13 +193,9 @@ in {
           (f "xdg-desktop-portal-gnome")
           (f "de.haeckerfelix.Fragments")
           (f "com.github.Aylur.ags")
-          "workspace 7, title:Spotify"
           "workspace 2, title:Firefox"
           "workspace 1, title:VSCodium"
-          
         ];
-
-        #windowrulev2 = "opacity 0.90 0.85,class:^(Alacritty)$";
 
         bind = let
           binding = mod: cmd: key: arg: "${mod}, ${key}, ${cmd}, ${arg}";
@@ -212,17 +204,9 @@ in {
           resizeactive = binding "SUPER CTRL" "resizeactive";
           mvactive = binding "SUPER ALT" "moveactive";
           mvtows = binding "SUPER SHIFT" "movetoworkspace";
-          e = "exec, asztal -b hypr";
           arr = [1 2 3 4 5 6 7];
         in
           [
-            "CTRL SHIFT, R,  ${e} quit; asztal -b hypr"
-            "SUPER, R,       ${e} -t launcher"
-            "SUPER, Tab,     ${e} -t overview"
-            ",XF86PowerOff,  ${e} -r 'powermenu.shutdown()'"
-            ",XF86Launch4,   ${e} -r 'recorder.start()'"
-            ",Print,         ${e} -r 'recorder.screenshot()'"
-            "SHIFT,Print,    ${e} -r 'recorder.screenshot(true)'"
             "SUPER, Return, exec, xterm" # xterm is a symlink, not actually xterm
             "SUPER, W, exec, firefox"
             "SUPER, E, exec, alacritty"
@@ -283,6 +267,7 @@ in {
         ];
 
         decoration = {
+          rounding = 10;
           drop_shadow = "yes";
           shadow_range = 8;
           shadow_render_power = 2;
@@ -324,32 +309,6 @@ in {
             "fade, 1, 10, default"
             "workspaces, 1, 5, wind"
           ];
-        };
-
-        plugin = {
-          overview = {
-            centerAligned = true;
-            hideTopLayers = true;
-            hideOverlayLayers = true;
-            showNewWorkspace = true;
-            exitOnClick = true;
-            exitOnSwitch = true;
-            drawActiveWorkspace = true;
-            reverseSwipe = true;
-          };
-          hyprbars = {
-            bar_color = "rgb(2a2a2a)";
-            bar_height = 28;
-            col_text = "rgba(ffffffdd)";
-            bar_text_size = 11;
-            bar_text_font = "Ubuntu Nerd Font";
-
-            buttons = {
-              button_size = 0;
-              "col.maximize" = "rgba(ffffff11)";
-              "col.close" = "rgba(ff111133)";
-            };
-          };
         };
       };
     };

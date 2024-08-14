@@ -1,11 +1,10 @@
-{ pkgs, ... }: 
-{
+{pkgs, ...}: {
   programs.neovim = {
     enable = true;
   };
 
-  home.packages = with pkgs; [ 
-    lunarvim 
+  home.packages = with pkgs; [
+    lunarvim
     wl-clipboard # For system clipboard capabilities
   ];
 

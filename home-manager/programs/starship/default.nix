@@ -115,6 +115,9 @@ in {
     };
   };
 
+  programs.bash.initExtra = ''
+    eval "$(${pkgs.starship}/bin/starship init bash)"
+  '';
   # This enables pkgs.bashInteractive
   programs.bash.enable = true;
 }

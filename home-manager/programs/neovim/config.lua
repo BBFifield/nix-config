@@ -14,3 +14,14 @@ if vim.fn.executable("wl-copy") == 1 then
     }
 end
 
+-- Move selected text up
+vim.api.nvim_set_keymap('v', '<S-k>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
+
+-- Move selected text down
+vim.api.nvim_set_keymap('v', '<S-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+
+-- Move selected text left
+vim.api.nvim_set_keymap('v', '<S-h>', ":<C-u>execute \"normal! <<gv\"<CR>", { noremap = true, silent = true })
+
+-- Move selected text right
+vim.api.nvim_set_keymap('v', '<S-l>', ":<C-u>execute \"normal! >>gv\"<CR>", { noremap = true, silent = true })

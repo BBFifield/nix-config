@@ -1,7 +1,9 @@
-{ config, lib, }:
 {
+  config,
+  lib,
+}: {
   options.hm.wlogout = {
-    emable = lib.mkEnableOption "Enable wlogout."
+    emable = lib.mkEnableOption "Enable wlogout.";
   };
 
   config = lib.mkIf config.hm.wlogout {
