@@ -47,9 +47,20 @@ in {
         (lib.mkIf (cfg.displayManager == "sddm") {
           services.displayManager.sddm = {
             wayland.compositor = "weston";
-            theme = "catppuccin-mocha";
-#            settings.Theme.CursorSize = 56;
+            theme = "catppuccin-frappe";
+            #settings.Theme.Font = "JetBrainsMono Nerd Font";
           };
+
+          environment.systemPackages = [(
+            pkgs.catppuccin-sddm.override {
+              flavor = "frappe";
+              font  = "FiraCode Mono";
+              fontSize = "11";
+            }
+          )];
+          fonts.packages = with pkgs; [
+            fira-code
+          ];
         })
         (lib.mkIf (cfg.hyprland.shell == "asztal" && cfg.displayManager == "greetd") {
           services.greetd = {

@@ -30,7 +30,7 @@ in {
       firefox.enable = true;
       vscodium.enable = true;
     }
-    (lib.optionalAttrs (osConfig.desktop.plasma.enable == true) {
+    (lib.optionalAttrs (osConfig.desktop.plasma.enable) {
       firefox.style = "plasma";
       plasma.enable = true;
       konsole.enable = true;
@@ -50,6 +50,7 @@ in {
         {enable = true;}
         (lib.optionalAttrs (osConfig.desktop.hyprland.shell == "vanilla") {shell = "vanilla";})
         (lib.optionalAttrs (osConfig.desktop.hyprland.shell == "asztal") {shell = "asztal";})
+        (lib.optionalAttrs (osConfig.desktop.hyprland.shell == "hyprpanel") {shell = "hyprpanel";})
       ];
       vscodium.theme = "gnome";
     })

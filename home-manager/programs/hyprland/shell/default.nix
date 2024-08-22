@@ -7,6 +7,21 @@
 with lib; {
   config = mkIf config.hm.hyprland.enable (
     mkMerge [
+      (mkIf (config.hm.hyprland.shell == "hyprpanel") {
+        home = {
+          packages = with pkgs; [
+            hyprpanel
+          ];
+        };
+
+        wayland.windowManager.hyprland = {
+          settings = {
+            exec-once = [
+              "${pkgs.hyprpanel}/bin/hyprpanel"
+            ];
+          };
+        };
+      })
       (mkIf (config.hm.hyprland.shell == "asztal") {
         home = {
           packages = with pkgs; [
@@ -31,30 +46,6 @@ with lib; {
               ",Print,         ${e} -r 'recorder.screenshot()'"
               "SHIFT,Print,    ${e} -r 'recorder.screenshot(true)'"
             ];
-
-            decoration = {
-              drop_shadow = "yes";
-              shadow_range = 8;
-              shadow_render_power = 2;
-              "col.shadow" = "rgba(00000044)";
-
-              # Change transparency of focused and unfocused windows
-              active_opacity = 0.95;
-              inactive_opacity = 0.9;
-
-              dim_inactive = false;
-
-              blur = {
-                enabled = true;
-                size = 8;
-                passes = 3;
-                new_optimizations = "on";
-                noise = 0.01;
-                contrast = 0.9;
-                brightness = 0.8;
-                popups = true;
-              };
-            };
           };
         };
       })
@@ -69,7 +60,7 @@ with lib; {
           settings = {
             exec-once = [
               "gBar bar 0"
-              "wpaperd"
+              "wpaperd -d"
             ];
 
             general = {
@@ -86,8 +77,12 @@ with lib; {
 
             bind = [
               "SUPER, R, exec, walker"
+              "SUPER, N, exec, wpaperctl next"
             ];
           };
+          extraConfig = ''
+            ${builtins.readFile ../mocha.conf}
+          '';
         };
       })
     ]

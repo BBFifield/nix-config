@@ -4,7 +4,7 @@
   ...
 }: {
   options.hm.gBar = {
-    enable = lib.mkEnableOption "Enable gBar";
+    enable = lib.mkEnableOption "Enable gBar.";
   };
 
   config = lib.mkIf config.hm.gBar.enable {
@@ -21,6 +21,8 @@
         AudioRevealer = true;
         NetworkAdapter = "enp9s0";
         #0b:00.0 is gpu pci address
+        ExitCommand = "pkill -U ${config.home.username}";
+        LockCommand = "hyprlock";
       };
       extraCSS = ''
         ${builtins.readFile ./style.css}

@@ -27,7 +27,7 @@ with lib; let
     name = "MoreWaita";
   };
   font = {
-    name = "Sans";
+    name = "Cantarell";#"Sans";
     size = lib.mkForce 10;
   };
 in {
@@ -39,7 +39,7 @@ in {
     enable = mkEnableOption "Enable hyprland configuration via home-manager";
 
     shell = mkOption {
-      type = types.enum ["vanilla" "asztal" null];
+      type = types.enum ["vanilla" "asztal" "hyprpanel" null];
       default = null;
       description = "Choose a customized shell.";
     };
@@ -64,7 +64,7 @@ in {
         terminal = false;
       };
     };
-
+    
     home = {
       packages = with pkgs; [
         nautilus
@@ -99,6 +99,29 @@ in {
         "gtk"
         "hyprland"
       ];
+    };
+
+    services.hypridle = {
+      enable = true;
+      settings = {
+        general = {
+          after_sleep_cmd = "hyprctl dispatch dpms on";
+          ignore_dbus_inhibit = false;
+          lock_cmd = "hyprlock";
+        };
+
+        listener = [
+          {
+            timeout = 900;
+            on-timeout = "hyprlock";
+          }
+          {
+            timeout = 1200;
+            on-timeout = "hyprctl dispatch dpms off";
+            on-resume = "hyprctl dispatch dpms on";
+          }
+        ];
+      };
     };
 
     wayland.windowManager.hyprland = {
@@ -220,7 +243,6 @@ in {
             "ALT, Q, killactive"
             "SUPER, F, togglefloating"
             "SUPER, G, fullscreen"
-            "SUPER, O, fakefullscreen"
             "SUPER, P, togglesplit"
 
             (mvfocus "k" "u")

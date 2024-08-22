@@ -15,6 +15,15 @@ in {
       example = "sddm";
       description = mdDoc "Choose the preferred display-manager.";
     };
+
+    hidpi = mkOption {
+      type = types.submodule {
+        options = {
+          enable = mkEnableOption "Enable hidpi display resolution.";
+        };
+      };
+      default = {};
+    };
   };
 
   config = mkMerge [
@@ -26,9 +35,14 @@ in {
       programs.dconf.profiles.gdm.databases = [
         {
           settings = {
-            "org/gnome/desktop/interface" = {
-              scaling-factor = lib.gvariant.mkUint32 2;
-            };
+            "org/gnome/desktop/interface" = mkMerge [
+              (optionalAttrs (cfg.displayManager.hidpi.enable) {
+                scaling-factor = lib.gvariant.mkUint32 2;
+              })
+              (optionalAttrs (!cfg.displayManager.hidpi.enable) {
+                scaling-factor = lib.gvariant.mkUint32 1;
+              })
+            ];
           };
         }
       ];
@@ -39,17 +53,22 @@ in {
         enable = true;
         package = lib.mkForce pkgs.kdePackages.sddm;
         wayland.enable = true;
-        settings = {
-          Theme = {
-            CursorSize = 56; #Doubled the size for hidpi display
-            CursorTheme = "BreezeX-Dark";
-
-            FacesDir = "/var/lib/AccountsService/icons";
-          };
-          General = {
-            GreeterEnvironment = "QT_FONT_DPI=192";# QT_SCREEN_SCALE_FACTORS=2"; 
-          };
-        };
+        settings = mkMerge [
+          {
+            Theme = {
+              CursorTheme = "BreezeX-Dark";
+              FacesDir = "/var/lib/AccountsService/icons";
+            };
+          }
+          (mkIf (cfg.hidpi.enable) {
+            Theme.CursorSize = 56;
+            General.GreeterEnvironment = "QT_FONT_DPI=192";
+          })
+          (mkIf (!cfg.hidpi.enable) {
+            Theme.CursorSize = 28;
+            General.GreeterEnvironment = "QT_FONT_DPI=96";
+          })
+        ];
       };
     })
 

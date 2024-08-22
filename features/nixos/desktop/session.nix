@@ -29,7 +29,7 @@ in {
         options = {
           enable = mkEnableOption "Enable Hyprland Window Manager";
           shell = mkOption {
-            type = types.enum ["asztal" "vanilla"];
+            type = types.enum ["asztal" "vanilla" "hyprpanel"];
             default = "vanilla";
             description = "Choose your preferred Hyprland shell";
             example = "asztal";
@@ -73,59 +73,66 @@ in {
         ];
       })
 
-      (mkIf (cfg.hyprland.enable) {
-        # Enable the hyprland "desktop environment"
-        programs.hyprland.enable = true;
-        environment.systemPackages = with pkgs; [
-          catppuccin-sddm
-          bun
-          gnome-tweaks
-          kdePackages.qtwayland #QT apps will not open under wayland mode otherwise
-          kdePackages.qt6ct
-          icons.breezeXcursor # custom # Needs to be installed system-wide to be accessible to sddm
-          morewaita-icon-theme
-          adwaita-icon-theme
-          qogir-icon-theme
-          gnome.gnome-control-center
-        ];
+      (mkIf (cfg.hyprland.enable) (
+        mkMerge [
+          { # Enable the hyprland "desktop environment"
+            programs.hyprland.enable = true;
+            environment.systemPackages = with pkgs; [
+              bun
+              gnome-tweaks
+              kdePackages.qtwayland #QT apps will not open under wayland mode otherwise
+              kdePackages.qt6ct
+              icons.breezeXcursor # custom # Needs to be installed system-wide to be accessible to sddm
+              morewaita-icon-theme
+              adwaita-icon-theme
+              qogir-icon-theme
+              gnome.gnome-control-center
+              jetbrains-mono
+            ];
 
-        security = {
-          polkit.enable = true;
-          pam.services.ags = {};
-        };
-
-        systemd = {
-          user.services.polkit-gnome-authentication-agent-1 = {
-            description = "polkit-gnome-authentication-agent-1";
-            wantedBy = ["graphical-session.target"];
-            wants = ["graphical-session.target"];
-            after = ["graphical-session.target"];
-            serviceConfig = {
-              Type = "simple";
-              ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-              Restart = "on-failure";
-              RestartSec = 1;
-              TimeoutStopSec = 10;
+            security = {
+              polkit.enable = true;
+              pam.services.ags = {};
             };
-          };
-        };
 
-        services = {
-          gvfs.enable = true;
-          devmon.enable = true;
-          udisks2.enable = true;
-          upower.enable = true;
-          power-profiles-daemon.enable = true;
-          accounts-daemon.enable = true;
-          gnome = {
-            evolution-data-server.enable = true;
-            glib-networking.enable = true;
-            gnome-keyring.enable = true;
-            gnome-online-accounts.enable = true;
-            tracker-miners.enable = true;
-            tracker.enable = true;
-          };
-        };
-      })
+            systemd = {
+              user.services.polkit-gnome-authentication-agent-1 = {
+                description = "polkit-gnome-authentication-agent-1";
+                wantedBy = ["graphical-session.target"];
+                wants = ["graphical-session.target"];
+                after = ["graphical-session.target"];
+                serviceConfig = {
+                  Type = "simple";
+                  ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+                  Restart = "on-failure";
+                  RestartSec = 1;
+                  TimeoutStopSec = 10;
+                };
+              };
+            };
+
+            services = {
+              gvfs.enable = true;
+              devmon.enable = true;
+              udisks2.enable = true;
+              upower.enable = true;
+              power-profiles-daemon.enable = true;
+              accounts-daemon.enable = true;
+              gnome = {
+                evolution-data-server.enable = true;
+                glib-networking.enable = true;
+                gnome-keyring.enable = true;
+                gnome-online-accounts.enable = true;
+                tracker-miners.enable = true;
+                tracker.enable = true;
+              };
+            };
+          }
+          # Hyprlock doesn't work without this 
+          (mkIf (cfg.hyprland.shell == "vanilla") {
+            security.pam.services.hyprlock = {};
+          })
+        ]
+      ))
     ];
 }

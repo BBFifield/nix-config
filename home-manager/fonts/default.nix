@@ -1,15 +1,14 @@
+# Use command "fc-list : family style" to see a list of fonts on your system.
+
 {pkgs, ...}: {
-  fonts.fontconfig.enable = true;
+  fonts.fontconfig = {
+    enable = true;
+    defaultFonts.monospace = ["FiraCode Nerd Font"];
+  };
 
   home.packages = with pkgs; [
-    fira-code
-    fira-code-symbols
-    font-awesome
-    liberation_ttf
-    mplus-outline-fonts.githubRelease
-    nerdfonts
-    noto-fonts
-    noto-fonts-emoji
-    proggyfonts
+    (nerdfonts.override {
+      fonts = [ "FiraCode" "RobotoMono" "JetBrainsMono" "CascadiaCode" ];
+    })
   ];
-}
+}      

@@ -19,6 +19,8 @@
   # With regard to substitutors
   nix.settings.trusted-users = ["brandon"];
 
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+
   # Enable networking
   networking.networkmanager.enable = lib.mkDefault true;
 
@@ -59,7 +61,7 @@
     vim
   ];
 
-  environment.variables = {EDITOR = "vim";};
+  environment.variables = {EDITOR = lib.mkForce "vim";};
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -87,6 +89,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
-
-  nix.settings.experimental-features = ["nix-command" "flakes"];
 }

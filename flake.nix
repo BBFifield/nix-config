@@ -49,6 +49,12 @@
       url = "github:rafaelmardojai/firefox-gnome-theme";
       flake = false;
     };
+
+    hyprpanel = {
+      url = "github:Jas-SinghFSU/HyprPanel";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.ags.follows = "ags";
+    };
   };
 
   outputs = {
@@ -66,10 +72,9 @@
       "aarch64-darwin"
       "x86_64-darwin"
     ];
-    # This is a function that generates an attribute by calling a function you
-    # pass to it, with each system as an argument. genAttrs already accepts 'systems' as
-    # an argument, but it also needs a function as an argument to execute, which is what will be provide when
-    # forAllSystems is called
+
+    # Maps a function over the 'systems' attribute set. 'Systems' is provided as the first arg, but it also
+    # needs a function as the second arg, which is provided below when forAllSystems is called.
     forAllSystems = nixpkgs.lib.genAttrs systems;
   in rec
   {
@@ -79,10 +84,9 @@
     # My custom packages
     # Accessible through 'nix build', 'nix shell', etc
     # Ex: nix shell packages.x86_64-linux.klassy
-    packages = 
-      forAllSystems (system:
-        lib.pathToAttrs "${self}/pkgs" (full_path: _: 
-          nixpkgs.legacyPackages.${system}.callPackage "${full_path}" {}));
+    packages = forAllSystems (system:
+      lib.pathToAttrs "${self}/pkgs" (full_path: _:
+        nixpkgs.legacyPackages.${system}.callPackage "${full_path}" {}));
 
     # Formatter for your nix files, available through 'nix fmt'
     # Other options beside 'alejandra' include 'nixpkgs-fmt'

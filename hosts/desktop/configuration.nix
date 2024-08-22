@@ -6,13 +6,37 @@
   ...
 }: let
 
-  defaultConfiguration = {
-    hyprland.enable = true;
-    hyprland.shell = "vanilla";
-    displayManager = "sddm";
-  };
+  enableHidpi = true;
+
+  defaultDesktop = "hyprland";
 
   specialisations = false;
+
+  desktops = {
+    hyprland = {
+      hyprland.enable = true;
+      hyprland.shell = "vanilla";
+      displayManager = "sddm";
+      hidpi.enable = enableHidpi;
+    };
+
+    plasma = {
+      plasma.enable = true;
+      displayManager = "sddm";
+      hidpi.enable = enableHidpi;
+    };
+
+    gnome = {
+      gnome.enable = true;
+      displayManager = "gdm";
+      hidpi.enable = enableHidpi;
+    };
+  };
+
+  specialisationSet = builtins.removeAttrs desktops [ defaultDesktop ];
+
+  defaultConfiguration = lib.filterAttrs (name: value: name == defaultDesktop) desktops; 
+
 
   featuresDir = ../../features/nixos;
 
@@ -29,32 +53,25 @@ in {
   inherit imports;
 
   config = lib.mkMerge [
-   
     (lib.mkIf (specialisations == false) {
-      desktop = defaultConfiguration;
+      desktop = defaultConfiguration.${defaultDesktop};
     })
     (lib.mkIf (specialisations == true) (
       lib.mkIf (config.specialisation != {}) {
-        desktop = defaultConfiguration;
+        desktop = defaultConfiguration.${defaultDesktop};
     
-        specialisation = {
-          plasma = {
-            inheritParentConfig = true;
-            configuration = {
-              system.nixos.tags = ["plasma"];
-              desktop.plasma.enable = true;
-              desktop.displayManager = "sddm";
-            };
-          };
-          gnome = {
-            inheritParentConfig = true;
-            configuration = {
-              system.nixos.tags = ["gnome"];
-              desktop.gnome.enable = true;
-              desktop.displayManager = "gdm";
-            };
-          };
-        };
+        specialisation = 
+          builtins.mapAttrs ( name: value: 
+            { 
+              name = name; 
+              value = {
+                inheritParentConfig = true;
+                configuration = {
+                  system.nixos.tags = [ name ];
+                } // value;
+              };
+            }
+          ) (specialisationSet);       
       }
     ))
     {
@@ -80,7 +97,10 @@ in {
         htop
         #nix-output-monitor
         #nix-du
+        openrgb-with-all-plugins
       ];
+
+      services.hardware.openrgb.enable = true;
 
       xdg.terminal-exec = {
         enable = true;

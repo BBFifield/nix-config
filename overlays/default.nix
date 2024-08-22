@@ -47,5 +47,6 @@
 
   defaults = [
     inputs.nurpkgs.overlay
+    inputs.hyprpanel.overlay
   ];
 }
