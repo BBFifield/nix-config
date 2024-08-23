@@ -15,13 +15,11 @@ with lib; let
   pactl = "${pkgs.pulseaudio}/bin/pactl";
 
   theme = {
-    package = pkgs.adw-gtk3;
     name = "adw-gtk3-dark";
   };
   cursorTheme = {
     name = "BreezeX-Dark";
     size = 28;
-    package = pkgs.qogir-icon-theme;
   };
   iconTheme = {
     name = "MoreWaita";
@@ -68,6 +66,7 @@ in {
     home = {
       packages = with pkgs; [
         nautilus
+        adw-gtk3
         morewaita-icon-theme
         adwaita-icon-theme
         qogir-icon-theme
@@ -77,11 +76,11 @@ in {
         icons.breezeXcursor
         wl-gammactl
       ];
-      sessionVariables = {
+     /* sessionVariables = {
         XCURSOR_THEME = cursorTheme.name;
         XCURSOR_SIZE = "${toString cursorTheme.size}";
       };
-      pointerCursor = cursorTheme // {gtk.enable = true;};
+      pointerCursor = cursorTheme // {gtk.enable = true;};*/
     };
 
     gtk = {
@@ -105,18 +104,18 @@ in {
       enable = true;
       settings = {
         general = {
+          lock_cmd = "pidof hyprlock || hyprlock";       # avoid starting multiple hyprlock instances.
+          before_sleep_cmd = "loginctl lock-session";
           after_sleep_cmd = "hyprctl dispatch dpms on";
-          ignore_dbus_inhibit = false;
-          lock_cmd = "hyprlock";
         };
 
         listener = [
           {
-            timeout = 900;
-            on-timeout = "hyprlock";
+            timeout = 60; #900
+            on-timeout = "loginctl lock-session";
           }
           {
-            timeout = 1200;
+            timeout = 80; #1200
             on-timeout = "hyprctl dispatch dpms off";
             on-resume = "hyprctl dispatch dpms on";
           }
@@ -216,8 +215,10 @@ in {
           (f "xdg-desktop-portal-gnome")
           (f "de.haeckerfelix.Fragments")
           (f "com.github.Aylur.ags")
+          "workspace 3, title:Files"
           "workspace 2, title:Firefox"
           "workspace 1, title:VSCodium"
+          "workspace 1, title:LunarVim"
         ];
 
         bind = let
@@ -230,8 +231,8 @@ in {
           arr = [1 2 3 4 5 6 7];
         in
           [
-            "SUPER, Return, exec, xterm" # xterm is a symlink, not actually xterm
             "SUPER, W, exec, firefox"
+            "SUPER F, exec, nautilus"
             "SUPER, E, exec, alacritty"
             "SUPER, C, exec, alacritty -e lvim"
 
@@ -241,7 +242,7 @@ in {
             "ALT, Tab, focuscurrentorlast"
             "CTRL ALT, Delete, exit"
             "ALT, Q, killactive"
-            "SUPER, F, togglefloating"
+            #"SUPER, F, togglefloating"
             "SUPER, G, fullscreen"
             "SUPER, P, togglesplit"
 

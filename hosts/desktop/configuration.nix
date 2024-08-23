@@ -95,8 +95,7 @@ in {
         #age
         #sops
         htop
-        #nix-output-monitor
-        #nix-du
+        nix-output-monitor
         openrgb-with-all-plugins
       ];
 

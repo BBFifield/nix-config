@@ -54,7 +54,7 @@ in {
           environment.systemPackages = [(
             pkgs.catppuccin-sddm.override {
               flavor = "frappe";
-              font  = "FiraCode Mono";
+              font  = "Fira Code";
               fontSize = "11";
             }
           )];

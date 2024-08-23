@@ -120,4 +120,9 @@ in {
   '';
   # This enables pkgs.bashInteractive
   programs.bash.enable = true;
+  programs.bash.shellAliases = {
+    sudo = "sudo ";
+    nixos-rebuild = "nixos-rebuild ";
+    switch = "switch --log-format internal-json -v |& nom --json";
+  };
 }

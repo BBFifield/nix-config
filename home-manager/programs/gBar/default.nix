@@ -17,12 +17,12 @@
           Discord = 26;
           OBS = 23;
         };
-        #WorkspaceSymbols = [ " " " " ];
+        WorkspaceSymbols = [ " " " " ];
         AudioRevealer = true;
         NetworkAdapter = "enp9s0";
         #0b:00.0 is gpu pci address
         ExitCommand = "pkill -U ${config.home.username}";
-        LockCommand = "hyprlock";
+        LockCommand = "loginctl lock-session";
       };
       extraCSS = ''
         ${builtins.readFile ./style.css}
