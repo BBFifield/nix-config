@@ -18,7 +18,7 @@ with lib; {
           sorting = "random";
           transition-time = "1000";
           transition = {
-            swirl = {};
+            hexagonalize = {};
           };
         };
         any = {

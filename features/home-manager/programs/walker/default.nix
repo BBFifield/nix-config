@@ -1,7 +1,12 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 with lib; {
   options.hm.walker = {
-    enable = mkEnableOption "Enable Walker launcher."; 
+    enable = mkEnableOption "Enable Walker launcher.";
   };
 
   config = mkIf config.hm.walker.enable {

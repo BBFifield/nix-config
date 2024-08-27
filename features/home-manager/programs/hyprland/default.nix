@@ -26,7 +26,7 @@ with lib; let
     name = "MoreWaita";
   };
   font = {
-    name = "Cantarell";#"Sans";
+    name = "Cantarell"; #"Sans";
     size = lib.mkForce 10;
   };
 in {
@@ -63,7 +63,7 @@ in {
         terminal = false;
       };
     };
-    
+
     home = {
       packages = with pkgs; [
         adw-gtk3
@@ -104,7 +104,7 @@ in {
       enable = true;
       settings = {
         general = {
-          lock_cmd = "pidof hyprlock || hyprlock";       # avoid starting multiple hyprlock instances.
+          lock_cmd = "pidof hyprlock || hyprlock"; # avoid starting multiple hyprlock instances.
           before_sleep_cmd = "loginctl lock-session";
           after_sleep_cmd = "hyprctl dispatch dpms on";
           ignore_dbus_inhibit = false;
@@ -126,7 +126,7 @@ in {
 
     wayland.windowManager.hyprland = {
       enable = true;
-      systemd = { 
+      systemd = {
         enable = true;
         variables = [
           "--all"

@@ -46,7 +46,7 @@ in {
       (mkIf (cfg.plasma.enable) {
         # Enable the KDE Plasma 6 Desktop Environment.
         services.desktopManager.plasma6.enable = true;
-        
+
         environment.systemPackages = with pkgs.kdePackages;
           [
             sddm-kcm
@@ -72,7 +72,8 @@ in {
 
       (mkIf (cfg.hyprland.enable) (
         mkMerge [
-          { # Enable the hyprland "desktop environment"
+          {
+            # Enable the hyprland "desktop environment"
             programs.hyprland.enable = true;
             environment.systemPackages = with pkgs; [
               bun
@@ -124,7 +125,7 @@ in {
               };
             };
           }
-          # Hyprlock doesn't work without this 
+          # Hyprlock doesn't work without this
           (mkIf (cfg.hyprland.shell == "vanilla") {
             security.pam.services.hyprlock = {};
           })

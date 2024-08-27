@@ -120,5 +120,4 @@ in {
   '';
   # This enables pkgs.bashInteractive
   programs.bash.enable = true;
-  
 }

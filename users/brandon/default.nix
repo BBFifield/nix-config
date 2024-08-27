@@ -16,12 +16,13 @@
     _1password-gui
     shellcheck
     arduino-ide
-    #lunarvim
+    # alacritty
+    #alacritty-theme
   ];
 in {
-  imports = (lib.concatMap import [../../home-manager/programs]) ++ [../../home-manager/fonts];
+  imports = (lib.concatMap import [../../features/home-manager/programs]) ++ [../../features/home-manager/fonts];
 
-  # lib.mergeAttrsList or // do not work here instead of lib.mkMerge because firefox for example, is
+  # lib.mergeAttrsList or // does not work here instead of lib.mkMerge because firefox for example, is
   # defined in both the base config and one of the optionals to be merged. The attribute sets only merge nicely if both contain distinct attribute keys,
   # so in this case firefox.enable = false (implied and the default value) from the optional set overrides the earlier declaration. "lib.mkMerge" otoh, merges
   # explicitly declared values and ignores "implied".

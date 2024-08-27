@@ -13,9 +13,11 @@ in {
   ];
 
   config = lib.mkMerge [
-   /* { 
-      systemd.globalEnvironment = { GDK_SCALE = "2"; }; 
-    }*/ 
+    /*
+      {
+      systemd.globalEnvironment = { GDK_SCALE = "2"; };
+    }
+    */
     (lib.mkIf (cfg.plasma.enable && !cfg.gnome.enable) {
       warnings =
         if cfg.displayManager != "sddm"
@@ -58,13 +60,15 @@ in {
             theme = "catppuccin-frappe";
           };
 
-          environment.systemPackages = [(
-            pkgs.catppuccin-sddm.override {
-              flavor = "frappe";
-              font  = "Fira Code";
-              fontSize = "11";
-            }
-          )];
+          environment.systemPackages = [
+            (
+              pkgs.catppuccin-sddm.override {
+                flavor = "frappe";
+                font = "Fira Code";
+                fontSize = "11";
+              }
+            )
+          ];
           fonts.packages = with pkgs; [
             fira-code
           ];

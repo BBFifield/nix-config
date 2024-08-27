@@ -61,7 +61,7 @@ in {
             };
           }
           (mkIf (cfg.hidpi.enable) {
-            Theme.CursorSize = 48; #BreezeX has problems with using 56px for some reason 
+            Theme.CursorSize = 48; #BreezeX has problems with using 56px for some reason
             General.GreeterEnvironment = "QT_SCALE_FACTOR=2";
           })
           (mkIf (!cfg.hidpi.enable) {

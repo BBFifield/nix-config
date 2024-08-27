@@ -17,7 +17,7 @@
           Discord = 26;
           OBS = 23;
         };
-        WorkspaceSymbols = [ " " " " ];
+        WorkspaceSymbols = [" " " "];
         AudioRevealer = true;
         NetworkAdapter = "enp9s0";
         #0b:00.0 is gpu pci address

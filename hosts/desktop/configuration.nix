@@ -5,7 +5,6 @@
   lib,
   ...
 }: let
-
   enableHidpi = true;
 
   defaultDesktop = "hyprland";
@@ -34,10 +33,9 @@
     };
   };
 
-  specialisationSet = builtins.removeAttrs desktops [ defaultDesktop ];
+  specialisationSet = builtins.removeAttrs desktops [defaultDesktop];
 
-  defaultConfiguration = lib.filterAttrs (name: value: name == defaultDesktop) desktops; 
-
+  defaultConfiguration = lib.filterAttrs (name: value: name == defaultDesktop) desktops;
 
   featuresDir = ../../features/nixos;
 
@@ -48,7 +46,6 @@
     "home-manager"
     "desktop"
   ];
-
 in {
   imports = outputs.lib.createImports features featuresDir;
 
@@ -59,19 +56,21 @@ in {
     (lib.mkIf (specialisations == true) (
       lib.mkIf (config.specialisation != {}) {
         nixos.desktop = defaultConfiguration.${defaultDesktop};
-    
-        specialisation = 
-          builtins.mapAttrs ( name: value: 
-            { 
-              name = name; 
-              value = {
-                inheritParentConfig = true;
-                configuration = {
-                  system.nixos.tags = [ name ];
-                } // value;
-              };
-            }
-          ) (specialisationSet);       
+
+        specialisation = builtins.mapAttrs (
+          name: value: {
+            name = name;
+            value = {
+              inheritParentConfig = true;
+              configuration =
+                {
+                  system.nixos.tags = [name];
+                }
+                // value;
+            };
+          }
+        )
+        specialisationSet;
       }
     ))
     {

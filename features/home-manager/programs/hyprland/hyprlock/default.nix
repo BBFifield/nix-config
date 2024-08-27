@@ -12,20 +12,22 @@ with lib; {
     programs.hyprlock = {
       enable = true;
       #https://wiki.hyprland.org/Hypr-Ecosystem/hyprlock/
-      /*extraConfig = ''
+      /*
+        extraConfig = ''
         ${builtins.readFile ./hyprlock.conf}
       '';
       sourceFirst = true;
       importantPrefixes = [
 
-      ];*/
+      ];
+      */
       settings = let
-        scale = 
+        scale =
           {
             "1" = 2; # "1" is true
             "" = 1; # "" is false
           }
-          .${builtins.toString osConfig.nixos.desktop.hidpi.enable}; 
+          .${builtins.toString osConfig.nixos.desktop.hidpi.enable};
       in {
         source = "$HOME/.config/hypr/hyprland.conf";
 
@@ -48,14 +50,14 @@ with lib; {
         };
 
         # LAYOUT
-        label = [ 
+        label = [
           {
             monitor = "";
             text = "Layout: $LAYOUT";
             color = "$text";
-            font_size = 25*scale;
+            font_size = 25 * scale;
             font_family = "$font";
-            position = "${builtins.toString (30*scale)}, ${builtins.toString (-60*scale)}"; 
+            position = "${builtins.toString (30 * scale)}, ${builtins.toString (-60 * scale)}";
             halign = "left";
             valign = "top";
           }
@@ -64,9 +66,9 @@ with lib; {
             monitor = "";
             text = "$TIME";
             color = "$text";
-            font_size = 90*scale;
+            font_size = 90 * scale;
             font_family = "$font";
-            position = "${builtins.toString (-30*scale)}, 0"; 
+            position = "${builtins.toString (-30 * scale)}, 0";
             halign = "right";
             valign = "top";
           }
@@ -75,9 +77,9 @@ with lib; {
             monitor = "";
             text = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
             color = "$text";
-            font_size = 25*scale;
+            font_size = 25 * scale;
             font_family = "$font";
-            position = "${builtins.toString (-30*scale)}, ${builtins.toString (-150*scale)}"; 
+            position = "${builtins.toString (-30 * scale)}, ${builtins.toString (-150 * scale)}";
             halign = "right";
             valign = "top";
           }
@@ -87,9 +89,9 @@ with lib; {
         image = {
           monitor = "";
           path = "/var/lib/AccountsService/icons/$USER";
-          size = 150*scale;
+          size = 150 * scale;
           border_color = "$accent";
-          position = "0, ${builtins.toString (75*scale)}"; 
+          position = "0, ${builtins.toString (75 * scale)}";
           halign = "center";
           valign = "center";
         };
@@ -97,10 +99,10 @@ with lib; {
         # INPUT FIELD
         input-field = {
           monitor = "";
-          size = "${builtins.toString (300*scale)}, ${builtins.toString (60*scale)}"; 
+          size = "${builtins.toString (300 * scale)}, ${builtins.toString (60 * scale)}";
           outline_thickness = 4;
-          dots_size = 0.2*scale;
-          dots_spacing = 0.2*scale;
+          dots_size = 0.2 * scale;
+          dots_spacing = 0.2 * scale;
           dots_center = true;
           outer_color = "$accent";
           inner_color = "$surface0";
@@ -112,7 +114,7 @@ with lib; {
           fail_color = "$red";
           fail_text = ''<i>$FAIL <b>($ATTEMPTS)</b></i>'';
           capslock_color = "$yellow";
-          position = "0, ${builtins.toString (-47*scale)}";
+          position = "0, ${builtins.toString (-47 * scale)}";
           halign = "center";
           valign = "center";
         };

@@ -87,8 +87,8 @@ in
           ];
           maintainers = with lib.maintainers; [pluiedev];
         }
-        // lib.optionalAttrs (qtMajorVersion == "6") {
+        // (lib.optionalAttrs (qtMajorVersion == "6") {
           # klassy-settings doesn't exist for the Qt 5 build.
           mainProgram = "klassy-settings";
-        };
+        });
     })
