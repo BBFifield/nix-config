@@ -18,6 +18,7 @@
       hyprland.shell = "vanilla";
       displayManager = "sddm";
       hidpi.enable = enableHidpi;
+      nautilus.enable = true;
     };
 
     plasma = {
@@ -45,20 +46,19 @@
     "cups"
     "nvidia"
     "home-manager"
-    "desktop/default"
+    "desktop"
   ];
 
-  imports = builtins.map (feature: featuresDir + ("/" + feature + ".nix")) features;
 in {
-  inherit imports;
+  imports = outputs.lib.createImports features featuresDir;
 
   config = lib.mkMerge [
     (lib.mkIf (specialisations == false) {
-      desktop = defaultConfiguration.${defaultDesktop};
+      nixos.desktop = defaultConfiguration.${defaultDesktop};
     })
     (lib.mkIf (specialisations == true) (
       lib.mkIf (config.specialisation != {}) {
-        desktop = defaultConfiguration.${defaultDesktop};
+        nixos.desktop = defaultConfiguration.${defaultDesktop};
     
         specialisation = 
           builtins.mapAttrs ( name: value: 
@@ -98,6 +98,12 @@ in {
         nix-output-monitor
         openrgb-with-all-plugins
       ];
+
+      programs.bash.shellAliases = {
+        sudo = "sudo ";
+        nixos-rebuild = "nixos-rebuild ";
+        switch = "switch --log-format internal-json -v |& nom --json";
+      };
 
       services.hardware.openrgb.enable = true;
 

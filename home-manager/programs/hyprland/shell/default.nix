@@ -53,8 +53,7 @@ with lib; {
         hm.gBar.enable = true;
         hm.wpaperd.enable = true;
         hm.hyprland.hyprlock.enable = true;
-
-        home.packages = with pkgs; [ walker ];
+        hm.walker.enable = true;
 
         wayland.windowManager.hyprland = {
           settings = {

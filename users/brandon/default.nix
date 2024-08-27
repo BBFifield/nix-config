@@ -29,28 +29,32 @@ in {
     {
       firefox.enable = true;
       vscodium.enable = true;
+      neovim = {
+        enable = true;
+        preset = "lunarvim";
+      };
     }
-    (lib.optionalAttrs (osConfig.desktop.plasma.enable) {
+    (lib.optionalAttrs (osConfig.nixos.desktop.plasma.enable) {
       firefox.style = "plasma";
       plasma.enable = true;
       konsole.enable = true;
       klassy.enable = true;
       kate.enable = true;
     })
-    (lib.optionalAttrs (osConfig.desktop.gnome.enable) {
+    (lib.optionalAttrs (osConfig.nixos.desktop.gnome.enable) {
       firefox.style = "gnome";
       gnome-shell.enable = true;
       dconf.enable = true;
       vscodium.theme = "gnome";
     })
-    (lib.optionalAttrs (osConfig.desktop.hyprland.enable) {
+    (lib.optionalAttrs (osConfig.nixos.desktop.hyprland.enable) {
       firefox.style = "gnome";
       dconf.enable = true;
       hyprland = lib.mkMerge [
         {enable = true;}
-        (lib.optionalAttrs (osConfig.desktop.hyprland.shell == "vanilla") {shell = "vanilla";})
-        (lib.optionalAttrs (osConfig.desktop.hyprland.shell == "asztal") {shell = "asztal";})
-        (lib.optionalAttrs (osConfig.desktop.hyprland.shell == "hyprpanel") {shell = "hyprpanel";})
+        (lib.optionalAttrs (osConfig.nixos.desktop.hyprland.shell == "vanilla") {shell = "vanilla";})
+        (lib.optionalAttrs (osConfig.nixos.desktop.hyprland.shell == "asztal") {shell = "asztal";})
+        (lib.optionalAttrs (osConfig.nixos.desktop.hyprland.shell == "hyprpanel") {shell = "hyprpanel";})
       ];
       vscodium.theme = "gnome";
     })

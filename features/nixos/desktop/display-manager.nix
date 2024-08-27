@@ -6,9 +6,9 @@
   ...
 }:
 with lib; let
-  cfg = config.desktop;
+  cfg = config.nixos.desktop;
 in {
-  options.desktop = {
+  options.nixos.desktop = {
     displayManager = mkOption {
       type = types.enum ["sddm" "gdm" "greetd" null];
       default = null;
@@ -36,10 +36,10 @@ in {
         {
           settings = {
             "org/gnome/desktop/interface" = mkMerge [
-              (optionalAttrs (cfg.displayManager.hidpi.enable) {
+              (mkIf (cfg.hidpi.enable) {
                 scaling-factor = lib.gvariant.mkUint32 2;
               })
-              (optionalAttrs (!cfg.displayManager.hidpi.enable) {
+              (mkIf (!cfg.hidpi.enable) {
                 scaling-factor = lib.gvariant.mkUint32 1;
               })
             ];
@@ -61,12 +61,12 @@ in {
             };
           }
           (mkIf (cfg.hidpi.enable) {
-            Theme.CursorSize = 56;
-            General.GreeterEnvironment = "QT_FONT_DPI=192";
+            Theme.CursorSize = 48; #BreezeX has problems with using 56px for some reason 
+            General.GreeterEnvironment = "QT_SCALE_FACTOR=2";
           })
           (mkIf (!cfg.hidpi.enable) {
-            Theme.CursorSize = 28;
-            General.GreeterEnvironment = "QT_FONT_DPI=96";
+            Theme.CursorSize = 24;
+            General.GreeterEnvironment = "QT_SCALE_FACTOR=1";
           })
         ];
       };

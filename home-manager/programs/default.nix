@@ -15,4 +15,5 @@
   ./alacritty
   ./vscodium
   ./neovim
+  ./walker
 ]

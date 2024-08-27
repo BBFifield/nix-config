@@ -25,7 +25,7 @@ with lib; {
             "1" = 2; # "1" is true
             "" = 1; # "" is false
           }
-          .${builtins.toString osConfig.desktop.hidpi.enable}; 
+          .${builtins.toString osConfig.nixos.desktop.hidpi.enable}; 
       in {
         source = "$HOME/.config/hypr/hyprland.conf";
 
@@ -42,7 +42,7 @@ with lib; {
         # BACKGROUND
         background = {
           monitor = "";
-          path = "$HOME/.config/background";
+          #path = "$HOME/.config/background";
           blur_passes = 0;
           color = "$base";
         };
@@ -98,7 +98,7 @@ with lib; {
         input-field = {
           monitor = "";
           size = "${builtins.toString (300*scale)}, ${builtins.toString (60*scale)}"; 
-          outline_thickness = 4*scale;
+          outline_thickness = 4;
           dots_size = 0.2*scale;
           dots_spacing = 0.2*scale;
           dots_center = true;

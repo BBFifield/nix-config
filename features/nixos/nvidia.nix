@@ -11,6 +11,7 @@
     MOZ_DISABLE_RDD_SANDBOX = "1";
     GBM_BACKEND = "nvidia-drm";
     _GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    WLR_DRM_NO_ATOMIC = "1";
   };
 
   # Eliminates phantom display 'unknown-1'

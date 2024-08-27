@@ -19,7 +19,8 @@ with lib; let
   };
   cursorTheme = {
     name = "BreezeX-Dark";
-    size = 28;
+    size = 24;
+    package = pkgs.icons.breezeXcursor;
   };
   iconTheme = {
     name = "MoreWaita";
@@ -65,7 +66,6 @@ in {
     
     home = {
       packages = with pkgs; [
-        nautilus
         adw-gtk3
         morewaita-icon-theme
         adwaita-icon-theme
@@ -76,11 +76,11 @@ in {
         icons.breezeXcursor
         wl-gammactl
       ];
-     /* sessionVariables = {
+      sessionVariables = {
         XCURSOR_THEME = cursorTheme.name;
         XCURSOR_SIZE = "${toString cursorTheme.size}";
       };
-      pointerCursor = cursorTheme // {gtk.enable = true;};*/
+      pointerCursor = cursorTheme // {gtk.enable = true;};
     };
 
     gtk = {
@@ -91,12 +91,12 @@ in {
     xdg.portal = {
       enable = true;
       extraPortals = [
-        pkgs.xdg-desktop-portal-gtk
         pkgs.xdg-desktop-portal-hyprland
+        pkgs.xdg-desktop-portal-gtk
       ];
       config.common.default = [
-        "gtk"
         "hyprland"
+        "gtk"
       ];
     };
 
@@ -107,15 +107,16 @@ in {
           lock_cmd = "pidof hyprlock || hyprlock";       # avoid starting multiple hyprlock instances.
           before_sleep_cmd = "loginctl lock-session";
           after_sleep_cmd = "hyprctl dispatch dpms on";
+          ignore_dbus_inhibit = false;
         };
 
         listener = [
           {
-            timeout = 60; #900
+            timeout = 9000;
             on-timeout = "loginctl lock-session";
           }
           {
-            timeout = 80; #1200
+            timeout = 12000;
             on-timeout = "hyprctl dispatch dpms off";
             on-resume = "hyprctl dispatch dpms on";
           }
@@ -125,8 +126,12 @@ in {
 
     wayland.windowManager.hyprland = {
       enable = true;
-      #package = hyprland;
-      systemd.enable = true;
+      systemd = { 
+        enable = true;
+        variables = [
+          "--all"
+        ];
+      };
       xwayland.enable = true;
       plugins = [
         # inputs.hyprland-hyprspace.packages.${pkgs.system}.default
@@ -215,10 +220,13 @@ in {
           (f "xdg-desktop-portal-gnome")
           (f "de.haeckerfelix.Fragments")
           (f "com.github.Aylur.ags")
-          "workspace 3, title:Files"
+          "workspace 3, ^(org.gnome.Nautilus)$"
           "workspace 2, title:Firefox"
-          "workspace 1, title:VSCodium"
-          "workspace 1, title:LunarVim"
+          "workspace 1, ^(VSCodium)$"
+        ];
+
+        windowrulev2 = [
+          "workspace 1, initialTitle:^(.*Alacritty.*)$, class:^(.*Alacritty.*)$, title:^(.*NVIM.*)$" #won't match
         ];
 
         bind = let
@@ -232,9 +240,9 @@ in {
         in
           [
             "SUPER, W, exec, firefox"
-            "SUPER F, exec, nautilus"
+            "SUPER, F, exec, nautilus --new-window"
             "SUPER, E, exec, alacritty"
-            "SUPER, C, exec, alacritty -e lvim"
+            "SUPER, C, exec, [workspace 1] alacritty -e lvim"
 
             # youtube
             ", XF86Launch1,  exec, ${yt}"

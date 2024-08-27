@@ -5,13 +5,13 @@
   ...
 }:
 with lib; let
-  cfg = config.desktop;
+  cfg = config.nixos.desktop;
 in {
-  options.desktop = {
+  options.nixos.desktop = {
     plasma = mkOption {
       type = types.submodule {
         options = {
-          enable = mkEnableOption "Enable the plasma desktop environment";
+          enable = mkEnableOption "Enable the plasma desktop environment.";
         };
       };
       default = {};
@@ -19,7 +19,7 @@ in {
     gnome = mkOption {
       type = types.submodule {
         options = {
-          enable = mkEnableOption "Enable the gnome desktop environment";
+          enable = mkEnableOption "Enable the gnome desktop environment.";
         };
       };
       default = {};
@@ -27,7 +27,7 @@ in {
     hyprland = mkOption {
       type = types.submodule {
         options = {
-          enable = mkEnableOption "Enable Hyprland Window Manager";
+          enable = mkEnableOption "Enable Hyprland Window Manager.";
           shell = mkOption {
             type = types.enum ["asztal" "vanilla" "hyprpanel"];
             default = "vanilla";
@@ -46,10 +46,7 @@ in {
       (mkIf (cfg.plasma.enable) {
         # Enable the KDE Plasma 6 Desktop Environment.
         services.desktopManager.plasma6.enable = true;
-        environment.variables = {
-          GDK_SCALE = "2";
-        };
-
+        
         environment.systemPackages = with pkgs.kdePackages;
           [
             sddm-kcm
@@ -87,7 +84,6 @@ in {
               adwaita-icon-theme
               qogir-icon-theme
               gnome.gnome-control-center
-              jetbrains-mono
             ];
 
             security = {

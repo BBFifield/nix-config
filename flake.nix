@@ -55,6 +55,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.ags.follows = "ags";
     };
+
+    walker = {
+      url = "github:abenz1267/walker";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -109,7 +114,17 @@
   };
 
   nixConfig = {
-    extra-substitutors = ["https://app.cachix.org/cache/bbfifield"];
-    extra-trusted-public-keys = ["bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg="];
+    extra-substitutors = 
+      [
+        "https://app.cachix.org/cache/bbfifield"
+        #"https://app.cachix.org/cache/walker"
+        #"https://app.cachix.org/cache/walker-git"
+      ];
+    extra-trusted-public-keys = 
+      [
+        "bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg="
+        #"walker.cachix.org-1:fG8q+uAaMqhsMxWjwvk0IMb4mFPFLqHjuvfwQxE4oJM="
+        #"walker-git.cachix.org-1:vmC0ocfPWh0S/vRAQGtChuiZBTAe4wiKDeyyXM0/7pM="
+      ];
   };
 }

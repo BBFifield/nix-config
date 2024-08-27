@@ -4,14 +4,18 @@
   lib,
   ...
 }: let
-  cfg = config.desktop;
+  cfg = config.nixos.desktop;
 in {
   imports = [
     ./session.nix
     ./display-manager.nix
+    ./nautilus.nix
   ];
 
   config = lib.mkMerge [
+   /* { 
+      systemd.globalEnvironment = { GDK_SCALE = "2"; }; 
+    }*/ 
     (lib.mkIf (cfg.plasma.enable && !cfg.gnome.enable) {
       warnings =
         if cfg.displayManager != "sddm"
@@ -40,15 +44,18 @@ in {
 
     (lib.mkIf (cfg.hyprland.enable) (
       {
-        assertion = config.displayManager == "gdm";
-        message = "You have set the display-manager to ${cfg.displayManager}. GDM may cause hyprland to crash on first launch.";
+        assertions = [
+          {
+            assertion = config.displayManager == "gdm";
+            message = "You have set the display-manager to ${cfg.displayManager}. GDM may cause hyprland to crash on first launch.";
+          }
+        ];
       }
       // lib.mkMerge [
         (lib.mkIf (cfg.displayManager == "sddm") {
           services.displayManager.sddm = {
             wayland.compositor = "weston";
             theme = "catppuccin-frappe";
-            #settings.Theme.Font = "JetBrainsMono Nerd Font";
           };
 
           environment.systemPackages = [(

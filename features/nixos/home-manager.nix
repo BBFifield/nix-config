@@ -17,5 +17,6 @@ with inputs; {
     gBar.homeManagerModules.x86_64-linux.default
     ags.homeManagerModules.default
     sops-nix.homeManagerModules.sops
+    walker.homeManagerModules.default
   ];
 }
