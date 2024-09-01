@@ -1,4 +1,5 @@
 {
+  self,
   outputs,
   config,
   pkgs,
@@ -6,6 +7,10 @@
   ...
 }: let
   enableHidpi = true;
+  project = {
+    enableMutableConfigs = true;
+    path = "/home/brandon/nixos-config";
+  };
 
   defaultDesktop = "hyprland";
 
@@ -30,32 +35,35 @@
       gnome.enable = true;
       displayManager = "gdm";
       hidpi.enable = enableHidpi;
+      nautilus.enable = true;
     };
   };
 
   specialisationSet = builtins.removeAttrs desktops [defaultDesktop];
-
-  defaultConfiguration = lib.filterAttrs (name: value: name == defaultDesktop) desktops;
+  defaultConfiguration = {
+    inherit project;
+    desktop = (lib.filterAttrs (name: value: name == defaultDesktop) desktops).${defaultDesktop};
+  };
 
   featuresDir = ../../features/nixos;
-
   features = [
     "base"
     "cups"
     "nvidia"
     "home-manager"
     "desktop"
+    "meta"
   ];
 in {
-  imports = outputs.lib.createImports features featuresDir;
+  imports = outputs.lib.mkImports features featuresDir;
 
   config = lib.mkMerge [
     (lib.mkIf (specialisations == false) {
-      nixos.desktop = defaultConfiguration.${defaultDesktop};
+      nixos = defaultConfiguration;
     })
     (lib.mkIf (specialisations == true) (
       lib.mkIf (config.specialisation != {}) {
-        nixos.desktop = defaultConfiguration.${defaultDesktop};
+        nixos = defaultConfiguration;
 
         specialisation = builtins.mapAttrs (
           name: value: {
@@ -66,7 +74,13 @@ in {
                 {
                   system.nixos.tags = [name];
                 }
-                // value;
+                // 
+                {
+                  nixos = {
+                    inherit project;
+                    desktop = value;
+                  };
+                };
             };
           }
         )
@@ -106,13 +120,6 @@ in {
 
       services.hardware.openrgb.enable = true;
 
-      xdg.terminal-exec = {
-        enable = true;
-        settings = {
-          default = ["Alacritty.desktop"];
-        };
-      };
-
       nixpkgs = {
         overlays =
           outputs.overlays.defaults
@@ -121,6 +128,7 @@ in {
             vivaldiFixed
             customPkgs
             asztalOverlay
+            neovim-flake
           ]);
         config.allowUnfree = true;
       };

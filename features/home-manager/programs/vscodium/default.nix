@@ -3,15 +3,15 @@
   pkgs,
   lib,
   ...
-}: {
+}: with lib; {
   options.hm.vscodium = {
     enable = lib.mkEnableOption "Enable VSCodium";
     theme = lib.mkOption {
-      type = lib.types.enum ["gnome" null];
+      type = with types; nullOr enum ["gnome"];
       default = null;
     };
   };
-  config = lib.mkIf config.hm.vscodium.enable {
+  config = mkIf config.hm.vscodium.enable {
     programs.vscode = {
       enable = true;
       package = pkgs.vscodium;
@@ -19,7 +19,7 @@
         [
           jnoortheen.nix-ide
         ]
-        ++ lib.optionals (config.hm.vscodium.theme == "gnome") [
+        ++ optionals (config.hm.vscodium.theme == "gnome") [
           piousdeer.adwaita-theme
         ];
       userSettings = {

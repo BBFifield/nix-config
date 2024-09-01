@@ -21,7 +21,7 @@
     item_dir - Path to be prepended to each item.
   Returns: The created imports list.
   */
-  createImports = item_list: item_dir:
+  mkImports = item_list: item_dir:
     builtins.map (
       item: let
         path = item_dir + ("/" + item + ".nix");

@@ -16,11 +16,12 @@
     _1password-gui
     shellcheck
     arduino-ide
+    #neovim
     # alacritty
-    #alacritty-theme
+    alacritty-theme
   ];
 in {
-  imports = (lib.concatMap import [../../features/home-manager/programs]) ++ [../../features/home-manager/fonts];
+  imports = [../../features/home-manager];
 
   # lib.mergeAttrsList or // does not work here instead of lib.mkMerge because firefox for example, is
   # defined in both the base config and one of the optionals to be merged. The attribute sets only merge nicely if both contain distinct attribute keys,
@@ -32,9 +33,13 @@ in {
       vscodium.enable = true;
       neovim = {
         enable = true;
-        preset = "lunarvim";
+        preset = "custom";
       };
     }
+    (lib.optionalAttrs (osConfig.nixos.project.enableMutableConfigs) {
+      enableMutableConfigs = true;
+      projectPath = osConfig.nixos.project.path + "/features/home-manager/programs";
+    })
     (lib.optionalAttrs (osConfig.nixos.desktop.plasma.enable) {
       firefox.style = "plasma";
       plasma.enable = true;

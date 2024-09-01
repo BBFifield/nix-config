@@ -1,17 +1,3 @@
-lvim.plugins = {
-  {
-    "antosha417/nvim-lsp-file-operations",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-tree.lua",
-    },
-    config = function()
-      require("lsp-file-operations").setup()
-    end,
-  },
-}
-require("lsp-file-operations").setup()
-
 local lspconfig = require'lspconfig'
 
 -- Set global defaults for all servers
@@ -28,3 +14,13 @@ lspconfig.util.default_config = vim.tbl_extend(
     )
   }
 )
+
+lspconfig.nil_ls.setup {
+  on_attach = function(client, bufnr)
+    -- Enable LSP-based file operations
+    require('lsp-file-operations').setup()
+  end,
+  flags = {
+    debounce_text_changes = 150,
+  }
+}

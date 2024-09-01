@@ -195,12 +195,12 @@
       definedAliases = ["@y"];
     };
   };
-in {
+in with lib; {
   options.hm.firefox = {
     enable = lib.mkEnableOption "Enable home-manager firefox configuration";
 
     style = lib.mkOption {
-      type = lib.types.enum ["plasma" "gnome" null];
+      type = with types; nullOr enum ["plasma" "gnome"];
       default = null;
       description = "Choose which style of settings to use";
     };

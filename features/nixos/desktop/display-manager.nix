@@ -10,7 +10,7 @@ with lib; let
 in {
   options.nixos.desktop = {
     displayManager = mkOption {
-      type = types.enum ["sddm" "gdm" "greetd" null];
+      type = with types; nullOr enum ["sddm" "gdm" "greetd"];
       default = null;
       example = "sddm";
       description = mdDoc "Choose the preferred display-manager.";

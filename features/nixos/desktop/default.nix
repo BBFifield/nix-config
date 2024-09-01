@@ -13,11 +13,16 @@ in {
   ];
 
   config = lib.mkMerge [
-    /*
-      {
-      systemd.globalEnvironment = { GDK_SCALE = "2"; };
+    {
+      # Specifies the default terminal program to execute when opening terminal-based programs from launchers.
+      xdg.terminal-exec = {
+        enable = true;
+        settings = {
+          default = ["Alacritty.desktop"];
+        };
+      };
     }
-    */
+
     (lib.mkIf (cfg.plasma.enable && !cfg.gnome.enable) {
       warnings =
         if cfg.displayManager != "sddm"

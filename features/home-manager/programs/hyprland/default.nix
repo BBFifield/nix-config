@@ -32,13 +32,14 @@ with lib; let
 in {
   imports = [
     ./shell
+    ./hyprlock
   ];
 
   options.hm.hyprland = {
     enable = mkEnableOption "Enable hyprland configuration via home-manager";
 
     shell = mkOption {
-      type = types.enum ["vanilla" "asztal" "hyprpanel" null];
+      type = with types; nullOr enum ["vanilla" "asztal" "hyprpanel"];
       default = null;
       description = "Choose a customized shell.";
     };

@@ -6,7 +6,6 @@
   ./kate
   ./dconf
   ./hyprland
-  ./hyprland/hyprlock
   ./waybar
   ./gBar
   ./wpaperd
