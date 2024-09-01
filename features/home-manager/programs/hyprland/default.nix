@@ -39,7 +39,7 @@ in {
     enable = mkEnableOption "Enable hyprland configuration via home-manager";
 
     shell = mkOption {
-      type = with types; nullOr enum ["vanilla" "asztal" "hyprpanel"];
+      type = with types; nullOr (enum ["vanilla" "asztal" "hyprpanel"]);
       default = null;
       description = "Choose a customized shell.";
     };

@@ -200,7 +200,7 @@ in with lib; {
     enable = lib.mkEnableOption "Enable home-manager firefox configuration";
 
     style = lib.mkOption {
-      type = with types; nullOr enum ["plasma" "gnome"];
+      type = with types; nullOr (enum ["plasma" "gnome"]);
       default = null;
       description = "Choose which style of settings to use";
     };

@@ -7,7 +7,7 @@
   options.hm.vscodium = {
     enable = lib.mkEnableOption "Enable VSCodium";
     theme = lib.mkOption {
-      type = with types; nullOr enum ["gnome"];
+      type = with types; nullOr (enum ["gnome"]);
       default = null;
     };
   };

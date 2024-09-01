@@ -128,7 +128,6 @@ in {
             vivaldiFixed
             customPkgs
             asztalOverlay
-            neovim-flake
           ]);
         config.allowUnfree = true;
       };

@@ -53,7 +53,7 @@ in {
       {
         assertions = [
           {
-            assertion = config.displayManager == "gdm";
+            assertion = cfg.displayManager == "gdm";
             message = "You have set the display-manager to ${cfg.displayManager}. GDM may cause hyprland to crash on first launch.";
           }
         ];
