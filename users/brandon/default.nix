@@ -4,6 +4,7 @@
   lib,
   ...
 }: let
+
   username = "brandon";
   homeDirectory = "/home/${username}";
 

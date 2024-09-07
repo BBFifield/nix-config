@@ -243,7 +243,7 @@ in {
             "SUPER, W, exec, firefox"
             "SUPER, F, exec, nautilus --new-window"
             "SUPER, E, exec, alacritty"
-            "SUPER, C, exec, [workspace 1] alacritty -e lvim"
+            "SUPER, C, exec, [workspace 1] alacritty -e nvim"
 
             # youtube
             ", XF86Launch1,  exec, ${yt}"

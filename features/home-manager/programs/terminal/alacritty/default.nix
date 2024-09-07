@@ -10,7 +10,6 @@
     programs.alacritty = {
       enable = true;
       settings = {
-        # shell.program = "${pkgs.bashInteractive}/bin/bash";
         #import = [ "~/.config/alacritty/themes/themes/catpuccin_mocha.toml" ];
         /*
         Fonts were specified because FiraCode isn't compatible with alacritty yet

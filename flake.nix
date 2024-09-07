@@ -69,6 +69,7 @@
     ...
   } @ inputs: let
     inherit (self) outputs;
+    
     # Supported systems for your flake packages, shell, etc.
     systems = [
       "aarch64-linux"

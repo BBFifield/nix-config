@@ -10,8 +10,7 @@
   ./gBar
   ./wpaperd
   ./gnome-shell
-  ./starship
-  ./alacritty
+  ./terminal
   ./vscodium
   ./neovim
   ./walker

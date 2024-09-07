@@ -18,7 +18,13 @@ in
         default = "custom";
         description = "Which configuration preset to use.";
       };
-      #enableMutableConfigs = mkEnableOption "Enable Neovim configuration files to be directly editable.";
+      pluginManager = mkOption {
+        type = with types; nullOr (enum [ "lazy" "nix" ]);
+        default = null;
+        description = ''
+          Which package manager to use to manage your neovim plugins. This option is invalid when preset is set to lunarvim.
+        '';
+      };
     };
     config = mkIf cfg.enable (
       mkMerge [
@@ -26,6 +32,7 @@ in
           programs.neovim.enable = true; 
           home.packages = with pkgs; [
             wl-clipboard # For system clipboard capabilities
+            ripgrep # For BurntSushi/ripgrep
           ];
         }
 
@@ -34,7 +41,7 @@ in
             defaultEditor = true;
 
             plugins = with pkgs.vimPlugins; [
-              alpha-nvim
+              /*alpha-nvim
               mini-nvim
               nvim-tree-lua
               nvim-web-devicons
@@ -44,15 +51,16 @@ in
               lsp-zero-nvim
               gitsigns-nvim
               base16-nvim
-              vim-nix
+              vim-nix*/
+              #lazy-nvim
+              #LazyVim
             ];
           };
 
           xdg.configFile = mkMerge [
             (mkIf config.hm.enableMutableConfigs {
-              "nvim/init.lua".source = mkOutOfStoreSymlink "${config.hm.projectPath}/neovim/init.lua";
-              "nvim/after/plugin/common.lua".source = mkOutOfStoreSymlink "${config.hm.projectPath}/neovim/common.lua";
-              "nvim/after/plugin/config.lua".source = mkOutOfStoreSymlink "${config.hm.projectPath}/neovim/config.lua";
+              "nvim".source = mkOutOfStoreSymlink "${config.hm.projectPath}/neovim/lazy";
+              #"nvim/after/plugin/clipboard.lua".source = mkOutOfStoreSymlink "${config.hm.projectPath}/neovim/lazy/after/plugin/clipboard.lua.backup";
             })
             (mkIf (!config.hm.enableMutableConfigs) {
               "nvim/init.lua".source = "./init.lua";
