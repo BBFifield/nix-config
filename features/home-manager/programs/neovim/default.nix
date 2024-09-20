@@ -41,7 +41,11 @@ in
             defaultEditor = true;
 
             plugins = with pkgs.vimPlugins; [
-              /*alpha-nvim
+              #nvim-lspconfig
+              #vim-nix
+            ] 
+            /*++ optionals (cfg.pluginManager == "nix") [
+              alpha-nvim
               mini-nvim
               nvim-tree-lua
               nvim-web-devicons
@@ -51,30 +55,36 @@ in
               lsp-zero-nvim
               gitsigns-nvim
               base16-nvim
-              vim-nix*/
-              #lazy-nvim
-              #LazyVim
-            ];
+              vim-nix
+            ]*/;
           };
+
+          #home.file."${config.hm.projectPath}/neovim/lazy".source = pkgs.neovim-config;
 
           xdg.configFile = mkMerge [
             (mkIf config.hm.enableMutableConfigs {
               "nvim".source = mkOutOfStoreSymlink "${config.hm.projectPath}/neovim/lazy";
-              #"nvim/after/plugin/clipboard.lua".source = mkOutOfStoreSymlink "${config.hm.projectPath}/neovim/lazy/after/plugin/clipboard.lua.backup";
             })
             (mkIf (!config.hm.enableMutableConfigs) {
-              "nvim/init.lua".source = "./init.lua";
-              "nvim/after/plugin/common.lua".source = "./common.lua";
-              "nvim/after/plugin/config.lua".source = "./config.lua";
+              "nvim".source = pkgs.neovim-config; #"${config.hm.projectPath}/neovim/lazy";
             })
           ];
         })
 
-       (mkIf (cfg.preset == "lunarvim") { 
-          hm.neovim.lunarvim = mkIf (cfg.preset == "lunarvim") {
+        (mkIf (cfg.preset == "lunarvim") { 
+          warnings = 
+            if cfg.pluginManager != null
+            then [
+              ''            You have set a plugin manager. This will have no effect with Lunar as the preset since Lazy is already used by default
+                          and NixOS or home-manager have no options to install plugins for this Neovim distro. I don't feel like implementing options that symlink
+                          the plugins to Lunar's directory. 
+              ''
+            ]
+            else [];
+          hm.neovim.lunarvim = {
             enable = true;
             defaultEditor = true;
-            extraConfig = ''${builtins.readFile ./common.lua}'' + ''${builtins.readFile ./lunarvim/config.lua}'';
+            extraConfig = ''${builtins.readFile ./lunarvim/keymaps.lua}'' + ''${builtins.readFile ./lunarvim/config.lua}'';
           };
         })
       ]

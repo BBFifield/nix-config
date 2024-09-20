@@ -4,7 +4,6 @@
   lib,
   ...
 }: let
-
   username = "brandon";
   homeDirectory = "/home/${username}";
 
@@ -19,7 +18,11 @@
     arduino-ide
     #neovim
     # alacritty
-    alacritty-theme
+    #alacritty-theme
+    alejandra
+    nil
+    lua-language-server
+    stylua
   ];
 in {
   imports = [../../features/home-manager];
@@ -35,6 +38,7 @@ in {
       neovim = {
         enable = true;
         preset = "custom";
+        pluginManager = "lazy";
       };
     }
     (lib.optionalAttrs (osConfig.nixos.project.enableMutableConfigs) {

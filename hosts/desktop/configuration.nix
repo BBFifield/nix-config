@@ -65,26 +65,26 @@ in {
       lib.mkIf (config.specialisation != {}) {
         nixos = defaultConfiguration;
 
-        specialisation = builtins.mapAttrs (
-          name: value: {
-            name = name;
-            value = {
-              inheritParentConfig = true;
-              configuration =
-                {
-                  system.nixos.tags = [name];
-                }
-                // 
-                {
-                  nixos = {
-                    inherit project;
-                    desktop = value;
+        specialisation =
+          builtins.mapAttrs (
+            name: value: {
+              name = name;
+              value = {
+                inheritParentConfig = true;
+                configuration =
+                  {
+                    system.nixos.tags = [name];
+                  }
+                  // {
+                    nixos = {
+                      inherit project;
+                      desktop = value;
+                    };
                   };
-                };
-            };
-          }
-        )
-        specialisationSet;
+              };
+            }
+          )
+          specialisationSet;
       }
     ))
     {
@@ -102,7 +102,6 @@ in {
       #programs.neovim.enable = true;
 
       environment.systemPackages = with pkgs; [
-        nil
         cachix
         #ssh-to-age
         #age
@@ -124,6 +123,7 @@ in {
         overlays =
           outputs.overlays.defaults
           ++ (with outputs.overlays; [
+            neovimConfig
             firefoxGnomeTheme
             vivaldiFixed
             customPkgs

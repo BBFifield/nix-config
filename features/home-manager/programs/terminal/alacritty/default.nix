@@ -2,36 +2,35 @@
   config,
   pkgs,
   ...
-}: {
+}: let
+  family = "JetBrainsMono Nerd Font";
+in {
   config = {
-    home.packages = with pkgs; [
-      alacritty-theme
-    ];
     programs.alacritty = {
       enable = true;
       settings = {
-        #import = [ "~/.config/alacritty/themes/themes/catpuccin_mocha.toml" ];
-        /*
-        Fonts were specified because FiraCode isn't compatible with alacritty yet
-        */
+        import = [pkgs.alacritty-theme.tokyo-night];
         font = {
           size = 11.0;
           bold = {
-            family = "RobotoMono Nerd Font";
+            inherit family;
             style = "Bold";
           };
           bold_italic = {
-            family = "RobotoMono Nerd Font";
+            inherit family;
             style = "Bold Italic";
           };
           italic = {
-            family = "RobotoMono Nerd Font";
+            inherit family;
             style = "Italic";
           };
           normal = {
-            family = "RobotoMono Nerd Font";
+            inherit family;
             style = "Regular";
           };
+        };
+        window = {
+          opacity = 0.9;
         };
       };
     };

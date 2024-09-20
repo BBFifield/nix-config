@@ -1,6 +1,11 @@
-{ config, lib, ... }:
-with lib; 
 {
+
+config,
+
+lib,
+  ...
+}:
+with lib; {
   imports = [
     ./alacritty
     ./starship

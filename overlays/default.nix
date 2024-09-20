@@ -30,9 +30,9 @@
   customPkgs = f: p:
     outputs.lib.pathToAttrs "${self}/pkgs" (full_path: _: p.callPackage full_path {});
 
-  /*neovim-flake = f: p: {
-    neovimtest = inputs.neovim.packages.x86_64-linux.default;
-  };*/
+  neovimConfig = f: p: {
+    inherit (inputs) neovim-config;
+  };
 
   firefoxGnomeTheme = f: p: {
     inherit (inputs) firefox-gnome-theme;
@@ -52,5 +52,6 @@
   defaults = [
     inputs.nurpkgs.overlay
     inputs.hyprpanel.overlay
+    inputs.alacritty-theme.overlays.default
   ];
 }

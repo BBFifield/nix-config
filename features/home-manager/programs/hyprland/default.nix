@@ -228,6 +228,7 @@ in {
 
         windowrulev2 = [
           "workspace 1, initialTitle:^(.*Alacritty.*)$, class:^(.*Alacritty.*)$, title:^(.*NVIM.*)$" #won't match
+	  "opacity 0.95 override 0.9 override, class:^(Alacritty)$"
         ];
 
         bind = let
@@ -313,12 +314,12 @@ in {
 
           blur = {
             enabled = true;
-            size = 8;
+            size = 10;
             passes = 3;
             new_optimizations = "on";
             noise = 0.01;
             contrast = 0.9;
-            brightness = 0.8;
+            brightness = 0.9;
             popups = true;
           };
         };

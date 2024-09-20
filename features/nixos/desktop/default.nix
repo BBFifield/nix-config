@@ -48,17 +48,26 @@ in {
         ]
         else [];
     })
-
-    (lib.mkIf (cfg.hyprland.enable) (
+    /*
+      Former syntax wasn't evaluating the assertion. The syntax was 
+      mkIf (conditional) (
       {
-        assertions = [
-          {
-            assertion = cfg.displayManager == "gdm";
-            message = "You have set the display-manager to ${cfg.displayManager}. GDM may cause hyprland to crash on first launch.";
-          }
-        ];
-      }
-      // lib.mkMerge [
+        assert/ass
+      } //
+      mkMerge 
+      )
+      And putting it right after "(lib.mkIf (cfg.hyprland.enable) ("" before mkMerge doesn't work either
+    */
+    (lib.mkIf (cfg.hyprland.enable) (
+      lib.mkMerge [
+        ({
+          assertions = [
+            {
+              assertion = cfg.displayManager != "gdm";
+              message = "You have set the display-manager to ${cfg.displayManager}. GDM may cause hyprland to crash on first launch.";
+            }
+          ];
+        })
         (lib.mkIf (cfg.displayManager == "sddm") {
           services.displayManager.sddm = {
             wayland.compositor = "weston";

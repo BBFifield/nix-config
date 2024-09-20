@@ -60,6 +60,13 @@
       url = "github:abenz1267/walker";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    neovim-config = {
+      url = "github:BBFifield/neovim-config";
+      flake = false;
+    };
+
+    alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
   };
 
   outputs = {
@@ -69,7 +76,7 @@
     ...
   } @ inputs: let
     inherit (self) outputs;
-    
+
     # Supported systems for your flake packages, shell, etc.
     systems = [
       "aarch64-linux"

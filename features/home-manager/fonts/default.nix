@@ -2,12 +2,13 @@
 {pkgs, ...}: {
   fonts.fontconfig = {
     enable = true;
-    defaultFonts.monospace = ["FiraCode Nerd Font"];
+    defaultFonts.monospace = ["JetBrainsMono Nerd Font"]; #["FiraCode Nerd Font"];
   };
 
   home.packages = with pkgs; [
     (nerdfonts.override {
-      fonts = ["FiraCode" "RobotoMono" "JetBrainsMono" "CascadiaCode"];
+      fonts = ["VictorMono" "IosevkaTerm" "JetBrainsMono" "Iosevka" "RobotoMono" "CascadiaCode"]; #["Iosevka" "FiraCode" "RobotoMono" "JetBrainsMono" "CascadiaCode"];
     })
+    iosevka
   ];
 }

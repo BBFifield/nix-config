@@ -1,6 +1,7 @@
 return {
     'akinsho/bufferline.nvim',
     requires = 'nvim-tree/nvim-web-devicons',
+    enabled = false,
     opts = {
         options = {
             themable = true,
