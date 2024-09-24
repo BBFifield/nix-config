@@ -1,6 +1,5 @@
 [
   ./browsers/firefox
-  ./konsole
   ./plasma
   ./klassy
   ./kate
@@ -14,4 +13,5 @@
   ./vscodium
   ./neovim
   ./walker
+  ./yazi
 ]

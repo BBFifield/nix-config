@@ -1,4 +1,8 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 with lib; {
   options.nixos = {
     project = mkOption {
@@ -19,3 +23,4 @@ with lib; {
     };
   };
 }
+

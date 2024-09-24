@@ -5,11 +5,5 @@ return {
 	dependencies = {
 		"nvim-telescope/telescope-fzf-native.nvim",
 	},
-	opts = {
-		lsp = {
-			enable = true,
-			servers = { "nil_ls" },
-		},
-		debug = true,
-	},
+	opts = {},
 }

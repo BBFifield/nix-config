@@ -1,28 +1,32 @@
--- Move text down
-vim.keymap.set("n", "<M-j>", ":m .+1<CR>", { noremap = true, silent = true })
-vim.keymap.set("v", "<M-j>", ":m '>+1<CR>gv", { noremap = true, silent = true })
--- Move text up
-vim.keymap.set("n", "<M-k>", ":m .-2<CR>", { noremap = true, silent = true })
-vim.keymap.set("v", "<M-k>", ":m '<-2<CR>gv", { noremap = true, silent = true })
--- Move text left
-vim.keymap.set("n", "<M-h>", "<<", { noremap = true, silent = true })
-vim.keymap.set("v", "<M-h>", "<gv", { noremap = true, silent = true })
--- Move text right
-vim.keymap.set("n", "<M-l>", ">>", { noremap = true, silent = true })
-vim.keymap.set("v", "<M-l>", ">gv", { noremap = true, silent = true })
+local create_keymaps = function(maps)
+	for _, v in ipairs(maps) do
+		vim.keymap.set(v[1], v[2], v[3], v[4])
+	end
+end
 
--- Yank to system clipboard register
-vim.keymap.set("n", "y", '"+y', { noremap = true, silent = true })
-vim.keymap.set("v", "y", '"+y', { noremap = true, silent = true })
--- Yank to primary selection register
-vim.keymap.set("n", "Y", '"*y', { noremap = true, silent = true })
-vim.keymap.set("v", "Y", '"*y', { noremap = true, silent = true })
--- Paste from system clipboard register
-vim.keymap.set("n", "p", '"+p', { noremap = true, silent = true })
-vim.keymap.set("v", "p", '"+p', { noremap = true, silent = true })
--- Paste from primary selection register
-vim.keymap.set("n", "P", '"*p', { noremap = true, silent = true })
-vim.keymap.set("v", "P", '"*p', { noremap = true, silent = true })
+local keymaps = {
+	{ "n", "<M-j>", ":m .+1<CR>", { silent = true } },
+	{ "v", "<M-j>", ":m '>+1<CR>gv", { silent = true } },
+	{ "n", "<M-k>", ":m .-2<CR>", { silent = true } },
+	{ "v", "<M-k>", ":m '<-2<CR>gv", { silent = true } },
+	{ "n", "<M-h>", "<<", { silent = true } },
+	{ "v", "<M-h>", "<gv", { silent = true } },
+	{ "n", "<M-l>", ">>", { silent = true } },
+	{ "v", "<M-l>", ">gv", { silent = true } },
+	{ "n", "y", '"+y', { silent = true } },
+	{ "v", "y", '"+y', { silent = true } },
+	{ "n", "Y", '"*y', { silent = true } },
+	{ "v", "Y", '"*y', { silent = true } },
+	{ "n", "p", '"+p', { silent = true } },
+	{ "v", "p", '"+p', { silent = true } },
+	{ "n", "P", '"*p', { silent = true } },
+	{ "v", "P", '"*p', { silent = true } },
+	{ "n", "<leader>bn", ":bn<CR>", { desc = "Next", silent = true } },
+	{ "n", "<leader>bb", ":bp<CR>", { desc = "Prev", silent = true } },
+	{ "n", "<leader>bd", ":bdelete<CR>", { desc = "Close", silent = true } },
+}
+
+create_keymaps(keymaps)
 
 -- Map registers to wl-clipboard commands
 vim.opt.clipboard:append("unnamed")

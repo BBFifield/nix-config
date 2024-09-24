@@ -1,5 +1,6 @@
 return {
 	"nvim-lualine/lualine.nvim",
+	--	enabled = false,
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
 	},
@@ -58,28 +59,36 @@ return {
 			end
 		end
 
-		--local navic = require("nvim-navic")
-		--local utils = require("dropbar.utils")
-		--local barbecue = require("barbecue.ui")
-		require("lualine").setup({
+		local navic
+		local barbecue
+		local winbar = {}
+		local navic_enabled = NewfieVim:get_plugin_info("navic").enabled
+		if navic_enabled then
+			navic = require("nvim-navic")
+			barbecue = require("barbecue.ui")
+			winbar = {
+				winbar = {
+					lualine_c = {
+						{
+							function()
+								return barbecue.update() or ""
+							end,
+							cond = function()
+								return navic.is_available()
+							end,
+						},
+					},
+				},
+			}
+		end
+
+		require("lualine").setup(vim.tbl_deep_extend("keep", winbar, {
 			options = {
 				icons_enabled = true,
 				--	theme = vim.g.colorscheme,
 				component_separators = { left = "", right = "" },
 				section_separators = { left = "", right = "" },
 			},
-			--[[winbar = {
-				lualine_c = {
-					{
-						function()
-							return barbecue.update() or ""
-						end,
-						cond = function()
-							return navic.is_available()
-						end,
-					},
-				},
-			},]]
 			sections = {
 				lualine_a = { "mode" },
 				lualine_b = { "branch" },
@@ -127,6 +136,7 @@ return {
 								and vim.bo.filetype ~= "lazy"
 								and vim.bo.filetype ~= "TelescopePrompt"
 								and vim.bo.filetype ~= "NvimTree"
+								and vim.bo.filetype ~= "tfm"
 						end,
 					},
 				},
@@ -141,6 +151,6 @@ return {
 				},
 			},
 			extensions = {},
-		})
+		}))
 	end,
 }

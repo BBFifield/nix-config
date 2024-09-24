@@ -1,3 +1,5 @@
+local wk = require("which-key")
+
 -- autocmd to execute the formatter when saving a file
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*",
@@ -14,8 +16,11 @@ return {
 		},
 		config = function()
 			local lspconfig = require("lspconfig")
-			--	local navic = require("nvim-navic")
-			--local dropbar = require("dropbar")
+			local navic
+			local navic_enabled = NewfieVim:get_plugin_info("navic").enabled
+			if navic_enabled then
+				navic = require("nvim-navic")
+			end
 
 			lspconfig.util.default_config = vim.tbl_extend("force", lspconfig.util.default_config, {
 				capabilities = vim.tbl_deep_extend(
@@ -26,7 +31,9 @@ return {
 				on_attach = function(client, bufnr)
 					require("lsp-file-operations").setup()
 					if client.server_capabilities.documentSymbolProvider then
-						--	navic.attach(client, bufnr)
+						if navic_enabled then
+							navic.attach(client, bufnr)
+						end
 					end
 				end,
 				flags = {
@@ -76,6 +83,13 @@ return {
 	},
 	{
 		"stevearc/conform.nvim",
+		enabled = function()
+			if NewfieVim:get_plugin_info("lsp_config").enabled then
+				return true
+			else
+				return false
+			end
+		end,
 		version = "*",
 		opts = {
 			formatters_by_ft = {
@@ -83,5 +97,12 @@ return {
 				lua = { "stylua" },
 			},
 		},
+		config = function(_, opts)
+			NewfieVim:get_plugin_info("lsp_config")
+			require("conform").setup(opts)
+			wk.add({
+				{ "<leader>lr", "<cmd>lua vim.lsp.buf.format()<CR>", icon = "󰝔", desc = "Run formatter" },
+			})
+		end,
 	},
 }

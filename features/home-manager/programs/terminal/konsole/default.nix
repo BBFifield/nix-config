@@ -23,7 +23,6 @@
       customColorSchemes = {BreezeBlur = ./BreezeBlur.colorscheme;};
     };
 
-    # Doesn't seem possible to merge/replace keys in a file?
     /*
       programs.plasma.dataFile."konsole/Breeze.colorscheme".General = {
       Blur = {

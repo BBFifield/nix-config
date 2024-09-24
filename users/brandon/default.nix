@@ -16,9 +16,6 @@
     _1password-gui
     shellcheck
     arduino-ide
-    #neovim
-    # alacritty
-    #alacritty-theme
     alejandra
     nil
     lua-language-server
@@ -37,7 +34,6 @@ in {
       vscodium.enable = true;
       neovim = {
         enable = true;
-        preset = "custom";
         pluginManager = "lazy";
       };
     }

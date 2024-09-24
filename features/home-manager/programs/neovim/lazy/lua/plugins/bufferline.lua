@@ -1,31 +1,31 @@
 return {
-    'akinsho/bufferline.nvim',
-    requires = 'nvim-tree/nvim-web-devicons',
-    enabled = false,
-    opts = {
-        options = {
-            themable = true,
-            color_icons = true,
-            hover = {
-                enabled = true,
-                delay = 50,
-                reveal = {'close'},
-            },
-            offsets = {
-                {
-                    filetype = 'NvimTree',
-                    text_align = 'center',
-                },
-            },
-            indicator = {
-                style = 'icon',
-            },
-        },
-    },
-    config = function(_, opts)
-        require('bufferline').setup(opts)
+	"akinsho/bufferline.nvim",
+	requires = "nvim-tree/nvim-web-devicons",
+	enabled = false,
+	opts = {
+		options = {
+			themable = true,
+			color_icons = true,
+			hover = {
+				enabled = true,
+				delay = 50,
+				reveal = { "close" },
+			},
+			offsets = {
+				{
+					filetype = "NvimTree",
+					text_align = "center",
+				},
+			},
+			indicator = {
+				style = "icon",
+			},
+		},
+	},
+	config = function(_, opts)
+		require("bufferline").setup(opts)
 
-       --[[ -- Which buffer to go to
+		--[[ -- Which buffer to go to
         local go_to = function(n)
             require('bufferline').go_to(n, true)
         end
@@ -39,5 +39,5 @@ return {
 
         -- Choose which buffer to close
         vim.keymap.set('n', '<leader>bc', ':BufferLinePickClose<CR>', key_opts('Close which..')) ]]
-    end
+	end,
 }

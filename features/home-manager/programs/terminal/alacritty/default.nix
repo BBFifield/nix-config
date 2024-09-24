@@ -9,7 +9,7 @@ in {
     programs.alacritty = {
       enable = true;
       settings = {
-        import = [pkgs.alacritty-theme.tokyo-night];
+        import = [pkgs.alacritty-theme.catppuccin_mocha];
         font = {
           size = 11.0;
           bold = {
