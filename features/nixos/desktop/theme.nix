@@ -1,11 +1,12 @@
+# Use command "fc-list : family style" to see a list of fonts on your system.
 {
-  config,
   pkgs,
+  config,
   lib,
   ...
 }:
 with lib; let
-  cfg = config.hm.theme;
+  cfg = config.nixos.desktop;
 
   fontsSubmodule = types.submodule {
     options = {
@@ -28,7 +29,7 @@ with lib; let
     };
   };
 in {
-  options.hm.theme = {
+  options.nixos.desktop = {
     fonts = mkOption {
       type = fontsSubmodule;
       default = "JetBrainsMono";
@@ -43,5 +44,16 @@ in {
   };
 
   config = {
+    fonts.fontconfig = {
+      enable = true;
+      defaultFonts.monospace = [cfg.fonts.defaultMonospace]; #["FiraCode Nerd Font"];
+    };
+
+    environment.systemPackages = with pkgs; [
+      (nerdfonts.override {
+        fonts = ["VictorMono" "IosevkaTerm" "JetBrainsMono" "Iosevka" "RobotoMono" "CascadiaCode"]; #["Iosevka" "FiraCode" "RobotoMono" "JetBrainsMono" "CascadiaCode"];
+      })
+      iosevka
+    ];
   };
 }

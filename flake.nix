@@ -66,6 +66,11 @@
       flake = false;
     };
 
+    ironbar = {
+      url = "github:JakeStanger/ironbar";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
   };
 
@@ -121,16 +126,20 @@
     };
   };
 
-  nixConfig = {
+  /*
+    nixConfig = {
     extra-substitutors = [
       "https://app.cachix.org/cache/bbfifield"
       #"https://app.cachix.org/cache/walker"
       #"https://app.cachix.org/cache/walker-git"
+      "https://cache.garnix.io"
     ];
     extra-trusted-public-keys = [
       "bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg="
       #"walker.cachix.org-1:fG8q+uAaMqhsMxWjwvk0IMb4mFPFLqHjuvfwQxE4oJM="
       #"walker-git.cachix.org-1:vmC0ocfPWh0S/vRAQGtChuiZBTAe4wiKDeyyXM0/7pM="
+      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
     ];
   };
+  */
 }

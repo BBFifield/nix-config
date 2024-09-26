@@ -9,6 +9,7 @@ in {
   imports = [
     ./session.nix
     ./display-manager.nix
+    ./theme.nix
     ./nautilus.nix
   ];
 
@@ -69,22 +70,24 @@ in {
             (
               pkgs.catppuccin-sddm.override {
                 flavor = "frappe";
-                font = "JetBrainsMono";
+                font = cfg.fonts.defaultMonospace;
                 fontSize = "11";
               }
             )
           ];
-          fonts.packages = with pkgs; [
+          /*
+            fonts.packages = with pkgs; [
             jetbrains-mono
           ];
+          */
         })
         (lib.mkIf (cfg.hyprland.shell == "asztal" && cfg.displayManager == "greetd") {
           services.greetd = {
             settings.default_session.command = lib.mkForce pkgs.writeShellScript "greeter" ''
               export WLR_NO_HARDWARE_CURSORS=1
               export XKB_DEFAULT_LAYOUT=${config.services.xserver.xkb.layout}
-              export XCURSOR_THEME=BreezeX-Dark
-              export XCURSOR_SIZE=28
+              export XCURSOR_THEME= ${cfg.cursor.theme}
+              export XCURSOR_SIZE= ${cfg.cursor.size}
               ${pkgs.asztal}/bin/greeter
             '';
           };

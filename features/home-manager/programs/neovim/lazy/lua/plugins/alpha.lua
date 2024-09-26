@@ -8,10 +8,8 @@ return {
 	},
 	opts = function()
 		local dashboard = require("alpha.themes.dashboard")
-		--	local buttons = dashboard.section.buttons.val
 		local buttons = { dashboard.button("n", " " .. " New file", "<cmd> ene <BAR> startinsert <cr>") }
 		if NewfieVim:get_plugin_info("telescope").enabled then
-			--table.insert(buttons, dashboard.button("f", " " .. " Find file", builtin.find_files))
 			table.insert(buttons, dashboard.button("f", " " .. " Find file", builtin.find_files))
 			table.insert(buttons, dashboard.button("r", " " .. " Recent files", builtin.oldfiles))
 			table.insert(buttons, dashboard.button("g", " " .. " Find text", builtin.live_grep))

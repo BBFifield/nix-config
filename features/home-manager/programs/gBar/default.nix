@@ -24,9 +24,18 @@
         ExitCommand = "pkill -U ${config.home.username}";
         LockCommand = "loginctl lock-session";
       };
-      extraCSS = ''
-        ${builtins.readFile ./style.css}
-      '';
+      extraCSS = lib.concatStrings [
+        ''
+          * {
+              all: unset;
+              font-family: "${config.hm.theme.fonts.defaultMonospace}";
+            }
+
+        ''
+        ''
+          ${builtins.readFile ./style.css}
+        ''
+      ];
     };
   };
 }

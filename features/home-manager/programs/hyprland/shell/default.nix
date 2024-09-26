@@ -54,12 +54,24 @@ with lib; {
         hm.wpaperd.enable = true;
         hm.hyprland.hyprlock.enable = true;
         hm.walker.enable = true;
+        hm.satty.enable = true;
+        hm.ironbar.enable = true;
+
+        home.packages = with pkgs; [
+          hyprpicker
+          clipse #TUI clipboard manager
+          satty #Screenshot annotation tool
+          hyprshade #Screenshader utility
+          slurp #For screenrecording and screenshotting
+          grim #Screenshotter
+        ];
 
         wayland.windowManager.hyprland = {
           settings = {
             exec-once = [
               "gBar bar 0"
               "wpaperd -d"
+              "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
             ];
 
             general = {
@@ -77,8 +89,13 @@ with lib; {
             bind = [
               "SUPER, R, exec, walker"
               "SUPER, N, exec, wpaperctl next"
+              "SUPER, P, exec, hyprpicker --autocopy"
+              "SUPER, H, exec, hyprshade toggle blue-light-filter"
+              "SUPER, P, exec, hyprpicker -a"
+              ''SUPER, S, exec, grim -g "$(slurp -o -r -c '#ff0000ff')" -t ppm - | satty''
             ];
           };
+          #For catppuccin style variables for other hypr apps
           extraConfig = ''
             ${builtins.readFile ../mocha.conf}
           '';

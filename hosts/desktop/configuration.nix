@@ -6,38 +6,40 @@
   lib,
   ...
 }: let
-  enableHidpi = true;
-  project = {
-    enableMutableConfigs = true;
-    path = "/home/brandon/nixos-config";
+  commonOpts = {
+    fonts.defaultMonospace = "JetBrainsMono Nerd Font";
+    cursor.theme = "BreezeX-Dark";
+    cursor.size = 24;
+    hidpi.enable = true;
+  };
+  desktops = {
+    hyprland = {
+      hyprland.enable = true;
+      hyprland.shell = "vanilla";
+      displayManager = "sddm";
+      nautilus.enable = true;
+    };
+    plasma = {
+      plasma.enable = true;
+      displayManager = "sddm";
+    };
+    gnome = {
+      gnome.enable = true;
+      displayManager = "gdm";
+      nautilus.enable = true;
+    };
   };
 
   defaultDesktop = "hyprland";
 
   specialisations = false;
 
-  desktops = {
-    hyprland = {
-      hyprland.enable = true;
-      hyprland.shell = "vanilla";
-      displayManager = "sddm";
-      hidpi.enable = enableHidpi;
-      nautilus.enable = true;
-    };
-
-    plasma = {
-      plasma.enable = true;
-      displayManager = "sddm";
-      hidpi.enable = enableHidpi;
-    };
-
-    gnome = {
-      gnome.enable = true;
-      displayManager = "gdm";
-      hidpi.enable = enableHidpi;
-      nautilus.enable = true;
-    };
+  project = {
+    enableMutableConfigs = true;
+    path = "/home/brandon/nixos-config";
   };
+
+  ######################################################################
 
   specialisationSet = builtins.removeAttrs desktops [defaultDesktop];
   defaultConfiguration = {
@@ -88,6 +90,8 @@ in {
       }
     ))
     {
+      nixos.desktop = commonOpts;
+
       # Bootloader.
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
@@ -152,6 +156,9 @@ in {
         # use the example session manager (no others are packaged yet so this is enabled by default,
         # no need to redefine it in your config for now)i
         #media-session.enable = true;
+        wireplumber = {
+          enable = true;
+        };
       };
 
       #virtualisation.virtualbox.host.enable = true;

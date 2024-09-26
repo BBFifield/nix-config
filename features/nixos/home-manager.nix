@@ -2,12 +2,11 @@
   self,
   inputs,
   outputs,
-  lib, 
+  lib,
   ...
 }:
 with inputs; {
   options.nixos.hm = {
-    
   };
 
   config = {
@@ -24,6 +23,7 @@ with inputs; {
       ags.homeManagerModules.default
       sops-nix.homeManagerModules.sops
       walker.homeManagerModules.default
+      ironbar.homeManagerModules.default
     ];
   };
 }

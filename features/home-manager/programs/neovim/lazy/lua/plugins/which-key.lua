@@ -5,7 +5,7 @@ return {
 		preset = "modern",
 		delay = 500,
 		spec = {
-			{ "<leader>u", group = "UI" },
+			{ "<leader>u", group = "UI", icon = "" },
 			{ "<leader>l", group = "LSP", icon = "󰿘" },
 			{ "<leader>w", proxy = "<c-w>", group = "Windows" },
 			{

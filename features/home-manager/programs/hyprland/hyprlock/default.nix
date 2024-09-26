@@ -33,7 +33,7 @@ with lib; {
 
         "$accent" = "$mauve";
         "$accentAlpha" = "$mauveAlpha";
-        "$font" = "FiraCode Nerd Font";
+        "$font" = "${config.hm.theme.fonts.defaultMonospace}";
 
         # GENERAL
         general = {

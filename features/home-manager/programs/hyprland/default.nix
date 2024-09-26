@@ -18,8 +18,8 @@ with lib; let
     name = "adw-gtk3-dark";
   };
   cursorTheme = {
-    name = "BreezeX-Dark";
-    size = 24;
+    name = config.hm.theme.cursor.theme;
+    size = config.hm.theme.cursor.size;
     package = pkgs.icons.breezeXcursor;
   };
   iconTheme = {
@@ -134,12 +134,6 @@ in {
         ];
       };
       xwayland.enable = true;
-      plugins = [
-        # inputs.hyprland-hyprspace.packages.${pkgs.system}.default
-        # plugins.hyprexpo
-        # plugins.hyprbars
-        # plugins.borderspp
-      ];
 
       settings = {
         exec-once = [
@@ -228,7 +222,7 @@ in {
 
         windowrulev2 = [
           "workspace 1, initialTitle:^(.*Alacritty.*)$, class:^(.*Alacritty.*)$, title:^(.*NVIM.*)$" #won't match
-	  "opacity 0.95 override 0.9 override, class:^(Alacritty)$"
+          "opacity 0.95 override 0.9 override, class:^(Alacritty)$"
         ];
 
         bind = let
