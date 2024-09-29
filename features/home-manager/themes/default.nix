@@ -124,12 +124,12 @@ in {
     hm.theme.gtkTheme.package = let
       pkgNameParts = lib.splitString "." gtkThemeAttrs.${cfg.gtkTheme.name};
     in
-      mkPkgName {} pkgs pkgNameParts;
+      mkPkgName {} {} pkgNameParts;
 
     hm.theme.cursorTheme.package = let
       pkgNameParts = lib.splitString "." cursorThemeAttrs.${cfg.cursorTheme.name};
     in
-      mkPkgName {} pkgs pkgNameParts;
+      mkPkgName {} {} pkgNameParts;
 
     home.packages = with pkgs; let
       filterByValue = value: attrs: builtins.filter (name: attrs.${name} == value) (builtins.attrNames attrs); # Get icon package to be installed
