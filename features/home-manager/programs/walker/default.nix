@@ -12,7 +12,7 @@ with lib; {
   config = mkIf config.hm.walker.enable {
     programs.walker = {
       enable = true;
-      package = pkgs.walker; #using nixpkgs cache because walker cache isn't working atm
+      # package = pkgs.walker;
       runAsService = true;
       config = {
         search.placeholder = "Example";

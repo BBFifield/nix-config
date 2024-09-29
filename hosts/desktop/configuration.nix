@@ -7,9 +7,11 @@
   ...
 }: let
   commonOpts = {
-    fonts.defaultMonospace = "JetBrainsMono Nerd Font";
-    cursor.theme = "BreezeX-Dark";
-    cursor.size = 24;
+    theme = {
+      fonts.defaultMonospace = "JetBrainsMono Nerd Font";
+      cursorTheme.name = "BreezeX-Dark";
+      cursorTheme.size = 24;
+    };
     hidpi.enable = true;
   };
   desktops = {

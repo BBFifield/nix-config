@@ -6,18 +6,6 @@
   lib,
   ...
 }: {
-  nix.settings = {
-    substituters = [
-      #  "https://cache.nixos.org"
-      "https://cache.garnix.io"
-      #"https://app.cachix.org/cache/bbfifield"
-    ];
-    trusted-public-keys = [
-      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
-      #"bbfifield.cachix.org-1:CCnFT1vusYyocjxJNHQKnighiTQSnv/LquQcZ3xrTgg="
-    ];
-  };
-
   # make `nix run nixpkgs#nixpkgs` use the same nixpkgs as the one used by this flake.
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
   nix.channel.enable = false; # remove nix-channel related tools & configs, we use flakes instead.
@@ -29,7 +17,7 @@
   nix.settings.nix-path = lib.mkForce "nixpkgs=/etc/nix/inputs/nixpkgs";
 
   # With regard to substitutors
-  #nix.settings.trusted-users = ["brandon"];
+  nix.settings.trusted-users = ["brandon"];
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
 

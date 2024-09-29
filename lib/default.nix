@@ -35,4 +35,26 @@
         else "Error checking file existence"
     )
     item_list;
+
+  /*
+  A recursive function which reates a package name (Ex: pkgs.kdePackages.breeze-icons) of type package
+  from a string list of the form [ "packageSet" "subPackageSet" "package" ].
+  Args:
+    count ? 1 - Just an integer that counts up from 1 as the function iterates through the list from right to left.
+    prefix ? pkgs - The package set being worked with.
+    attr_list - The string list which contains the package set and subpackage names.
+  Returns: The created package name of type package.
+  */
+  mkPkgName = let
+    getElem = with builtins; count: attr_list: elemAt attr_list ((length attr_list) - count);
+  in
+    with builtins;
+      {count ? 1}: {prefix ? pkgs}: attr_list: (
+        if (getElem count attr_list) == (elemAt attr_list 0)
+        then (head (lib.attrsets.attrVals [(getElem count attr_list)] prefix))
+        else
+          (
+            head (lib.attrsets.attrVals [(getElem count attr_list)] (mkPkgName {count = count + 1;} {inherit prefix;} attr_list))
+          )
+      );
 }

@@ -6,37 +6,48 @@
 }:
 with lib; let
   cfg = config.nixos.desktop;
+
+  plasmaSubmodule = types.submodule {
+    options = {
+      enable = mkEnableOption "Enable the plasma desktop environment.";
+    };
+  };
+  gnomeSubmodule = types.submodule {
+    options = {
+      enable = mkEnableOption "Enable the gnome desktop environment.";
+    };
+  };
+  hyprlandSubmodule = types.submodule {
+    options = {
+      enable = mkEnableOption "Enable Hyprland Window Manager.";
+      shell = mkOption {
+        type = types.enum ["asztal" "vanilla" "hyprpanel"];
+        default = "vanilla";
+        description = "Choose your preferred Hyprland shell";
+        example = "asztal";
+      };
+    };
+  };
 in {
   options.nixos.desktop = {
     plasma = mkOption {
-      type = types.submodule {
-        options = {
-          enable = mkEnableOption "Enable the plasma desktop environment.";
-        };
+      type = plasmaSubmodule;
+      default = {
+        enable = false;
       };
-      default = {};
     };
     gnome = mkOption {
-      type = types.submodule {
-        options = {
-          enable = mkEnableOption "Enable the gnome desktop environment.";
-        };
+      type = gnomeSubmodule;
+      default = {
+        enable = false;
       };
-      default = {};
     };
     hyprland = mkOption {
-      type = types.submodule {
-        options = {
-          enable = mkEnableOption "Enable Hyprland Window Manager.";
-          shell = mkOption {
-            type = types.enum ["asztal" "vanilla" "hyprpanel"];
-            default = "vanilla";
-            description = "Choose your preferred Hyprland shell";
-            example = "asztal";
-          };
-        };
+      type = hyprlandSubmodule;
+      default = {
+        enable = false;
+        shell = "vanilla";
       };
-      default = {};
     };
   };
 
@@ -47,16 +58,14 @@ in {
         # Enable the KDE Plasma 6 Desktop Environment.
         services.desktopManager.plasma6.enable = true;
 
-        environment.systemPackages = with pkgs.kdePackages;
-          [
-            sddm-kcm
-            partitionmanager
-            kpmcore
-            kde-cli-tools
-            kdbusaddons
-            isoimagewriter
-          ]
-          ++ [pkgs.icons.breezeXcursor]; # custom # Needs to be installed system-wide so sddm has access to it
+        environment.systemPackages = with pkgs.kdePackages; [
+          sddm-kcm
+          partitionmanager
+          kpmcore
+          kde-cli-tools
+          kdbusaddons
+          isoimagewriter
+        ];
       })
 
       (mkIf (cfg.gnome.enable) {
@@ -80,11 +89,10 @@ in {
               gnome-tweaks
               kdePackages.qtwayland #QT apps will not open under wayland mode otherwise
               kdePackages.qt6ct
-              icons.breezeXcursor # custom # Needs to be installed system-wide to be accessible to sddm
               morewaita-icon-theme
               adwaita-icon-theme
               qogir-icon-theme
-              gnome.gnome-control-center
+              gnome-control-center
             ];
 
             security = {

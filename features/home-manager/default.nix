@@ -1,8 +1,8 @@
-{ osConfig, config, lib, ...}:
+{lib, ...}:
 with lib; {
-
-  imports = (lib.concatMap import [./programs]) 
-    ++ [./fonts];
+  imports =
+    (lib.concatMap import [./programs])
+    ++ [./themes];
 
   options.hm = {
     enableMutableConfigs = mkEnableOption "Enable configs to be directly modifiable.";
@@ -15,6 +15,4 @@ with lib; {
       '';
     };
   };
-
-  
 }

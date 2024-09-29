@@ -32,6 +32,7 @@ in {
     sysCfg = osConfig.nixos;
   in
     lib.mkMerge [
+      ###### BASE CONFIG ######
       {
         firefox.enable = true;
         vscodium.enable = true;
@@ -40,10 +41,11 @@ in {
           pluginManager = "lazy";
         };
         theme = {
-          fonts.defaultMonospace = sysCfg.desktop.fonts.defaultMonospace;
-          cursor = {
-            size = sysCfg.desktop.cursor.size;
-            theme = sysCfg.desktop.cursor.theme;
+          gtkTheme.name = "adw-gtk3-dark";
+          fonts.defaultMonospace = sysCfg.desktop.theme.fonts.defaultMonospace;
+          cursorTheme = {
+            name = sysCfg.desktop.theme.cursorTheme.name;
+            size = sysCfg.desktop.theme.cursorTheme.size;
           };
         };
       }
@@ -51,29 +53,43 @@ in {
         enableMutableConfigs = true;
         projectPath = sysCfg.project.path + "/features/home-manager/programs";
       })
+      ###### PLASMA CONFIG ######
       (lib.optionalAttrs (sysCfg.desktop.plasma.enable) {
         firefox.style = "plasma";
         plasma.enable = true;
         konsole.enable = true;
         klassy.enable = true;
         kate.enable = true;
+        theme = {
+          gtkTheme.name = "Breeze";
+          iconTheme = ''"Breeze-Round-Chameleon Dark Icons"'';
+        };
       })
+      ###### GNOME-SHELL CONFIG ######
       (lib.optionalAttrs (sysCfg.desktop.gnome.enable) {
         firefox.style = "gnome";
         gnome-shell.enable = true;
         dconf.enable = true;
         vscodium.theme = "gnome";
+        theme = {
+          gtkTheme.name = "adw-gtk3-dark";
+          iconTheme = "MoreWaita";
+        };
       })
+      ###### HYPRLAND CONFIG ######
       (lib.optionalAttrs (osConfig.nixos.desktop.hyprland.enable) {
         firefox.style = "gnome";
         dconf.enable = true;
+        theme = {
+          gtkTheme.name = "adw-gtk3-dark";
+          iconTheme = "MoreWaita";
+        };
         hyprland = lib.mkMerge [
           {enable = true;}
-          (lib.optionalAttrs (osConfig.nixos.desktop.hyprland.shell == "vanilla") {shell = "vanilla";})
-          (lib.optionalAttrs (osConfig.nixos.desktop.hyprland.shell == "asztal") {shell = "asztal";})
-          (lib.optionalAttrs (osConfig.nixos.desktop.hyprland.shell == "hyprpanel") {shell = "hyprpanel";})
+          (lib.optionalAttrs (sysCfg.desktop.hyprland.shell == "vanilla") {shell = "vanilla";})
+          (lib.optionalAttrs (sysCfg.desktop.hyprland.shell == "asztal") {shell = "asztal";})
+          (lib.optionalAttrs (sysCfg.desktop.hyprland.shell == "hyprpanel") {shell = "hyprpanel";})
         ];
-        satty.enable = true;
         vscodium.theme = "gnome";
       })
     ];

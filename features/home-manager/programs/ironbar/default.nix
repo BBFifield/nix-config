@@ -14,7 +14,7 @@ in {
   config = mkIf cfg.enable {
     programs.ironbar = {
       enable = false;
-      #      package = pkgs.ironbar;
+      #package = pkgs.ironbar;
     };
   };
 }

@@ -15,6 +15,5 @@
   ./walker
   ./yazi
   ./satty
-  ./theme
   ./ironbar
 ]

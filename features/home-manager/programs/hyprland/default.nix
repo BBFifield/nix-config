@@ -15,15 +15,15 @@ with lib; let
   pactl = "${pkgs.pulseaudio}/bin/pactl";
 
   theme = {
-    name = "adw-gtk3-dark";
+    name = config.hm.theme.gtkTheme.name;
   };
   cursorTheme = {
-    name = config.hm.theme.cursor.theme;
-    size = config.hm.theme.cursor.size;
-    package = pkgs.icons.breezeXcursor;
+    name = config.hm.theme.cursorTheme.name;
+    size = config.hm.theme.cursorTheme.size;
+    package = config.hm.theme.cursorTheme.package;
   };
   iconTheme = {
-    name = "MoreWaita";
+    name = config.hm.theme.iconTheme;
   };
   font = {
     name = "Cantarell"; #"Sans";
@@ -51,7 +51,7 @@ in {
         name = "Settings";
         comment = "Gnome Control Center";
         icon = "org.gnome.Settings";
-        exec = "env XDG_CURRENT_DESKTOP=gnome ${pkgs.gnome.gnome-control-center}/bin/gnome-control-center";
+        exec = "env XDG_CURRENT_DESKTOP=gnome ${pkgs.gnome-control-center}/bin/gnome-control-center";
         categories = ["X-Preferences"];
         terminal = false;
       };
@@ -68,13 +68,9 @@ in {
     home = {
       packages = with pkgs; [
         adw-gtk3
-        morewaita-icon-theme
-        adwaita-icon-theme
-        qogir-icon-theme
         loupe
         baobab
         gnome-system-monitor
-        icons.breezeXcursor
         wl-gammactl
       ];
       sessionVariables = {

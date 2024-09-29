@@ -33,8 +33,8 @@ with lib.hm.gvariant; {
             color-scheme = "prefer-dark";
             enable-animations = true;
             font-name = "Sans, 10";
-            gtk-theme = "adw-gtk3-dark";
-            icon-theme = "Tela";
+            gtk-theme = config.hm.theme.gtkTheme.name;
+            icon-theme = config.hm.theme.iconTheme.name;
             scaling-factor = mkUint32 2;
             text-scaling-factor = 1.0;
             toolbar-style = "text";

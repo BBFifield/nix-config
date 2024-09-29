@@ -5,15 +5,15 @@
   ...
 }: let
   theme = {
-    package = pkgs.kdePackages.breeze;
-    name = "Breeze";
+    package = pkgs.${config.hm.theme.gtkTheme.package};
+    name = config.hm.theme.gtkTheme.name;
   };
   iconTheme = {
-    name = ''"Breeze-Round-Chameleon Dark Icons"''; # Needed to encase in double single quotes because of the spaces in directory/theme name
+    name = config.hm.theme.iconTheme; # Needed to encase in double single quotes because of the spaces in directory/theme name
   };
   cursor = {
-    theme = "BreezeX-Dark";
-    size = 28;
+    theme = config.hm.theme.cursorTheme.name;
+    size = config.hm.theme.cursorTheme.size;
   };
   colorScheme = "BreezeDark";
   windowDecorations = {
@@ -39,7 +39,7 @@ in {
       [
         application-title-bar #plasmoid
         kde-rounded-corners
-        icons.breezeChameleon # defined in overlays from ./pkgs
+        #icons.breezeChameleon # defined in overlays from ./pkgs
         klassy # defined in overlays from ./pkgs
         plasma-panel-colorizer
       ]

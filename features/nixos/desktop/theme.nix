@@ -6,12 +6,26 @@
   ...
 }:
 with lib; let
-  cfg = config.nixos.desktop;
+  cfg = config.nixos.desktop.theme;
+
+  nfAttrs = {
+    "VictorMono" = {name = "VictorMono Nerd Font";};
+    "IosevkaTerm" = {name = "IosevkaTerm Nerd Font";};
+    "JetBrainsMono" = {name = "JetBrainsMono Nerd Font";};
+    "Iosevka" = {name = "Iosevka Nerd Font";};
+    "RobotoMono" = {name = "RobotoMono Nerd Font";};
+    "CascadiaCode" = {name = "CaskaydiaCove Nerd Font Mono";};
+    "FiraCode" = {name = "FiraCode Nerd Font";};
+  };
+
+  nfToFetch = builtins.attrNames nfAttrs;
+
+  nfEnums = with builtins; attrValues (mapAttrs (name: value: value.name) nfAttrs);
 
   fontsSubmodule = types.submodule {
     options = {
       defaultMonospace = mkOption {
-        type = types.str;
+        type = types.enum nfEnums;
         default = "JetBrainsMono";
       };
     };
@@ -22,23 +36,23 @@ with lib; let
         type = types.ints.positive;
         default = 28;
       };
-      theme = mkOption {
+      name = mkOption {
         type = types.str;
         default = "BreezeX-Dark";
       };
     };
   };
 in {
-  options.nixos.desktop = {
+  options.nixos.desktop.theme = {
     fonts = mkOption {
       type = fontsSubmodule;
       default = "JetBrainsMono";
     };
-    cursor = mkOption {
+    cursorTheme = mkOption {
       type = cursorSubmodule;
       default = {
         size = 28;
-        theme = "BreezeX-Dark";
+        name = "BreezeX-Dark";
       };
     };
   };
@@ -46,14 +60,16 @@ in {
   config = {
     fonts.fontconfig = {
       enable = true;
-      defaultFonts.monospace = [cfg.fonts.defaultMonospace]; #["FiraCode Nerd Font"];
+      defaultFonts.monospace = [cfg.fonts.defaultMonospace];
     };
 
-    environment.systemPackages = with pkgs; [
-      (nerdfonts.override {
-        fonts = ["VictorMono" "IosevkaTerm" "JetBrainsMono" "Iosevka" "RobotoMono" "CascadiaCode"]; #["Iosevka" "FiraCode" "RobotoMono" "JetBrainsMono" "CascadiaCode"];
-      })
-      iosevka
-    ];
+    environment.systemPackages = with pkgs;
+      [
+        (nerdfonts.override {
+          fonts = nfToFetch;
+        })
+        iosevka
+      ]
+      ++ [pkgs.icons.breezeXcursor]; # custom # Needs to be installed system-wide so sddm has access to it;
   };
 }

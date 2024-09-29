@@ -70,7 +70,7 @@ in {
             (
               pkgs.catppuccin-sddm.override {
                 flavor = "frappe";
-                font = cfg.fonts.defaultMonospace;
+                font = cfg.theme.fonts.defaultMonospace;
                 fontSize = "11";
               }
             )
@@ -86,8 +86,8 @@ in {
             settings.default_session.command = lib.mkForce pkgs.writeShellScript "greeter" ''
               export WLR_NO_HARDWARE_CURSORS=1
               export XKB_DEFAULT_LAYOUT=${config.services.xserver.xkb.layout}
-              export XCURSOR_THEME= ${cfg.cursor.theme}
-              export XCURSOR_SIZE= ${cfg.cursor.size}
+              export XCURSOR_THEME= ${cfg.theme.cursorTheme.name}
+              export XCURSOR_SIZE= ${cfg.cursorTheme.size}
               ${pkgs.asztal}/bin/greeter
             '';
           };
