@@ -7,19 +7,6 @@
 with lib; let
   cfg = config.hm.theme;
 
-  mkPkgName = let
-    getElem = with builtins; count: attr_list: elemAt attr_list ((length attr_list) - count);
-  in
-    with builtins;
-      {count ? 1}: {prefix ? pkgs}: attr_list: (
-        if (getElem count attr_list) == (elemAt attr_list 0)
-        then (head (lib.attrsets.attrVals [(getElem count attr_list)] prefix))
-        else
-          (
-            head (lib.attrsets.attrVals [(getElem count attr_list)] (mkPkgName {count = count + 1;} {inherit prefix;} attr_list))
-          )
-      );
-
   nfAttrs = {
     VictorMono = {name = "VictorMono Nerd Font";};
     IosevkaTerm = {name = "IosevkaTerm Nerd Font";};
@@ -124,12 +111,12 @@ in {
     hm.theme.gtkTheme.package = let
       pkgNameParts = lib.splitString "." gtkThemeAttrs.${cfg.gtkTheme.name};
     in
-      mkPkgName {} {} pkgNameParts;
+      mkPkgName {} pkgs pkgNameParts;
 
     hm.theme.cursorTheme.package = let
       pkgNameParts = lib.splitString "." cursorThemeAttrs.${cfg.cursorTheme.name};
     in
-      mkPkgName {} {} pkgNameParts;
+      mkPkgName {} pkgs pkgNameParts;
 
     home.packages = with pkgs; let
       filterByValue = value: attrs: builtins.filter (name: attrs.${name} == value) (builtins.attrNames attrs); # Get icon package to be installed

@@ -1,6 +1,6 @@
 {
   self,
-  outputs,
+  lib,
   inputs,
   ...
 }: {
@@ -28,7 +28,7 @@
   };
 
   customPkgs = f: p:
-    outputs.lib.pathToAttrs "${self}/pkgs" (full_path: _: p.callPackage full_path {});
+    lib.pathToAttrs "${self}/pkgs" (full_path: _: p.callPackage full_path {});
 
   neovimConfig = f: p: {
     inherit (inputs) neovim-config;

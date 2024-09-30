@@ -1,9 +1,9 @@
 {
   self,
-  outputs,
   config,
-  pkgs,
+  overlays,
   lib,
+  pkgs,
   ...
 }: let
   commonOpts = {
@@ -59,7 +59,7 @@
     "meta"
   ];
 in {
-  imports = outputs.lib.mkImports features featuresDir;
+  imports = lib.mkImports features featuresDir;
 
   config = lib.mkMerge [
     (lib.mkIf (specialisations == false) {
@@ -127,8 +127,8 @@ in {
 
       nixpkgs = {
         overlays =
-          outputs.overlays.defaults
-          ++ (with outputs.overlays; [
+          overlays.defaults
+          ++ (with overlays; [
             neovimConfig
             firefoxGnomeTheme
             vivaldiFixed

@@ -1,5 +1,5 @@
 # Personal lib
-{}: {
+{lib}: rec {
   /*
   Creates a list of sets with attribute keys based on directory names and corresponding values from a callback function.
   Args:
@@ -49,12 +49,29 @@
     getElem = with builtins; count: attr_list: elemAt attr_list ((length attr_list) - count);
   in
     with builtins;
-      {count ? 1}: {prefix ? pkgs}: attr_list: (
+      {count ? 1}: prefix: attr_list: (
         if (getElem count attr_list) == (elemAt attr_list 0)
         then (head (lib.attrsets.attrVals [(getElem count attr_list)] prefix))
         else
           (
-            head (lib.attrsets.attrVals [(getElem count attr_list)] (mkPkgName {count = count + 1;} {inherit prefix;} attr_list))
+            head (lib.attrsets.attrVals [(getElem count attr_list)] (mkPkgName {count = count + 1;} prefix attr_list))
           )
       );
+
+  /*
+  mkPkgName = with builtins; let
+    getElem = count: attr_list: elemAt attr_list ((length attr_list) - count);
+
+    mkPkgNameHelper = {count ? 1}: prefix: attr_list: (
+      if (getElem count attr_list) == (elemAt attr_list 0)
+      then (head (lib.attrsets.attrVals [(getElem count attr_list)] prefix))
+      else
+        (
+          head (lib.attrsets.attrVals [(getElem count attr_list)] (mkPkgNameHelper {count = count + 1;} prefix attr_list))
+        )
+    );
+  in
+    {count ? 1}: prefix: attr_list:
+      mkPkgNameHelper {inherit count;} prefix attr_list;
+  */
 }

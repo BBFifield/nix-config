@@ -96,8 +96,13 @@
     forAllSystems = nixpkgs.lib.genAttrs systems;
   in rec
   {
-    # My custom libraries
-    lib = import ./lib {};
+    # Merge my custom libraries with the ones defined in nixpkgs.
+    lib = nixpkgs.lib.extend (self: super:
+      (import ./lib {
+        lib = nixpkgs.lib;
+        # pkgs = nixpkgs;
+      })
+      // inputs.home-manager.lib);
 
     # My custom packages
     # Accessible through 'nix build', 'nix shell', etc
@@ -110,11 +115,11 @@
     # Other options beside 'alejandra' include 'nixpkgs-fmt'
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-    overlays = import ./overlays {inherit self outputs inputs;};
+    overlays = import ./overlays {inherit self lib inputs;};
 
     nixosConfigurations = lib.pathToAttrs "${self}/hosts" (full_path: hostname:
       nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit self inputs outputs hostname;};
+        specialArgs = {inherit self inputs overlays lib hostname;};
         modules = ["${full_path}/modules-list.nix"];
       });
 

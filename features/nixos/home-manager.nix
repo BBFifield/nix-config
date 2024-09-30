@@ -1,7 +1,6 @@
 {
   self,
   inputs,
-  outputs,
   lib,
   ...
 }:
@@ -10,11 +9,12 @@ with inputs; {
   };
 
   config = {
+    # home-manager.lib = home-manager.lib.extend (f: p: import ../../lib);
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
     home-manager.backupFileExtension = "backup";
 
-    home-manager.users = outputs.lib.pathToAttrs "${self}/users" (full_path: _: import full_path);
+    home-manager.users = lib.pathToAttrs "${self}/users" (full_path: _: import full_path);
 
     # These modules are imported into all home-manager configs
     home-manager.sharedModules = [
