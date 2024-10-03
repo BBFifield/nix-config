@@ -1,5 +1,6 @@
 {
   config,
+  pkgs,
   lib,
   ...
 }: {
@@ -8,6 +9,7 @@
   };
 
   config = lib.mkIf config.hm.gBar.enable {
+    home.packages = with pkgs; [pamixer];
     programs.gBar = {
       enable = true;
       config = {
@@ -28,7 +30,7 @@
         ''
           * {
               all: unset;
-              font-family: "${config.hm.theme.fonts.defaultMonospace}";
+              font-family: ${config.hm.theme.fonts.defaultMonospace};
             }
 
         ''

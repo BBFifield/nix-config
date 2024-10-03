@@ -1,0 +1,133 @@
+let {
+  $workspaces = {
+    type = "workspaces"
+    all_monitors = false
+    name_map = {
+      1 = " "
+      2 = "󰖟"
+      3 = ""
+    }
+    favorites = [ "1" "2" "3" ]
+  }
+
+  $focused = { type = "focused" }
+
+  $launcher = {
+    type = "launcher"
+    show_names = false
+    show_icons = true
+  }
+
+  $mpris = {
+    type = "music"
+    player_type = "mpris"
+
+    on_click_middle = "playerctl play-pause"
+    on_scroll_up = "playerctl volume +5"
+    on_scroll_down = "playerctl volume -5"
+  }
+
+  $notifications = {
+    type = "notifications"
+    show_count = true
+
+    icons.closed_none = "󰍥"
+    icons.closed_some = "󱥂"
+    icons.closed_dnd = "󱅯"
+    icons.open_none = "󰍡"
+    icons.open_some = "󱥁"
+    icons.open_dnd = "󱅮"
+  }
+
+  $sys_info = {
+    type = "sys_info"
+
+    interval.memory = 30
+    interval.cpu = 1
+    interval.temps = 5
+    interval.disks = 300
+    interval.networks = 3
+
+    format = [
+      "  {cpu_percent}%|{temp_c:k10temp-Tctl}°C"
+      "  {memory_used}GB({memory_percent}%)"
+      "󰋊 {disk_used:/}/{disk_total:/}GB({disk_percent:/}%)"
+      "{net_down:enp9s0}/{net_up:enp9s0}Mbps"
+    ]
+  }
+
+  $tray = { type = "tray" }
+
+  $clock = { type = "clock" }
+
+  $clipboard = { 
+    type = "clipboard"
+    icon = ""
+    max_items = 6
+    truncate.mode = "end"
+    truncate.length = 50
+  }
+
+  $volume = {
+    type = "volume"
+    format = "{icon}"
+    max_volume = 100
+    icons.volume_high = " "
+    icons.volume_medium = ""
+    icons.volume_low = ""
+    icons.muted = ""
+  }
+
+  // -- begin custom --
+  $button = { type = "button" name="power-btn" label = "" on_click = "popup:toggle" }
+
+  $src = "/var/lib/AccountsService/icons/{{echo $(whoami)}}"
+
+  $popup = {
+    type = "box"
+    orientation = "vertical"
+    widgets = [
+      { type = "label" name = "header" label = "{{echo $(whoami)}}" }
+      { type = "box" orientation = "vertical" name = "profile-pic-box"
+        widgets = [
+          {type = "image" name = "profile-pic" src = $src  size = 80 }
+            
+          ]
+      }
+      {
+        type = "box"
+        name = "power-actions-box"
+        widgets = [
+          // {type = "box" class = "spacer-box" }
+          { type = "button" class="power-btn" label = "<span font-size='30pt'>󰐥</span>" on_click = "!shutdown now" }
+          { type = "button" class="power-btn" label = "<span font-size='30pt'>󰜉</span>" on_click = "!reboot" }
+          // {type = "box" class = "spacer-box" }
+        ]
+      }
+    ]
+  }
+
+  $power_menu = {
+    type = "custom"
+    class = "power-menu"
+
+    bar = [ $button ]
+    popup = [ $popup ]
+  }
+
+  $left = [ $workspaces ]
+  $center = [ $clock $notifications ]
+  $right = [ $sys_info $clipboard $volume $power_menu ]
+}
+
+in {
+  name = "topbar"
+  height = 35
+  anchor_to_edges = true
+  position = "top"
+  icon_theme = "Morewaita"
+
+  start = $left
+  center = $center
+  end = $right
+} 
