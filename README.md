@@ -28,7 +28,7 @@ Example: `klassy = inputs.newfie.packages.x86_64-linux.klassy;` Then you can add
 
 ### Raspberry Pi 2B:
 
-**Note: The Raspberry Pi config is currently outdated and some adjustments need to be made to get it working with this flake again, which I plan to do over the next little while.**
+**Note: The Raspberry Pi config is currently outdated and some adjustments need to be made to get it working with this flake again. It has been removed from the master branch, but you can find it in the development branch if you're still interested before it's adjusted and moved back to master.**
 
 Those with a Raspberry Pi 2B might be particularly interested in how one would go about writing such a system config - a custom overlay for uboot is detailed so the system may automatically boot NixOS without keyboard input.
 
