@@ -95,6 +95,8 @@ return {
 			formatters_by_ft = {
 				nix = { "alejandra" },
 				lua = { "stylua" },
+				css = { "prettierd" },
+				scss = { "prettierd" },
 			},
 		},
 		config = function(_, opts)

@@ -14,7 +14,7 @@ in
         type = with types; nullOr (enum ["lazy" "nix"]);
         default = null;
         description = ''
-          Which package manager to use to manage your neovim plugins. This option is invalid when preset is set to lunarvim.
+          Which package manager to use to manage your neovim plugins.
         '';
       };
     };
@@ -29,15 +29,9 @@ in
         gcc # For installing treesitter parsers
       ];
 
-      #home.file."${config.hm.projectPath}/neovim/lazy".source = pkgs.neovim-config;
-
-      xdg.configFile = mkMerge [
-        (mkIf config.hm.enableMutableConfigs {
-          "nvim".source = mkOutOfStoreSymlink "${config.hm.projectPath}/neovim/lazy";
-        })
-        (mkIf (!config.hm.enableMutableConfigs) {
-          "nvim".source = pkgs.neovim-config; #"${config.hm.projectPath}/neovim/lazy";
-        })
-      ];
+      xdg.configFile."nvim".source =
+        if config.hm.enableMutableConfigs
+        then mkOutOfStoreSymlink "${config.hm.projectPath}/editors/neovim/lazy"
+        else pkgs.neovim-config; #"${config.hm.projectPath}/editors/neovim/lazy";
     };
   }

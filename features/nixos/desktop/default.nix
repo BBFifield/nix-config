@@ -75,11 +75,6 @@ in {
               }
             )
           ];
-          /*
-            fonts.packages = with pkgs; [
-            jetbrains-mono
-          ];
-          */
         })
         (lib.mkIf (cfg.hyprland.shell == "asztal" && cfg.displayManager == "greetd") {
           services.greetd = {

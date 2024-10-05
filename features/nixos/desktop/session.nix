@@ -89,9 +89,6 @@ in {
               gnome-tweaks
               kdePackages.qtwayland #QT apps will not open under wayland mode otherwise
               kdePackages.qt6ct
-              morewaita-icon-theme
-              adwaita-icon-theme
-              qogir-icon-theme
               gnome-control-center
             ];
 

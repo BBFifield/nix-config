@@ -30,12 +30,10 @@
   customPkgs = f: p:
     lib.pathToAttrs "${self}/pkgs" (full_path: _: p.callPackage full_path {});
 
-  neovimConfig = f: p: {
+  nonFlakeSrcs = f: p: {
     inherit (inputs) neovim-config;
-  };
-
-  firefoxGnomeTheme = f: p: {
     inherit (inputs) firefox-gnome-theme;
+    inherit (inputs) yazi-flavors;
   };
 
   # See https://github.com/NixOS/nixpkgs/issues/310755

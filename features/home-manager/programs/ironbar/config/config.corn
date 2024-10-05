@@ -9,6 +9,14 @@ let {
     }
     favorites = [ "1" "2" "3" ]
   }
+$config_dir = ".config/ironbar"
+    $cairo = {
+        type = "cairo"
+        path = "$config_dir/clock.lua"
+        frequency = 100
+        width = 300
+        height = 300
+    }
 
   $focused = { type = "focused" }
 

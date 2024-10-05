@@ -1,5 +1,4 @@
 {
-  self,
   config,
   overlays,
   lib,
@@ -8,7 +7,7 @@
 }: let
   commonOpts = {
     theme = {
-      fonts.defaultMonospace = "JetBrainsMono Nerd Font";
+      fonts.defaultMonospace = "FiraCode Nerd Font";
       cursorTheme.name = "BreezeX-Dark";
       cursorTheme.size = 24;
     };
@@ -129,8 +128,9 @@ in {
         overlays =
           overlays.defaults
           ++ (with overlays; [
-            neovimConfig
-            firefoxGnomeTheme
+            nonFlakeSrcs
+            #neovimConfig
+            #firefoxGnomeTheme
             vivaldiFixed
             customPkgs
             asztalOverlay

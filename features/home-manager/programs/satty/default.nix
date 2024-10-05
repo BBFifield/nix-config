@@ -14,12 +14,16 @@ in {
   };
 
   config = mkIf cfg.enable {
-    home.packages = with pkgs; [satty];
+    home.packages = with pkgs; [
+      satty
+      slurp #For screenrecording and screenshotting
+      grim #Screenshotter
+    ];
 
-    xdg.configFile."config.toml" = {
+    xdg.configFile."satty/config.toml" = {
       source = tomlFormat.generate "satty-config" {
         general = {
-          fullscreen = true;
+          fullscreen = false;
           # Exit directly after copy/save action
           early-exit = true;
           # Select the tool on startup [possible values: pointer, crop, line, arrow, rectangle, text, marker, blur, brush]
@@ -27,7 +31,7 @@ in {
           copy-command = "wl-copy";
           annotation-size-factor = 2;
           # Filename to use for saving action. Omit to disable saving to file. Might contain format specifiers: https://docs.rs/chrono/latest/chrono/format/strftime/index.html
-          output-filename = "~/Pictures/Screenshots/satty-%Y-%m-%d_%H:%M:%S.png";
+          output-filename = "${config.home.homeDirectory}/Pictures/Screenshots/satty-$(date '+%Y%m%d-%H:%M:%S').png";
           # After copying the screenshot, save it to a file as well
           save-after-copy = false;
           default-hide-toolbars = false;

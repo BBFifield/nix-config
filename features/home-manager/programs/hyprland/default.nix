@@ -217,7 +217,11 @@ in {
         ];
 
         windowrulev2 = [
-          "workspace 1, initialTitle:^(.*Alacritty.*)$, class:^(.*Alacritty.*)$, title:^(.*NVIM.*)$" #won't match
+          /*
+            won't match
+          "workspace 3, initialTitle:^(.*Yazi.*)$, class:^(.Alacritty.*)$"
+          "workspace 1, initialTitle:^(.*Alacritty.*)$, class:^(.*Alacritty.*)$, title:^(.*NVIM.*)$"
+          */
           "opacity 0.95 override 0.9 override, class:^(Alacritty)$"
         ];
 
@@ -232,7 +236,7 @@ in {
         in
           [
             "SUPER, W, exec, firefox"
-            "SUPER, F, exec, nautilus --new-window"
+            "SUPER, F, exec, [workspace 3] alacritty -e yazi"
             "SUPER, E, exec, alacritty"
             "SUPER, C, exec, [workspace 1] alacritty -e nvim"
 
@@ -244,7 +248,7 @@ in {
             "ALT, Q, killactive"
             #"SUPER, F, togglefloating"
             "SUPER, G, fullscreen"
-            "SUPER, P, togglesplit"
+            "SUPER CTRL, P, togglesplit"
 
             (mvfocus "k" "u")
             (mvfocus "j" "d")

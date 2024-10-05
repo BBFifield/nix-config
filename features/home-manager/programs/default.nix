@@ -10,8 +10,8 @@
   ./wpaperd
   ./gnome-shell
   ./terminal
-  ./vscodium
-  ./neovim
+  ./editors/vscodium
+  ./editors/neovim
   ./walker
   ./yazi
   ./satty

@@ -72,6 +72,11 @@
     };
 
     alacritty-theme.url = "github:alexghr/alacritty-theme.nix";
+
+    yazi-flavors = {
+      url = "github:yazi-rs/flavors";
+      flake = false;
+    };
   };
 
   outputs = {
@@ -100,7 +105,6 @@
     lib = nixpkgs.lib.extend (self: super:
       (import ./lib {
         lib = nixpkgs.lib;
-        # pkgs = nixpkgs;
       })
       // inputs.home-manager.lib);
 

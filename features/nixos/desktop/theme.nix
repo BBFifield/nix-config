@@ -9,18 +9,21 @@ with lib; let
   cfg = config.nixos.desktop.theme;
 
   nfAttrs = {
+    "FiraCode" = {name = "FiraCode Nerd Font";};
     "VictorMono" = {name = "VictorMono Nerd Font";};
     "IosevkaTerm" = {name = "IosevkaTerm Nerd Font";};
     "JetBrainsMono" = {name = "JetBrainsMono Nerd Font";};
     "Iosevka" = {name = "Iosevka Nerd Font";};
     "RobotoMono" = {name = "RobotoMono Nerd Font";};
     "CascadiaCode" = {name = "CaskaydiaCove Nerd Font Mono";};
-    "FiraCode" = {name = "FiraCode Nerd Font";};
   };
-
   nfToFetch = builtins.attrNames nfAttrs;
-
   nfEnums = with builtins; attrValues (mapAttrs (name: value: value.name) nfAttrs);
+
+  cursorThemeAttrs = {
+    "BreezeX-Dark" = "icons.breezeXcursor";
+  };
+  cursorThemeEnums = builtins.attrNames cursorThemeAttrs;
 
   fontsSubmodule = types.submodule {
     options = {
@@ -34,11 +37,15 @@ with lib; let
     options = {
       size = mkOption {
         type = types.ints.positive;
-        default = 28;
+        default = 24;
       };
       name = mkOption {
-        type = types.str;
+        type = types.enum cursorThemeEnums;
         default = "BreezeX-Dark";
+      };
+      package = mkOption {
+        type = types.package;
+        default = pkgs.icons.breezeXcursor;
       };
     };
   };
@@ -51,8 +58,9 @@ in {
     cursorTheme = mkOption {
       type = cursorSubmodule;
       default = {
-        size = 28;
+        size = 24;
         name = "BreezeX-Dark";
+        package = pkgs.icons.breezeXcursor;
       };
     };
   };
@@ -63,13 +71,17 @@ in {
       defaultFonts.monospace = [cfg.fonts.defaultMonospace];
     };
 
-    environment.systemPackages = with pkgs;
-      [
-        (nerdfonts.override {
-          fonts = nfToFetch;
-        })
-        iosevka
-      ]
-      ++ [pkgs.icons.breezeXcursor]; # custom # Needs to be installed system-wide so sddm has access to it;
+    nixos.desktop.theme.cursorTheme.package = let
+      pkgNameParts = lib.splitString "." cursorThemeAttrs.${cfg.cursorTheme.name};
+    in
+      mkPkgName {} pkgs pkgNameParts;
+
+    fonts.packages = with pkgs; [
+      (nerdfonts.override {
+        fonts = nfToFetch;
+      })
+      iosevka
+    ];
+    environment.systemPackages = [cfg.cursorTheme.package]; # custom # Needs to be installed system-wide so sddm has access to it;
   };
 }

@@ -1,7 +1,30 @@
 local create_keymaps = function(maps)
 	for _, v in ipairs(maps) do
+		if type(v[1]) == "table" then
+			for _, m in ipairs(v[1]) do
+				vim.keymap.set(m, v[2], v[3], v[4])
+			end
+		end
 		vim.keymap.set(v[1], v[2], v[3], v[4])
 	end
+end
+
+local create_reg_keymaps = function()
+	local opts = { silent = true }
+	for i = string.byte("a"), string.byte("z") do
+		local letterReg = string.char(i)
+		local prefix = '"' .. letterReg
+		vim.keymap.set("n", prefix .. "y", prefix .. "y", opts)
+		vim.keymap.set("v", prefix .. "y", prefix .. "ygv", opts)
+		vim.keymap.set("n", prefix .. "Y", prefix .. "Y", opts)
+		create_keymaps({ { { "n", "v" }, prefix .. "p", prefix .. "p", opts } })
+	end
+	vim.keymap.set("n", "y", '"+y', opts)
+	vim.keymap.set("v", "y", '"+ygv', { silent = true })
+	vim.keymap.set("n", "Y", '"*y', { silent = true })
+	vim.keymap.set("v", "Y", '"*ygv', { silent = true })
+	create_keymaps({ { { "n", "v" }, "p", '"+p', opts } })
+	create_keymaps({ { { "n", "v" }, "P", '"*P', opts } })
 end
 
 local keymaps = {
@@ -13,20 +36,13 @@ local keymaps = {
 	{ "v", "<M-h>", "<gv", { silent = true } },
 	{ "n", "<M-l>", ">>", { silent = true } },
 	{ "v", "<M-l>", ">gv", { silent = true } },
-	{ "n", "y", '"+y', { silent = true } },
-	{ "v", "y", '"+y', { silent = true } },
-	{ "n", "Y", '"*y', { silent = true } },
-	{ "v", "Y", '"*y', { silent = true } },
-	{ "n", "p", '"+p', { silent = true } },
-	{ "v", "p", '"+p', { silent = true } },
-	{ "n", "P", '"*p', { silent = true } },
-	{ "v", "P", '"*p', { silent = true } },
 	{ "n", "<leader>bn", ":bn<CR>", { desc = "Next", silent = true } },
 	{ "n", "<leader>bb", ":bp<CR>", { desc = "Prev", silent = true } },
 	{ "n", "<leader>bd", ":bdelete<CR>", { desc = "Close", silent = true } },
 }
 
 create_keymaps(keymaps)
+create_reg_keymaps()
 
 -- Map registers to wl-clipboard commands
 vim.opt.clipboard:append("unnamed")

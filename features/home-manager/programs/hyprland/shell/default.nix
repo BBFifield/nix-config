@@ -50,7 +50,7 @@ with lib; {
         };
       })
       (mkIf (config.hm.hyprland.shell == "vanilla") {
-        hm.gBar.enable = true;
+        #hm.gBar.enable = true;
         hm.wpaperd.enable = true;
         hm.hyprland.hyprlock.enable = true;
         hm.walker.enable = true;
@@ -60,7 +60,6 @@ with lib; {
         home.packages = with pkgs; [
           hyprpicker
           clipse #TUI clipboard manager
-          satty #Screenshot annotation tool
           hyprshade #Screenshader utility
           slurp #For screenrecording and screenshotting
           grim #Screenshotter
@@ -90,9 +89,8 @@ with lib; {
               "SUPER, R, exec, walker"
               "SUPER, N, exec, wpaperctl next"
               "SUPER, P, exec, hyprpicker --autocopy"
-              "SUPER, H, exec, hyprshade toggle blue-light-filter"
-              "SUPER, P, exec, hyprpicker -a"
-              ''SUPER, S, exec, grim -g "$(slurp -o -r -c '#ff0000ff')" -t ppm - | satty''
+              "SUPER CTRL, H, exec, hyprshade toggle blue-light-filter"
+              ''SUPER, S, exec, grim -g "$(slurp -o -r -c '##89b4faff')" -t ppm - | satty --filename -''
             ];
           };
           #For catppuccin style variables for other hypr apps

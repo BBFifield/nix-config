@@ -20,6 +20,7 @@
     nil
     lua-language-server
     stylua
+    prettierd
   ];
 in {
   imports = [../../features/home-manager];

@@ -19,7 +19,16 @@ in {
     programs.yazi = {
       enable = true;
       enableBashIntegration = true;
+      flavors = {
+        catppuccin-macchiato = "${pkgs.yazi-flavors}/catppuccin-macchiato.yazi";
+      };
       settings = {
+        manager = {
+          show_hidden = true;
+        };
+      };
+      theme = {
+        flavor.use = "catppuccin-macchiato";
       };
     };
   };

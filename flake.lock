@@ -900,7 +900,8 @@
         "nurpkgs": "nurpkgs",
         "plasma-manager": "plasma-manager",
         "sops-nix": "sops-nix",
-        "walker": "walker"
+        "walker": "walker",
+        "yazi-flavors": "yazi-flavors"
       }
     },
     "rust-overlay": {
@@ -1056,6 +1057,22 @@
       "original": {
         "owner": "hyprwm",
         "repo": "xdg-desktop-portal-hyprland",
+        "type": "github"
+      }
+    },
+    "yazi-flavors": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1725036354,
+        "narHash": "sha256-W56r4LMepQj0vW1tayx0qA43ZhZEQ09ukZ8IlQMFMe0=",
+        "owner": "yazi-rs",
+        "repo": "flavors",
+        "rev": "d479f67a5bde91ccd3cddc927144b442c6e885e5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "yazi-rs",
+        "repo": "flavors",
         "type": "github"
       }
     }
