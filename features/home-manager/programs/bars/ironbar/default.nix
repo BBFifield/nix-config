@@ -30,7 +30,7 @@ in {
 
     xdg.configFile."ironbar".source =
       if config.hm.enableMutableConfigs
-      then mkOutOfStoreSymlink "${config.hm.projectPath}/ironbar/config"
+      then mkOutOfStoreSymlink "${config.hm.projectPath}/bars/ironbar/config"
       else ./config/config.corn;
     /*
       home.packages = with pkgs; [

@@ -21,6 +21,7 @@
     lua-language-server
     stylua
     prettierd
+    dart-sass
   ];
 in {
   imports = [../../features/home-manager];
@@ -84,6 +85,10 @@ in {
         theme = {
           gtkTheme.name = "adw-gtk3-dark";
           iconTheme = "MoreWaita";
+          colorScheme = {
+            name = "catppuccin";
+            variant = "macchiato";
+          };
         };
         hyprland = lib.mkMerge [
           {enable = true;}

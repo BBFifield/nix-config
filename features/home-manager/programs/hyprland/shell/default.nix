@@ -66,23 +66,31 @@ with lib; {
         ];
 
         wayland.windowManager.hyprland = {
-          settings = {
-            exec-once = [
-              "gBar bar 0"
-              "wpaperd -d"
-              "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+          settings = let
+            cfg = config.hm.theme.colorScheme.props;
+            activeBorder1 = cfg.borderActive1;
+            activeBorder2 = cfg.borderActive2;
+            inactiveBorder1 = cfg.borderInactive1;
+            inactiveBorder2 = cfg.borderInactive2;
+          in {
+            exec-once = mkMerge [
+              [
+                "wpaperd -d"
+                "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+              ]
+              (mkIf (config.hm.gBar.enable == true) ["gBar bar 0"])
             ];
 
             general = {
-              "col.active_border" = "rgba(ca9ee6ff) rgba(f2d5cfff) 45deg";
-              "col.inactive_border" = "rgba(b4befecc) rgba(6c7086cc) 45deg";
+              "col.active_border" = "rgba(${activeBorder1}ff) rgba(${activeBorder2}ff) 45deg";
+              "col.inactive_border" = "rgba(${inactiveBorder1}cc) rgba(${inactiveBorder2}cc) 45deg";
             };
 
             group = {
-              "col.border_active" = "rgba(ca9ee6ff) rgba(f2d5cfff) 45deg";
-              "col.border_inactive" = "rgba(b4befecc) rgba(6c7086cc) 45deg";
-              "col.border_locked_active" = "rgba(ca9ee6ff) rgba(f2d5cfff) 45deg";
-              "col.border_locked_inactive" = "rgba(b4befecc) rgba(6c7086cc) 45deg";
+              "col.border_active" = "rgba(${activeBorder1}ff) rgba(${activeBorder2}ff) 45deg";
+              "col.border_inactive" = "rgba(${inactiveBorder1}cc) rgba(${inactiveBorder2}cc) 45deg";
+              "col.border_locked_active" = "rgba(${activeBorder1}ff) rgba(${activeBorder2}ff) 45deg";
+              "col.border_locked_inactive" = "rgba(${inactiveBorder1}cc) rgba(${inactiveBorder2}cc) 45deg";
             };
 
             bind = [
@@ -90,13 +98,18 @@ with lib; {
               "SUPER, N, exec, wpaperctl next"
               "SUPER, P, exec, hyprpicker --autocopy"
               "SUPER CTRL, H, exec, hyprshade toggle blue-light-filter"
-              ''SUPER, S, exec, grim -g "$(slurp -o -r -c '##89b4faff')" -t ppm - | satty --filename -''
+              ''SUPER, S, exec, grim -g "$(slurp -o -r -c '##${activeBorder1}ff')" -t ppm - | satty --filename -''
             ];
           };
           #For catppuccin style variables for other hypr apps
-          extraConfig = ''
-            ${builtins.readFile ../mocha.conf}
-          '';
+          /*
+            extraConfig = mkMerge [
+            (mkIf (config.hm.theme.colorScheme == "catppuccin")
+              ''
+                ${builtins.readFile ../mocha.conf}
+              '')
+          ];
+          */
         };
       })
     ]

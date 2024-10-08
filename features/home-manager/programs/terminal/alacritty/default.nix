@@ -1,15 +1,21 @@
 {
   config,
   pkgs,
+  lib,
   ...
 }: let
   family = "JetBrainsMono Nerd Font";
+  cfg = config.hm.theme;
 in {
   config = {
     programs.alacritty = {
       enable = true;
       settings = {
-        import = [pkgs.alacritty-theme.catppuccin_mocha];
+        import = lib.mkMerge [
+          (lib.mkIf (cfg.colorScheme.name == "catppuccin") [
+            pkgs.alacritty-theme."catppuccin_${cfg.colorScheme.variant}"
+          ])
+        ];
         font = {
           size = 11.0;
           bold = {

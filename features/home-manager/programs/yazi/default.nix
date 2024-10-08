@@ -3,8 +3,7 @@
   pkgs,
   lib,
   ...
-}:
-with lib; let
+}: let
   cfg = config.hm.yazi;
 in {
   /*
@@ -16,19 +15,25 @@ in {
     home.packages = with pkgs; [
       ueberzugpp
     ];
-    programs.yazi = {
+    programs.yazi = let
+      cfg = config.hm.theme.colorScheme;
+    in {
       enable = true;
       enableBashIntegration = true;
-      flavors = {
-        catppuccin-macchiato = "${pkgs.yazi-flavors}/catppuccin-macchiato.yazi";
-      };
+      flavors = lib.mkMerge [
+        (lib.mkIf (cfg.name == "catppuccin") {
+          "catppuccin-${cfg.variant}" = "${pkgs.yazi-flavors}/catppuccin-${cfg.variant}.yazi";
+        })
+      ];
       settings = {
         manager = {
           show_hidden = true;
         };
       };
       theme = {
-        flavor.use = "catppuccin-macchiato";
+        flavor.use = lib.mkMerge [
+          (lib.mkIf (cfg.name == "catppuccin") "catppuccin-${cfg.variant}")
+        ];
       };
     };
   };

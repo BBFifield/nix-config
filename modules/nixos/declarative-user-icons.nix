@@ -7,8 +7,7 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
   userIconsPath = "/etc/user-icons";
 
   usersWithIcons = lib.filterAttrs (_: value: value.icon != null) config.users.users;
@@ -18,21 +17,22 @@ with lib; let
   icons = pkgs.runCommand "user-icons" {} ''
     mkdir -p $out${userIconsPath}
     cd $out${userIconsPath}
-    ${concatStringsSep "\n" iconLinks}
-    ${concatStringsSep "\n" iconLinks2}
+    ${lib.concatStringsSep "\n" iconLinks}
+    ${lib.concatStringsSep "\n" iconLinks2}
   '';
 in {
-  options.users.users = mkOption {
-    type = types.attrsOf (types.submodule {
-      options.icon = mkOption {
-        type = types.nullOr types.path;
-        default = null;
-        description = ''
-          An icon to use for the user in their login manager and other UIs.
-        '';
-      };
-    });
-  };
+  options.users.users = with lib;
+    mkOption {
+      type = types.attrsOf (types.submodule {
+        options.icon = mkOption {
+          type = types.nullOr types.path;
+          default = null;
+          description = ''
+            An icon to use for the user in their login manager and other UIs.
+          '';
+        };
+      });
+    };
 
   config = {
     services.accounts-daemon.defaultSettings.User.Icon = "/run/current-system/sw${userIconsPath}/\${USER}";

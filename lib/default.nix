@@ -57,21 +57,4 @@
             head (lib.attrsets.attrVals [(getElem count attr_list)] (mkPkgName {count = count + 1;} prefix attr_list))
           )
       );
-
-  /*
-  mkPkgName = with builtins; let
-    getElem = count: attr_list: elemAt attr_list ((length attr_list) - count);
-
-    mkPkgNameHelper = {count ? 1}: prefix: attr_list: (
-      if (getElem count attr_list) == (elemAt attr_list 0)
-      then (head (lib.attrsets.attrVals [(getElem count attr_list)] prefix))
-      else
-        (
-          head (lib.attrsets.attrVals [(getElem count attr_list)] (mkPkgNameHelper {count = count + 1;} prefix attr_list))
-        )
-    );
-  in
-    {count ? 1}: prefix: attr_list:
-      mkPkgNameHelper {inherit count;} prefix attr_list;
-  */
 }

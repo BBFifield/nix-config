@@ -1,19 +1,19 @@
 [
+  ./bars/gBar
+  ./bars/ironbar
   ./browsers/firefox
-  ./plasma
-  ./klassy
-  ./kate
   ./dconf
-  ./hyprland
-  ./waybar
-  ./gBar
-  ./wpaperd
-  ./gnome-shell
-  ./terminal
   ./editors/vscodium
   ./editors/neovim
-  ./walker
-  ./yazi
+  ./gnome-shell
+  ./hyprland
+  ./kate
+  ./klassy
+  ./plasma
+  ./wpaperd
   ./satty
-  ./ironbar
+  ./terminal
+  ./walker
+  ./waybar
+  ./yazi
 ]

@@ -43,6 +43,10 @@ in {
       default = null;
       description = "Choose a customized shell.";
     };
+    colorScheme = mkOption {
+      type = types.enum ["catppuccin"];
+      default = "catppuccin";
+    };
   };
 
   config = mkIf config.hm.hyprland.enable {
@@ -101,8 +105,8 @@ in {
       enable = true;
       settings = {
         general = {
-          lock_cmd = "pidof hyprlock || hyprlock"; # avoid starting multiple hyprlock instances.
-          before_sleep_cmd = "loginctl lock-session";
+          lock_cmd = "./start_hyprlock.sh"; # avoid starting multiple hyprlock instances.
+          before_sleep_cmd = "./start_hyprlock.sh";
           after_sleep_cmd = "hyprctl dispatch dpms on";
           ignore_dbus_inhibit = false;
         };
@@ -110,7 +114,7 @@ in {
         listener = [
           {
             timeout = 9000;
-            on-timeout = "loginctl lock-session";
+            on-timeout = "./start_hyprlock.sh";
           }
           {
             timeout = 12000;

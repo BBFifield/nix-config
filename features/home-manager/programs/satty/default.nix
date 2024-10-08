@@ -44,13 +44,15 @@ in {
           family = config.hm.theme.fonts.defaultMonospace;
           style = "Bold";
         };
-        color-palette = {
-          first = "#00ffff";
-          second = "#a52a2a";
-          third = "#dc143c";
-          fourth = "#ff1493";
-          fifth = "#ffd700";
-          custom = "#008000";
+        color-palette = let
+          cfg = config.hm.theme.colorScheme.props;
+        in {
+          first = "#${cfg.blue}";
+          second = "#${cfg.red}";
+          third = "#${cfg.purple}";
+          fourth = "#${cfg.pink}";
+          fifth = "#${cfg.yellow}";
+          custom = "#${cfg.green}";
         };
       };
     };

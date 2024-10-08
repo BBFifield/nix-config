@@ -1,0 +1,253 @@
+/* -- base styles -- */
+* {
+  font-family: JetBrainsMono Nerd Font, sans-serif;
+  font-weight: normal;
+  font-size: 16px;
+}
+
+#bar {
+  border-radius: 0%;
+  border-bottom: 1px solid #585b70;
+}
+
+.window {
+  border-radius: 20%;
+}
+
+.background {
+  border-radius: 1em;
+  padding: 0px;
+}
+
+window {
+  border-radius: 1em;
+}
+
+box {
+  border-radius: 1em;
+  background-color: #1e1e2e;
+  background-image: none;
+  box-shadow: none;
+}
+
+menubar {
+  background-color: #1e1e2e;
+  background-image: none;
+  box-shadow: none;
+}
+
+button {
+  transition-timing-function: linear;
+  background-color: #1e1e2e;
+  background-image: none;
+  box-shadow: none;
+  color: #89b4fa;
+  box-shadow: none;
+}
+button .item {
+  transition-duration: 0.2s;
+  transition-timing-function: linear;
+}
+button box {
+  transition-duration: 0.2s;
+  transition-timing-function: linear;
+}
+button:hover {
+  background-color: #89b4fa;
+}
+button:hover label {
+  color: #1e1e2e;
+}
+button:hover box {
+  background-color: #89b4fa;
+  color: #1e1e2e;
+}
+
+label {
+  color: #89b4fa;
+  box-shadow: none;
+}
+
+scale trough {
+  min-width: 1px;
+  min-height: 2px;
+}
+.popup {
+  border: 1px solid #585b70;
+  padding: 1em;
+}
+
+/* -- clipboard -- */
+.clipboard {
+  margin-left: 5px;
+  font-size: 1.1em;
+}
+
+.popup-clipboard .item {
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #585b70;
+  border-radius: 0%;
+}
+
+/* -- clock -- */
+.clock {
+  font-weight: normal;
+  margin-left: 5px;
+}
+
+.popup-clock .calendar-clock {
+  color: #89b4fa;
+  font-size: 2.5em;
+  padding-bottom: 0.1em;
+}
+.popup-clock .calendar {
+  background-color: #1e1e2e;
+  color: #89b4fa;
+  border-bottom-left-radius: 5%;
+  border-bottom-right-radius: 5%;
+}
+.popup-clock .calendar .header {
+  padding-top: 1em;
+  border-top: 1px solid #585b70;
+  font-size: 1.5em;
+}
+.popup-clock .calendar:selected {
+  background-color: #89b4fa;
+  color: #1e1e2e;
+  border-radius: 20%;
+}
+
+/* -- launcher -- */
+.launcher .item {
+  margin-right: 4px;
+}
+.launcher .ifix examtem:not(.focused):hover {
+  background-color: #89b4fa;
+}
+.launcher .open {
+  border-bottom: 1px solid #89b4fa;
+}
+.launcher .focused {
+  border-bottom: 1px solid #cba6f7;
+}
+.launcher .urgent {
+  border-bottom-color: #f38ba8;
+}
+
+.popup-launcher {
+  padding: 0;
+}
+.popup-launcher .popup-item:not(:first-child) {
+  border-top: 1px solid #585b70;
+}
+
+/* -- music -- */
+.music:hover * {
+  background-color: #89b4fa;
+}
+
+.popup-music {
+  /* -- volume -- */
+}
+.popup-music .album-art {
+  margin-right: 1em;
+}
+.popup-music .icon-box {
+  margin-right: 0.4em;
+}
+.popup-music .title .icon {
+  font-size: 1.7em;
+}
+.popup-music .title .label {
+  font-size: 1.7em;
+}
+.popup-music .controls *:disabled {
+  color: #585b70;
+}
+.popup-music .volume .slider slider {
+  border-radius: 100%;
+}
+.popup-music .volume .icon {
+  margin-left: 4px;
+}
+.popup-music .progress .slider slider {
+  border-radius: 100%;
+}
+
+/* notifications */
+.notifications .count {
+  font-size: 0.6rem;
+  background-color: #89b4fa;
+  color: #1e1e2e;
+  border-radius: 100%;
+  margin-right: 3px;
+  margin-top: 3px;
+  padding-left: 4px;
+  padding-right: 4px;
+  opacity: 0.7;
+}
+
+.script {
+  padding-left: 10px;
+}
+
+/* -- sys_info -- */
+/* -- tray -- */
+.tray {
+  margin-left: 10px;
+}
+
+/* -- Volume -- */
+.popup-volume .slider .top {
+  color: #89b4fa;
+}
+.popup-volume slider {
+  background-color: #89b4fa;
+}
+.popup-volume highlight {
+  background-color: #89b4fa;
+}
+.popup-volume .device-box {
+  border-right: 1px solid #585b70;
+}
+.popup-volume .device-box .device-selector .combo:hover box {
+  background-color: #89b4fa;
+  color: #1e1e2e;
+}
+.popup-volume .device-box .device-selector menu {
+  background-color: #1e1e2e;
+  color: #89b4fa;
+}
+.popup-volume .device-box .device-selector menuitem:hover {
+  background-color: #89b4fa;
+  color: #1e1e2e;
+}
+
+/* -- workspaces -- */
+.workspaces .item.focused {
+  background-color: transparent;
+}
+.workspaces .item.focused > label {
+  color: #a6e3a1;
+}
+
+/* -- custom: power menu -- */
+.popup-power-menu #header {
+  font-size: 1.2em;
+  padding-bottom: 0.4em;
+  margin-bottom: 0.6em;
+  border-bottom: 1px solid #585b70;
+}
+.popup-power-menu #profile-pic {
+  margin-bottom: 0.6em;
+}
+.popup-power-menu .power-btn {
+  border-radius: 20%;
+  padding: 0.1em 1em;
+  margin: 0.3em;
+}
+.popup-power-menu #buttons > *:nth-child(1) .power-btn {
+  margin-right: 1em;
+}
+
+/*# sourceMappingURL=style.css.map */

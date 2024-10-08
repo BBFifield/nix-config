@@ -3,9 +3,37 @@
   pkgs,
   lib,
   ...
-}:
-with lib; let
+}: let
   cfg = config.hm.theme;
+
+  iconThemeAttrs = {
+    "icons.breezeChameleon" = ''"Breeze-Round-Chameleon Dark Icons"'';
+    "morewaita-icon-theme" = "MoreWaita";
+    "tela-icon-theme" = "Tela";
+    "qogir-icon-theme" = "Qogir";
+  };
+  iconThemeEnums = lib.attrValues iconThemeAttrs;
+
+  gtkThemeAttrs = {
+    adw-gtk3 = "adw-gtk3";
+    adw-gtk3-dark = "adw-gtk3";
+    orchis = "orchis-theme";
+    Breeze = "kdePackages.breeze";
+  };
+  gtkThemeEnums = builtins.attrNames gtkThemeAttrs;
+  defaultGtkTheme = builtins.elemAt gtkThemeEnums 0;
+  gtkThemeSubmodule = lib.types.submodule {
+    options = {
+      name = lib.mkOption {
+        type = lib.types.enum gtkThemeEnums;
+        default = defaultGtkTheme;
+      };
+      package = lib.mkOption {
+        type = lib.types.package;
+        default = pkgs.${gtkThemeAttrs.${defaultGtkTheme}};
+      };
+    };
+  };
 
   nfAttrs = {
     VictorMono = {name = "VictorMono Nerd Font";};
@@ -18,71 +46,63 @@ with lib; let
   };
   nfToFetch = builtins.attrNames nfAttrs;
   nfEnums = with builtins; attrValues (mapAttrs (name: value: value.name) nfAttrs);
-
-  iconThemeAttrs = {
-    "icons.breezeChameleon" = ''"Breeze-Round-Chameleon Dark Icons"'';
-    "morewaita-icon-theme" = "MoreWaita";
-    "tela-icon-theme" = "Tela";
-    "qogir-icon-theme" = "Qogir";
+  fontsSubmodule = lib.types.submodule {
+    options = {
+      defaultMonospace = lib.mkOption {
+        type = lib.types.enum nfEnums;
+        default = "JetBrainsMono";
+      };
+    };
   };
-  iconThemeEnums = builtins.attrValues iconThemeAttrs;
-
-  gtkThemeAttrs = {
-    adw-gtk3 = "adw-gtk3";
-    adw-gtk3-dark = "adw-gtk3";
-    orchis = "orchis-theme";
-    Breeze = "kdePackages.breeze";
-  };
-  gtkThemeEnums = builtins.attrNames gtkThemeAttrs;
 
   cursorThemeAttrs = {
     "BreezeX-Dark" = "icons.breezeXcursor";
   };
   cursorThemeEnums = builtins.attrNames cursorThemeAttrs;
-
-  gtkThemeSubmodule = types.submodule {
+  cursorSubmodule = lib.types.submodule {
     options = {
-      name = mkOption {
-        type = types.enum gtkThemeEnums;
-        default = "adw-gtk3-dark";
-      };
-      package = mkOption {
-        type = types.package;
-        default = pkgs.adw-gtk3;
-      };
-    };
-  };
-  fontsSubmodule = types.submodule {
-    options = {
-      defaultMonospace = mkOption {
-        type = types.enum nfEnums;
-        default = "JetBrainsMono";
-      };
-    };
-  };
-  cursorSubmodule = types.submodule {
-    options = {
-      size = mkOption {
-        type = types.ints.positive;
+      size = lib.mkOption {
+        type = lib.types.ints.positive;
         default = 28;
       };
-      name = mkOption {
-        type = types.enum cursorThemeEnums;
+      name = lib.mkOption {
+        type = lib.types.enum cursorThemeEnums;
         default = "BreezeX-Dark";
       };
-      package = mkOption {
-        type = types.package;
+      package = lib.mkOption {
+        type = lib.types.package;
         default = pkgs.${cursorThemeAttrs."BreezeX-Dark"}; #pkgs.icons.breezeXcursor;
       };
     };
   };
+
+  colorSchemes = import ./colorSchemes.nix;
+  colorSchemeEnums = builtins.attrNames colorSchemes;
+  defaultScheme = builtins.elemAt colorSchemeEnums 0;
+  defaultVariant = builtins.elemAt (builtins.attrNames colorSchemes.${defaultScheme}.variant) 0;
+  colorSchemeSubmodule = lib.types.submodule {
+    options = {
+      name = lib.mkOption {
+        type = lib.types.enum colorSchemeEnums;
+        default = defaultScheme;
+      };
+      variant = lib.mkOption {
+        type = lib.types.str;
+        default = defaultVariant;
+      };
+      props = lib.mkOption {
+        type = lib.types.attrs;
+        default = colorSchemes.${defaultScheme}.variant.${defaultVariant};
+      };
+    };
+  };
 in {
-  options.hm.theme = {
+  options.hm.theme = with lib; {
     gtkTheme = mkOption {
       type = gtkThemeSubmodule;
       default = {
-        name = "adw-gtk3-dark";
-        package = pkgs.adw-gtk;
+        name = defaultGtkTheme;
+        package = pkgs.${gtkThemeAttrs.${defaultGtkTheme}};
       };
     };
     iconTheme = mkOption {
@@ -101,6 +121,14 @@ in {
         package = pkgs.${cursorThemeAttrs."BreezeX-Dark"}; #pkgs.icons.breezeXcursor;
       };
     };
+    colorScheme = mkOption {
+      type = colorSchemeSubmodule;
+      default = {
+        name = defaultScheme;
+        variant = defaultVariant;
+        props = colorSchemes.${defaultScheme}.variant.${defaultVariant};
+      };
+    };
   };
 
   config = {
@@ -111,15 +139,15 @@ in {
     hm.theme.gtkTheme.package = let
       pkgNameParts = lib.splitString "." gtkThemeAttrs.${cfg.gtkTheme.name};
     in
-      mkPkgName {} pkgs pkgNameParts;
+      lib.mkPkgName {} pkgs pkgNameParts;
 
     hm.theme.cursorTheme.package = let
       pkgNameParts = lib.splitString "." cursorThemeAttrs.${cfg.cursorTheme.name};
     in
-      mkPkgName {} pkgs pkgNameParts;
+      lib.mkPkgName {} pkgs pkgNameParts;
 
     home.packages = with pkgs; let
-      filterByValue = value: attrs: builtins.filter (name: attrs.${name} == value) (builtins.attrNames attrs); # Get icon package to be installed
+      filterByValue = value: attrs: builtins.filter (name: attrs.${name} == value) (lib.attrNames attrs); # Get icon package to be installed
       iconTheme = pkgs.${builtins.head (filterByValue cfg.iconTheme iconThemeAttrs)};
       dependencies = lib.optionals (cfg.iconTheme == "MoreWaita") [pkgs.adwaita-icon-theme]; #MoreWaita requires Adwaita to also be installed
       iconThemePkgs = [iconTheme] ++ dependencies;
@@ -132,5 +160,10 @@ in {
         })
       ]
       ++ [cfg.cursorTheme.package]; # custom # Needs to be installed system-wide so sddm has access to it;
+
+    hm.theme.colorScheme.props = let
+      variantEnums = lib.attrNames colorSchemes.${cfg.colorScheme.name}.variant;
+    in
+      assert lib.assertOneOf "variant" cfg.colorScheme.variant variantEnums; colorSchemes.${cfg.colorScheme.name}.variant.${cfg.colorScheme.variant};
   };
 }

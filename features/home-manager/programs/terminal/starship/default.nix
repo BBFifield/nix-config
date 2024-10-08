@@ -36,7 +36,7 @@ in {
         "$cmd_duration"
         "$status"
         "$line_break"
-        "[❯](bold purple)"
+        "[](bold purple)" #❯
         ''''${custom.space}''
       ];
       custom.space = {
@@ -73,7 +73,7 @@ in {
           " [${pad.left}](fg:bright-black)"
           "[$path](bg:bright-black fg:white)"
           "[${pad.right}](fg:bright-black)"
-          " [$read_only](fg:yellow)"
+          " [$read_only](fg:)"
         ];
         read_only = " ";
         truncate_to_repo = true;

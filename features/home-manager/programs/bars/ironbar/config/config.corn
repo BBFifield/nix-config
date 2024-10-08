@@ -47,20 +47,45 @@ $config_dir = ".config/ironbar"
     icons.open_dnd = "󱅮"
   }
 
-  $sys_info = {
+  $sys_info_label = {
     type = "sys_info"
 
-    interval.memory = 30
-    interval.cpu = 1
+    interval.memory = 5
+    interval.cpu = 5
     interval.temps = 5
-    interval.disks = 300
-    interval.networks = 3
+    interval.disks = 30
+    interval.networks = 2
 
     format = [
       "  {cpu_percent}%|{temp_c:k10temp-Tctl}°C"
       "  {memory_used}GB({memory_percent}%)"
-      "󰋊 {disk_used:/}/{disk_total:/}GB({disk_percent:/}%)"
-      "{net_down:enp9s0}/{net_up:enp9s0}Mbps"
+      // "󰋊 STORAGE\n {disk_used:/}/{disk_total:/}GB({disk_percent:/}%)"
+      // "{net_down:enp9s0}/{net_up:enp9s0}Mbps\n"
+    ]
+  }
+
+  $custom_sys_info = {
+    type = "script"
+    cmd = "bash /home/brandon/nixos-config/features/home-manager/programs/ironbar/config/sys_info.sh"
+    mode = "poll"
+    interval = 5000
+  }
+
+  $sys_info_menu = {
+    type = "custom"
+    bar = [
+      { type = "button" name = "stats-btn" on_click = "popup:toggle" 
+        widgets = [ $sys_info_label ]
+      }
+    ]
+    popup = [
+      {
+        type = "box"
+        orientation = "vertical"
+        widgets = [
+          $custom_sys_info
+        ]
+      }
     ]
   }
 
@@ -107,8 +132,10 @@ $config_dir = ".config/ironbar"
         name = "power-actions-box"
         widgets = [
           // {type = "box" class = "spacer-box" }
-          { type = "button" class="power-btn" label = "<span font-size='30pt'>󰐥</span>" on_click = "!shutdown now" }
-          { type = "button" class="power-btn" label = "<span font-size='30pt'>󰜉</span>" on_click = "!reboot" }
+          { type = "button" class="power-btn" label = "<span font-size='25pt'>󰗽</span>" on_click = "!pkill -U $(echo $(whoami))" }
+          { type = "button" class="power-btn" label = "<span font-size='25pt'>󰌾</span>" on_click = "!~/.config/hypr/start_hyprlock.sh" }
+          { type = "button" class="power-btn" label = "<span font-size='25pt'>󰐥</span>" on_click = "!shutdown now" }
+          { type = "button" class="power-btn" label = "<span font-size='25pt'>󰜉</span>" on_click = "!reboot" }
           // {type = "box" class = "spacer-box" }
         ]
       }
@@ -125,7 +152,7 @@ $config_dir = ".config/ironbar"
 
   $left = [ $workspaces ]
   $center = [ $clock $notifications ]
-  $right = [ $sys_info $clipboard $volume $power_menu ]
+  $right = [ $sys_info_menu $clipboard $volume $power_menu ]
 }
 
 in {
