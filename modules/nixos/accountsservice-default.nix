@@ -4,11 +4,10 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
+}: let
   cfg = config.services.accounts-daemon.defaultSettings;
 
-  templateFile = pkgs.writeText "user-template" (generators.toINI {} cfg);
+  templateFile = pkgs.writeText "user-template" (lib.generators.toINI {} cfg);
   templateDir = "/share/accountsservice/user-templates";
   templates = pkgs.runCommand "user-templates" {} ''
     mkdir -p $out${templateDir}
@@ -18,8 +17,8 @@ with lib; let
     ln -s ${templateFile} standard
   '';
 in {
-  options.services.accounts-daemon.defaultSettings = mkOption {
-    type = types.anything;
+  options.services.accounts-daemon.defaultSettings = lib.mkOption {
+    type = lib.types.anything;
     default = {};
     description = ''
       Settings that should be set on by default on the AccountsService cache

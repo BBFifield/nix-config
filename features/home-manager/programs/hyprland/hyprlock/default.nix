@@ -24,7 +24,7 @@ with lib; {
           }
           .${builtins.toString osConfig.nixos.desktop.hidpi.enable};
 
-        cfg = config.hm.theme.colorScheme.props;
+        cfg = config.hm.theme.colorScheme.cognates;
       in
         mkMerge [
           {
@@ -49,7 +49,7 @@ with lib; {
             "$font" = "${config.hm.theme.fonts.defaultMonospace}";
 
             background = {
-              color = "rgb(${cfg.base})";
+              color = "rgb(${cfg.bg})";
             };
 
             # LAYOUT
@@ -108,7 +108,7 @@ with lib; {
               dots_spacing = 0.2 * scale;
               dots_center = true;
               outer_color = "$accent";
-              inner_color = "rgb(${cfg.surface0})";
+              inner_color = "rgb(${cfg.textField})";
               font_color = "$text";
               fade_on_empty = "false";
               placeholder_text = ''<span foreground="##${cfg.text}"><i>󰌾 Logged in as </i><span foreground="##$accentAlpha">$USER</span></span>'';

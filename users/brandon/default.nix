@@ -36,6 +36,7 @@ in {
     lib.mkMerge [
       ###### BASE CONFIG ######
       {
+        hotload.enable = true;
         firefox.enable = true;
         vscodium.enable = true;
         neovim = {
@@ -92,7 +93,12 @@ in {
         };
         hyprland = lib.mkMerge [
           {enable = true;}
-          (lib.optionalAttrs (sysCfg.desktop.hyprland.shell == "vanilla") {shell = "vanilla";})
+          (lib.optionalAttrs (sysCfg.desktop.hyprland.shell == "vanilla") {
+            shell = {
+              name = "vanilla";
+              hotload.enable = false;
+            };
+          })
           (lib.optionalAttrs (sysCfg.desktop.hyprland.shell == "asztal") {shell = "asztal";})
           (lib.optionalAttrs (sysCfg.desktop.hyprland.shell == "hyprpanel") {shell = "hyprpanel";})
         ];

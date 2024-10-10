@@ -20,8 +20,8 @@
     orchis = "orchis-theme";
     Breeze = "kdePackages.breeze";
   };
-  gtkThemeEnums = builtins.attrNames gtkThemeAttrs;
-  defaultGtkTheme = builtins.elemAt gtkThemeEnums 0;
+  gtkThemeEnums = lib.attrNames gtkThemeAttrs;
+  defaultGtkTheme = lib.elemAt gtkThemeEnums 0;
   gtkThemeSubmodule = lib.types.submodule {
     options = {
       name = lib.mkOption {
@@ -44,8 +44,8 @@
     CascadiaCode = {name = "CaskaydiaCove Nerd Font Mono";};
     FiraCode = {name = "FiraCode Nerd Font";};
   };
-  nfToFetch = builtins.attrNames nfAttrs;
-  nfEnums = with builtins; attrValues (mapAttrs (name: value: value.name) nfAttrs);
+  nfToFetch = lib.attrNames nfAttrs;
+  nfEnums = lib.attrValues (lib.mapAttrs (name: value: value.name) nfAttrs);
   fontsSubmodule = lib.types.submodule {
     options = {
       defaultMonospace = lib.mkOption {
@@ -58,7 +58,7 @@
   cursorThemeAttrs = {
     "BreezeX-Dark" = "icons.breezeXcursor";
   };
-  cursorThemeEnums = builtins.attrNames cursorThemeAttrs;
+  cursorThemeEnums = lib.attrNames cursorThemeAttrs;
   cursorSubmodule = lib.types.submodule {
     options = {
       size = lib.mkOption {
@@ -75,59 +75,21 @@
       };
     };
   };
-
-  colorSchemes = import ./colorSchemes.nix;
-  colorSchemeEnums = builtins.attrNames colorSchemes;
-  defaultScheme = builtins.elemAt colorSchemeEnums 0;
-  defaultVariant = builtins.elemAt (builtins.attrNames colorSchemes.${defaultScheme}.variant) 0;
-  colorSchemeSubmodule = lib.types.submodule {
-    options = {
-      name = lib.mkOption {
-        type = lib.types.enum colorSchemeEnums;
-        default = defaultScheme;
-      };
-      variant = lib.mkOption {
-        type = lib.types.str;
-        default = defaultVariant;
-      };
-      props = lib.mkOption {
-        type = lib.types.attrs;
-        default = colorSchemes.${defaultScheme}.variant.${defaultVariant};
-      };
-    };
-  };
 in {
+  imports = [./colorSchemes.nix {}];
+
   options.hm.theme = with lib; {
     gtkTheme = mkOption {
       type = gtkThemeSubmodule;
-      default = {
-        name = defaultGtkTheme;
-        package = pkgs.${gtkThemeAttrs.${defaultGtkTheme}};
-      };
     };
     iconTheme = mkOption {
       type = types.enum iconThemeEnums;
-      default = "MoreWaita";
     };
     fonts = mkOption {
       type = fontsSubmodule;
-      default = "JetBrainsMono";
     };
     cursorTheme = mkOption {
       type = cursorSubmodule;
-      default = {
-        size = 24;
-        name = "BreezeX-Dark";
-        package = pkgs.${cursorThemeAttrs."BreezeX-Dark"}; #pkgs.icons.breezeXcursor;
-      };
-    };
-    colorScheme = mkOption {
-      type = colorSchemeSubmodule;
-      default = {
-        name = defaultScheme;
-        variant = defaultVariant;
-        props = colorSchemes.${defaultScheme}.variant.${defaultVariant};
-      };
     };
   };
 
@@ -160,10 +122,5 @@ in {
         })
       ]
       ++ [cfg.cursorTheme.package]; # custom # Needs to be installed system-wide so sddm has access to it;
-
-    hm.theme.colorScheme.props = let
-      variantEnums = lib.attrNames colorSchemes.${cfg.colorScheme.name}.variant;
-    in
-      assert lib.assertOneOf "variant" cfg.colorScheme.variant variantEnums; colorSchemes.${cfg.colorScheme.name}.variant.${cfg.colorScheme.variant};
   };
 }

@@ -3,17 +3,16 @@
   pkgs,
   lib,
   ...
-}:
-with lib; let
+}: let
   cfg = config.hm.satty;
 
   tomlFormat = pkgs.formats.toml {};
 in {
   options.hm.satty = {
-    enable = mkEnableOption "Enable Satty, a screenshotting tool.";
+    enable = lib.mkEnableOption "Enable Satty, a screenshotting tool.";
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
       satty
       slurp #For screenrecording and screenshotting
@@ -45,7 +44,7 @@ in {
           style = "Bold";
         };
         color-palette = let
-          cfg = config.hm.theme.colorScheme.props;
+          cfg = config.hm.theme.colorScheme.cognates;
         in {
           first = "#${cfg.blue}";
           second = "#${cfg.red}";

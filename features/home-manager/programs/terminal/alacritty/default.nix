@@ -15,6 +15,9 @@ in {
           (lib.mkIf (cfg.colorScheme.name == "catppuccin") [
             pkgs.alacritty-theme."catppuccin_${cfg.colorScheme.variant}"
           ])
+          (lib.mkIf (cfg.colorScheme.name == "dracula") [
+            pkgs.alacritty-theme.dracula
+          ])
         ];
         font = {
           size = 11.0;
