@@ -133,21 +133,12 @@ with lib; let
       mvactive = binding "SUPER ALT" "moveactive";
       mvtows = binding "SUPER SHIFT" "movetoworkspace";
       arr = [1 2 3 4 5 6 7];
-
-      script = pkgs.writeShellScript "change_conf" ''
-        #!/usr/bin/env bash
-        cd ${config.home.homeDirectory}/.config/hypr
-        mv ./hyprland.conf ./hypr2/hyprland1.conf
-        mv ./hypr2/hyprland2.conf ./hyprland.conf
-        hyprctl reload
-      '';
     in
       [
         "SUPER, W, exec, firefox"
         "SUPER, F, exec, [workspace 3] alacritty -e yazi"
         "SUPER, E, exec, alacritty"
         "SUPER, C, exec, [workspace 1] alacritty -e nvim"
-        #"SUPER, T, exec, ${script}"
 
         # youtube
         ", XF86Launch1,  exec, ${yt}"
@@ -335,8 +326,7 @@ in {
           };
         };
       }
-
-      (lib.mkIf (!cfg.shell.hotload.enable) {
+      {
         wayland.windowManager.hyprland = {
           enable = true;
           systemd = {
@@ -348,7 +338,7 @@ in {
           xwayland.enable = true;
           inherit settings;
         };
-      })
+      }
     ]
   );
 }

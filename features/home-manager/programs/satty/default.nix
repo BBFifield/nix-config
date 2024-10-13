@@ -44,7 +44,7 @@ in {
           style = "Bold";
         };
         color-palette = let
-          cfg = config.hm.theme.colorScheme.cognates;
+          cfg = config.hm.theme.colorscheme.cognates;
         in {
           first = "#${cfg.blue}";
           second = "#${cfg.red}";

@@ -12,10 +12,10 @@ in {
       enable = true;
       settings = {
         import = lib.mkMerge [
-          (lib.mkIf (cfg.colorScheme.name == "catppuccin") [
-            pkgs.alacritty-theme."catppuccin_${cfg.colorScheme.variant}"
+          (lib.mkIf (cfg.colorscheme.name == "catppuccin") [
+            pkgs.alacritty-theme."catppuccin_${cfg.colorscheme.variant}"
           ])
-          (lib.mkIf (cfg.colorScheme.name == "dracula") [
+          (lib.mkIf (cfg.colorscheme.name == "dracula") [
             pkgs.alacritty-theme.dracula
           ])
         ];

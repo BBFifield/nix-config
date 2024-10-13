@@ -1,12 +1,11 @@
 {
-  pkgs,
   config,
+  pkgs,
   lib,
   ...
 }:
 with lib; let
   cfg = config.hm.hyprland.shell;
-
   shellSubmodule = lib.types.submodule {
     options = {
       name = mkOption {
@@ -23,7 +22,29 @@ with lib; let
       };
     };
   };
-  settings = cognates: let
+
+  switch_conf = pkgs.writeShellScript "switch_conf" ''
+    #!/usr/bin/env bash
+    directory=${config.home.homeDirectory}/.config/hypr
+    current_colorscheme="$1"
+    switch_config() {
+      rm "$directory/hyprland_colors.conf"
+      cp -rf "$directory/hyprland_colorschemes/$1" "$directory/hyprland_colors.conf"
+    }
+
+    if [ "$(ls -1 "$directory/hyprland_colorschemes" | wc -l)" -le 1 ]; then
+      exit 1
+    else
+      next_colorscheme=$(ls -1 "$directory/hyprland_colorschemes" | sed -n "/$current_colorscheme/{n;p}")
+      if [[ -z "$next_colorscheme" ]]; then
+        next_colorscheme=$(ls -1 "$directory/hyprland_colorschemes" | sed -n '1p')
+      fi
+    fi
+    switch_config "$next_colorscheme"
+    hyprctl reload
+  '';
+
+  settings = theme: cognates: let
     inherit cognates;
     activeBorder1 = cognates.borderActive1;
     activeBorder2 = cognates.borderActive2;
@@ -35,7 +56,11 @@ with lib; let
         "wpaperd -d"
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
       ]
-      ++ (lib.optionals (config.hm.gBar.enable == true) ["gBar bar 0"]);
+      ++ (lib.optionals (config.hm.gBar.enable) ["gBar bar 0"]);
+
+    env = [
+      "CURRENT_COLORSCHEME,hyprland_${theme}.conf"
+    ];
 
     general = {
       "col.active_border" = "rgba(${activeBorder1}ff) rgba(${activeBorder2}ff) 45deg";
@@ -50,11 +75,12 @@ with lib; let
     };
 
     bind = [
+      ''SUPER, T, exec, ${switch_conf} hyprland_${theme}.conf''
       "SUPER, R, exec, walker"
       "SUPER, N, exec, wpaperctl next"
       "SUPER, P, exec, hyprpicker --autocopy"
       "SUPER CTRL, H, exec, hyprshade toggle blue-light-filter"
-      ''SUPER, S, exec, grim -g "$(slurp -o -r -c '##${activeBorder1}ff')" -t ppm - | satty --filename -''
+      "SUPER, S, exec, grim -g \"$(slurp -o -r -c '##${activeBorder1}ff')\" -t ppm - | satty --filename -"
     ];
   };
 in {
@@ -64,6 +90,7 @@ in {
       description = "Choose a customized shell.";
     };
   };
+
   config = mkIf config.hm.hyprland.enable (
     mkMerge [
       (mkIf (config.hm.hyprland.shell.name == "hyprpanel") {
@@ -81,7 +108,7 @@ in {
           };
         };
       })
-      (mkIf (config.hm.hyprland.shell == "asztal") {
+      (mkIf (config.hm.hyprland.shell.name == "asztal") {
         home = {
           packages = with pkgs; [
             asztal
@@ -110,28 +137,40 @@ in {
       })
       (mkIf (cfg.name == "vanilla") (
         let
-          attrset = config.hm.theme.colorScheme.all;
+          attrset = import ../../../themes/colorschemeInfo.nix;
           themeNames = lib.attrNames attrset;
           getVariantNames = theme: lib.attrNames attrset.${theme}.variants;
-          result = lib.listToAttrs (lib.concatMap (theme:
+
+          result = lib.listToAttrs (builtins.concatMap (theme:
             lib.map (variant: {
               name = "${theme}_${variant}";
               value = attrset.${theme}.cognates variant;
             }) (getVariantNames theme))
           themeNames);
 
-          createFile = themeName: cognates: {
-            xdg.configFile."hypr/hypr_${themeName}/hyprland_${themeName}.conf".text = lib.hm.generators.toHyprconf {
-              attrs = settings cognates;
+          createFile = name: value: {
+            xdg.configFile."hypr/hyprland_colorschemes/hyprland_${name}.conf".text = lib.hm.generators.toHyprconf {
+              attrs = settings name value;
               inherit (config.wayland.windowManager.hyprland) importantPrefixes;
             };
           };
 
-          files = builtins.trace result (builtins.mapAttrs (themeName: cognates: createFile themeName cognates) result);
+          files = mkMerge [
+            (lib.foldl' (acc: item: {xdg.configFile = acc.xdg.configFile // item.xdg.configFile;}) {xdg.configFile = {};} (lib.attrValues (lib.mapAttrs (name: value: createFile name value) result)))
+            {
+              xdg.configFile."hypr/hyprland_colors.conf".text = let
+                name = "${config.hm.theme.colorscheme.name}_${config.hm.theme.colorscheme.variant}";
+                cognates = config.hm.theme.colorscheme.cognates;
+              in
+                lib.hm.generators.toHyprconf {
+                  attrs = settings name cognates;
+                  inherit (config.wayland.windowManager.hyprland) importantPrefixes;
+                };
+            }
+          ];
         in
           mkMerge [
             {
-              #hm.gBar.enable = true;
               hm.wpaperd.enable = true;
               hm.hyprland.hyprlock.enable = true;
               hm.walker.enable = true;
@@ -142,19 +181,24 @@ in {
                 hyprpicker
                 clipse #TUI clipboard manager
                 hyprshade #Screenshader utility
-                slurp #For screenrecording and screenshotting
+                slurp #For screen recording and screenshotting
                 grim #Screenshotter
               ];
             }
-
-            (
-              lib.mkIf (cfg.hotload.enable)
-              files
-            )
-
+            (lib.mkIf (cfg.hotload.enable)
+              {
+                wayland.windowManager.hyprland.extraConfig = ''
+                  source = ${config.home.homeDirectory}/.config/hypr/hyprland_colors.conf
+                '';
+              })
+            (lib.mkIf (cfg.hotload.enable) files)
             {
               wayland.windowManager.hyprland = (lib.mkIf (!cfg.hotload.enable)) {
-                settings = settings config.hm.theme.colorScheme.cognates;
+                settings = let
+                  name = "${config.hm.theme.colorscheme.name}_${config.hm.theme.colorscheme.variant}";
+                  cognates = config.hm.theme.colorscheme.cognates;
+                in
+                  settings name cognates;
               };
             }
           ]

@@ -4,12 +4,15 @@
   osConfig,
   ...
 }:
-with lib; {
+with lib; let
+  hotloadSubmodule = import ../../../submodules {inherit lib;};
+in {
   options.hm.hyprland.hyprlock = {
     enable = mkEnableOption "Enable Hyprlock.";
+    hotload = hotloadSubmodule;
   };
   config = mkIf config.hm.hyprland.enable {
-    xdg.configFile."hypr/start_hyprland.sh".source = ./start_hyprlock.sh; # This ensures the script is available to ironbar while its config is outside of the store;
+    xdg.configFile."hypr/start_hyprlock.sh".source = ./start_hyprlock.sh; # This ensures the script is available to ironbar while its config is outside of the store;
     programs.hyprlock = {
       enable = true;
       # sourceFirst = true;
@@ -24,7 +27,7 @@ with lib; {
           }
           .${builtins.toString osConfig.nixos.desktop.hidpi.enable};
 
-        cfg = config.hm.theme.colorScheme.cognates;
+        cfg = config.hm.theme.colorscheme.cognates;
       in
         mkMerge [
           {
@@ -41,7 +44,7 @@ with lib; {
               blur_passes = 2;
             };
           }
-          (mkIf (config.hm.theme.colorScheme.name == "catppuccin") {
+          (mkIf (config.hm.theme.colorscheme.name == "catppuccin") {
             source = "$HOME/.config/hypr/hyprland.conf";
             "$accent" = "rgb(${cfg.borderActive1})";
             "$accentAlpha" = "${cfg.borderActive1}";

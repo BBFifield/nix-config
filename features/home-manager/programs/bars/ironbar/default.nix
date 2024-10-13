@@ -7,9 +7,12 @@
 with lib; let
   cfg = config.hm.ironbar;
   mkOutOfStoreSymlink = config.lib.file.mkOutOfStoreSymlink;
+
+  hotloadSubmodule = import ../../../submodules {inherit lib;};
 in {
   options.hm.ironbar = {
     enable = mkEnableOption "Enable ironbar statusbar.";
+    hotload = hotloadSubmodule;
   };
 
   config = mkIf cfg.enable {

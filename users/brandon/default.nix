@@ -86,7 +86,7 @@ in {
         theme = {
           gtkTheme.name = "adw-gtk3-dark";
           iconTheme = "MoreWaita";
-          colorScheme = {
+          colorscheme = {
             name = "catppuccin";
             variant = "macchiato";
           };
@@ -96,7 +96,7 @@ in {
           (lib.optionalAttrs (sysCfg.desktop.hyprland.shell == "vanilla") {
             shell = {
               name = "vanilla";
-              hotload.enable = false;
+              hotload.enable = true;
             };
           })
           (lib.optionalAttrs (sysCfg.desktop.hyprland.shell == "asztal") {shell = "asztal";})

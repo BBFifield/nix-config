@@ -16,7 +16,7 @@ in {
       ueberzugpp
     ];
     programs.yazi = let
-      cfg = config.hm.theme.colorScheme;
+      cfg = config.hm.theme.colorscheme;
     in {
       enable = true;
       enableBashIntegration = true;

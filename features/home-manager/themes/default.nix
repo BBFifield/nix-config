@@ -76,7 +76,7 @@
     };
   };
 in {
-  imports = [./colorSchemes.nix {}];
+  imports = [./colorschemes.nix];
 
   options.hm.theme = with lib; {
     gtkTheme = mkOption {
