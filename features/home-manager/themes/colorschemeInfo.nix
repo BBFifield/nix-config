@@ -115,10 +115,10 @@
       };
     };
     cognates = value: {
-      borderActive1 = variants.${value}.mauve;
-      borderActive2 = variants.${value}.rosewater;
-      borderInactive1 = variants.${value}.lavender;
-      borderInactive2 = variants.${value}.overlay0;
+      activeBorder1 = variants.${value}.mauve;
+      activeBorder2 = variants.${value}.rosewater;
+      inactiveBorder1 = variants.${value}.lavender;
+      inactiveBorder2 = variants.${value}.overlay0;
       text = variants.${value}.text;
       textField = variants.${value}.surface0;
       bg = variants.${value}.base;
@@ -163,10 +163,10 @@
       };
     };
     cognates = value: {
-      borderActive1 = variants.${value}.green;
-      borderActive2 = variants.${value}.cyan;
-      borderInactive1 = variants.${value}.comment;
-      borderInactive2 = variants.${value}.currentLine;
+      activeBorder1 = variants.${value}.green;
+      activeBorder2 = variants.${value}.cyan;
+      inactiveBorder1 = variants.${value}.comment;
+      inactiveBorder2 = variants.${value}.currentLine;
       text = variants.${value}.foreground;
       textField = variants.${value}.currentLine;
       bg = variants.${value}.background;

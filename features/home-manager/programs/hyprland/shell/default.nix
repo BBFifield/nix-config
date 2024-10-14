@@ -28,8 +28,10 @@ with lib; let
     directory=${config.home.homeDirectory}/.config/hypr
     current_colorscheme="$1"
     switch_config() {
-      rm "$directory/hyprland_colors.conf"
-      cp -rf "$directory/hyprland_colorschemes/$1" "$directory/hyprland_colors.conf"
+      rm "$directory/colorscheme_settings.conf"
+      rm "$directory/hyprland_colorscheme.conf"
+      cp -rf "$directory/hyprland_colorschemes/$1" "$directory/hyprland_colorscheme.conf"
+      cp -rf "$directory/colorscheme_settings/$1" "$directory/colorscheme_settings.conf"
     }
 
     if [ "$(ls -1 "$directory/hyprland_colorschemes" | wc -l)" -le 1 ]; then
@@ -44,13 +46,13 @@ with lib; let
     hyprctl reload
   '';
 
-  settings = theme: cognates: let
-    inherit cognates;
-    activeBorder1 = cognates.borderActive1;
-    activeBorder2 = cognates.borderActive2;
-    inactiveBorder1 = cognates.borderInactive1;
-    inactiveBorder2 = cognates.borderInactive2;
-  in {
+  settings = {
+    source =
+      [
+        "${config.home.homeDirectory}/.config/hypr/hyprland_colorscheme.conf"
+      ]
+      ++ (lib.optionals (config.hm.hotload.enable) ["${config.home.homeDirectory}/.config/hypr/colorscheme_settings.conf"]);
+
     exec-once =
       [
         "wpaperd -d"
@@ -58,29 +60,31 @@ with lib; let
       ]
       ++ (lib.optionals (config.hm.gBar.enable) ["gBar bar 0"]);
 
-    env = [
-      "CURRENT_COLORSCHEME,hyprland_${theme}.conf"
-    ];
-
     general = {
-      "col.active_border" = "rgba(${activeBorder1}ff) rgba(${activeBorder2}ff) 45deg";
-      "col.inactive_border" = "rgba(${inactiveBorder1}cc) rgba(${inactiveBorder2}cc) 45deg";
+      "col.active_border" = "0xff$activeBorder1 0xff$activeBorder2 45deg";
+      "col.inactive_border" = "0xcc$inactiveBorder1 0xcc$inactiveBorder2 45deg";
     };
 
     group = {
-      "col.border_active" = "rgba(${activeBorder1}ff) rgba(${activeBorder2}ff) 45deg";
-      "col.border_inactive" = "rgba(${inactiveBorder1}cc) rgba(${inactiveBorder2}cc) 45deg";
-      "col.border_locked_active" = "rgba(${activeBorder1}ff) rgba(${activeBorder2}ff) 45deg";
-      "col.border_locked_inactive" = "rgba(${inactiveBorder1}cc) rgba(${inactiveBorder2}cc) 45deg";
+      "col.border_active" = "0xff$activeBorder1 0xff$activeBorder2 45deg";
+      "col.border_inactive" = "0xcc$inactiveBorder1 0xcc$inactiveBorder2 45deg";
+      "col.border_locked_active" = "0xff$activeBorder 0xff$activeBorder2 45deg";
+      "col.border_locked_inactive" = "0xcc$inactiveBorder1 0xcc$inactiveBorder2 45deg";
     };
 
     bind = [
-      ''SUPER, T, exec, ${switch_conf} hyprland_${theme}.conf''
       "SUPER, R, exec, walker"
       "SUPER, N, exec, wpaperctl next"
       "SUPER, P, exec, hyprpicker --autocopy"
       "SUPER CTRL, H, exec, hyprshade toggle blue-light-filter"
-      "SUPER, S, exec, grim -g \"$(slurp -o -r -c '##${activeBorder1}ff')\" -t ppm - | satty --filename -"
+      "SUPER, S, exec, grim -g \"$(slurp -o -r -c '##$activeBorder1ff')\" -t ppm - | satty --filename -"
+    ];
+  };
+
+  colorschemeSettings = theme: {
+    bind = ''SUPER, T, exec, ${switch_conf} ${theme}.conf'';
+    env = [
+      "CURRENT_COLORSCHEME,${theme}.conf"
     ];
   };
 in {
@@ -141,29 +145,53 @@ in {
           themeNames = lib.attrNames attrset;
           getVariantNames = theme: lib.attrNames attrset.${theme}.variants;
 
-          result = lib.listToAttrs (builtins.concatMap (theme:
+          mkColorPrefix = name: value: {
+            name = "\$${name}";
+            value = "${value}";
+          };
+
+          unpacked = lib.listToAttrs (lib.concatMap (theme:
             lib.map (variant: {
               name = "${theme}_${variant}";
               value = attrset.${theme}.cognates variant;
             }) (getVariantNames theme))
           themeNames);
 
-          createFile = name: value: {
-            xdg.configFile."hypr/hyprland_colorschemes/hyprland_${name}.conf".text = lib.hm.generators.toHyprconf {
-              attrs = settings name value;
-              inherit (config.wayland.windowManager.hyprland) importantPrefixes;
+          unpacked2 = lib.concatMap (theme:
+            lib.map (variant: {
+              name = "${theme}_${variant}";
+              value = let
+                cognates = attrset.${theme}.cognates variant;
+              in
+                lib.map (cognateName: mkColorPrefix cognateName cognates.${cognateName}) (lib.attrNames cognates);
+            }) (getVariantNames theme))
+          themeNames;
+
+          mkColorFile = name: value: {
+            xdg.configFile."hypr/hyprland_colorschemes/${name}.conf".text = lib.hm.generators.toHyprconf {
+              attrs = value;
             };
           };
 
-          files = mkMerge [
-            (lib.foldl' (acc: item: {xdg.configFile = acc.xdg.configFile // item.xdg.configFile;}) {xdg.configFile = {};} (lib.attrValues (lib.mapAttrs (name: value: createFile name value) result)))
+          mkSettingsFile = name: value: {
+            xdg.configFile."hypr/colorscheme_settings/${name}.conf".text = lib.hm.generators.toHyprconf {
+              attrs = colorschemeSettings name;
+              # inherit (config.wayland.windowManager.hyprland) importantPrefixes;
+            };
+          };
+
+          colorFiles = mkMerge [
+            (lib.foldl' (acc: item: {xdg.configFile = acc.xdg.configFile // item.xdg.configFile;}) {xdg.configFile = {};} (lib.attrValues (lib.mapAttrs (name: value: mkColorFile name (lib.listToAttrs value)) (lib.listToAttrs unpacked2))))
+          ];
+
+          settingsFiles = mkMerge [
+            (lib.foldl' (acc: item: {xdg.configFile = acc.xdg.configFile // item.xdg.configFile;}) {xdg.configFile = {};} (lib.attrValues (lib.mapAttrs (name: value: mkSettingsFile name value) unpacked)))
             {
-              xdg.configFile."hypr/hyprland_colors.conf".text = let
+              xdg.configFile."hypr/colorscheme_settings.conf".text = let
                 name = "${config.hm.theme.colorscheme.name}_${config.hm.theme.colorscheme.variant}";
-                cognates = config.hm.theme.colorscheme.cognates;
               in
                 lib.hm.generators.toHyprconf {
-                  attrs = settings name cognates;
+                  attrs = colorschemeSettings name;
                   inherit (config.wayland.windowManager.hyprland) importantPrefixes;
                 };
             }
@@ -181,26 +209,25 @@ in {
                 hyprpicker
                 clipse #TUI clipboard manager
                 hyprshade #Screenshader utility
-                slurp #For screen recording and screenshotting
+                slurp #For selecting region of the screen
                 grim #Screenshotter
               ];
-            }
-            (lib.mkIf (cfg.hotload.enable)
-              {
-                wayland.windowManager.hyprland.extraConfig = ''
-                  source = ${config.home.homeDirectory}/.config/hypr/hyprland_colors.conf
-                '';
-              })
-            (lib.mkIf (cfg.hotload.enable) files)
-            {
-              wayland.windowManager.hyprland = (lib.mkIf (!cfg.hotload.enable)) {
-                settings = let
-                  name = "${config.hm.theme.colorscheme.name}_${config.hm.theme.colorscheme.variant}";
-                  cognates = config.hm.theme.colorscheme.cognates;
-                in
-                  settings name cognates;
+
+              wayland.windowManager.hyprland = {
+                inherit settings;
               };
+
+              xdg.configFile."hypr/hyprland_colorscheme.conf".text = let
+                name = "${config.hm.theme.colorscheme.name}_${config.hm.theme.colorscheme.variant}";
+              in
+                lib.hm.generators.toHyprconf {
+                  attrs = lib.listToAttrs ((lib.head (lib.filter (theme: name == theme.name) unpacked2)).value);
+                };
             }
+            (lib.mkIf (cfg.hotload.enable) (mkMerge [
+              colorFiles
+              settingsFiles
+            ]))
           ]
       ))
     ]

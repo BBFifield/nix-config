@@ -18,5 +18,6 @@ in {
         wherever they are typically put without having to rebuild the entire configuration.
       '';
     };
+    hidpi.enable = lib.mkEnableOption "Enable hidpi (which just makes the scale 2x in relevant parts of the configuration).";
   };
 }

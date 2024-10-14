@@ -29,7 +29,7 @@ in {
   # lib.mergeAttrsList or // does not work here instead of lib.mkMerge because firefox for example, is
   # defined in both the base config and one of the optionals to be merged. The attribute sets only merge nicely if both contain distinct attribute keys,
   # so in this case firefox.enable = false (implied and the default value) from the optional set overrides the earlier declaration. "lib.mkMerge" otoh, merges
-  # explicitly declared values and ignores "implied".
+  # explicitly declared values and ignores implicit.
   hm = let
     sysCfg = osConfig.nixos;
   in
@@ -37,6 +37,8 @@ in {
       ###### BASE CONFIG ######
       {
         hotload.enable = true;
+        hidpi.enable = sysCfg.desktop.hidpi.enable;
+
         firefox.enable = true;
         vscodium.enable = true;
         neovim = {
@@ -80,7 +82,7 @@ in {
         };
       })
       ###### HYPRLAND CONFIG ######
-      (lib.optionalAttrs (osConfig.nixos.desktop.hyprland.enable) {
+      (lib.optionalAttrs (sysCfg.desktop.hyprland.enable) {
         firefox.style = "gnome";
         dconf.enable = true;
         theme = {

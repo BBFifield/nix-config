@@ -15,9 +15,6 @@ in {
     xdg.configFile."hypr/start_hyprlock.sh".source = ./start_hyprlock.sh; # This ensures the script is available to ironbar while its config is outside of the store;
     programs.hyprlock = {
       enable = true;
-      # sourceFirst = true;
-      # importantPrefixes = [
-      # ];
 
       settings = let
         scale =
@@ -25,9 +22,7 @@ in {
             "1" = 2; # "1" is true
             "" = 1; # "" is false
           }
-          .${builtins.toString osConfig.nixos.desktop.hidpi.enable};
-
-        cfg = config.hm.theme.colorscheme.cognates;
+          .${builtins.toString config.hm.hidpi.enable};
       in
         mkMerge [
           {
@@ -44,15 +39,15 @@ in {
               blur_passes = 2;
             };
           }
-          (mkIf (config.hm.theme.colorscheme.name == "catppuccin") {
+          (mkIf (config.hm.hotload.enable) {
             source = "$HOME/.config/hypr/hyprland.conf";
-            "$accent" = "rgb(${cfg.borderActive1})";
-            "$accentAlpha" = "${cfg.borderActive1}";
-            "$text" = "rgb(${cfg.text})";
+            "$accent" = "rgb($activeBorder1})";
+            "$accentAlpha" = "rgb($activeBorder1)";
+            "$text" = "rgb($text)";
             "$font" = "${config.hm.theme.fonts.defaultMonospace}";
 
             background = {
-              color = "rgb(${cfg.bg})";
+              color = "rgb($bg)";
             };
 
             # LAYOUT
@@ -111,15 +106,15 @@ in {
               dots_spacing = 0.2 * scale;
               dots_center = true;
               outer_color = "$accent";
-              inner_color = "rgb(${cfg.textField})";
+              inner_color = "rgb($textField)";
               font_color = "$text";
               fade_on_empty = "false";
-              placeholder_text = ''<span foreground="##${cfg.text}"><i>󰌾 Logged in as </i><span foreground="##$accentAlpha">$USER</span></span>'';
+              placeholder_text = ''<span foreground="##$text"><i>󰌾 Logged in as </i><span foreground="##$accentAlpha">$USER</span></span>'';
               hide_input = false;
               check_color = "$accent";
-              fail_color = "rgb(${cfg.failure})";
+              fail_color = "rgb($failure)";
               fail_text = ''<i>$FAIL <b>($ATTEMPTS)</b></i>'';
-              capslock_color = "rgb(${cfg.warning})";
+              capslock_color = "rgb($warning)";
               position = "0, ${builtins.toString (-47 * scale)}";
               halign = "center";
               valign = "center";
