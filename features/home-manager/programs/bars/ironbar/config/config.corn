@@ -66,7 +66,7 @@ $config_dir = ".config/ironbar"
 
   $custom_sys_info = {
     type = "script"
-    cmd = "bash /home/brandon/nixos-config/features/home-manager/programs/ironbar/config/sys_info.sh"
+    cmd = "bash /home/brandon/.config/ironbar/sys_info.sh"
     mode = "poll"
     interval = 5000
   }
@@ -165,4 +165,4 @@ in {
   start = $left
   center = $center
   end = $right
-} 
+}

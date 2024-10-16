@@ -1,7 +1,7 @@
 {
   catppuccin = rec {
     variants = {
-      mocha = {
+      mocha = rec {
         rosewater = "f5e0dc"; #f5e0dc
         flamingo = "f2cdcd"; #f2cdcd
         pink = "f5c2e7"; #f5c2e7
@@ -28,8 +28,14 @@
         base = "1e1e2e"; #1e1e2e
         mantle = "181825"; #181825
         crust = "11111b"; #11111b
+        customBg = mantle;
+        customText = blue;
+        customBtnHoverBg = blue;
+        customBtnHoverFg = mantle;
+        customActiveWorkspace = red;
+        customInactiveWorkspace = pink;
       };
-      macchiato = {
+      macchiato = rec {
         rosewater = "f5e0dc"; #f5e0dc
         flamingo = "f2cdcd"; #f2cdcd
         pink = "f5c2e7"; #f5c2e7
@@ -56,8 +62,14 @@
         base = "1e1e2e"; #1e1e2e
         mantle = "181825"; #181825
         crust = "11111b"; #11111b
+        customBg = base;
+        customText = blue;
+        customBtnHoverBg = blue;
+        customBtnHoverFg = base;
+        customActiveWorkspace = red;
+        customInactiveWorkspace = pink;
       };
-      frappe = {
+      frappe = rec {
         rosewater = "f2d5cf"; #f2d5cf
         flamingo = "eebebe"; #eebebe
         pink = "f4b8e4"; #f4b8e4
@@ -84,8 +96,14 @@
         base = "303446"; #303446
         mantle = "292c3c"; #292c3c
         crust = "232634"; #232634
+        customBg = base;
+        customText = blue;
+        customBtnHoverBg = blue;
+        customBtnHoverFg = base;
+        customActiveWorkspace = red;
+        customInactiveWorkspace = pink;
       };
-      latte = {
+      latte = rec {
         rosewater = "dc8a78"; #dc8a78
         flamingo = "dd7878"; #dd7878
         pink = "ea76cb"; #ea76cb
@@ -112,6 +130,12 @@
         base = "eff1f5"; #eff1f5
         mantle = "e6e9ef"; #e6e9ef
         crust = "dce0e8"; #dce0e8
+        customBg = base;
+        customText = text;
+        customBtnHoverBg = blue;
+        customBtnHoverFg = base;
+        customActiveWorkspace = blue;
+        customInactiveWorkspace = teal;
       };
     };
     cognates = value: {
@@ -119,10 +143,13 @@
       activeBorder2 = variants.${value}.rosewater;
       inactiveBorder1 = variants.${value}.lavender;
       inactiveBorder2 = variants.${value}.overlay0;
-      text = variants.${value}.text;
+      text = variants.${value}.customText;
       textField = variants.${value}.surface0;
-      bg = variants.${value}.base;
-      darkBg = variants.${value}.blue;
+      bg = variants.${value}.customBg;
+      btnHoverBg = variants.${value}.customBtnHoverBg;
+      btnHoverFg = variants.${value}.customBtnHoverFg;
+      activeWorkspace = variants.${value}.customActiveWorkspace;
+      inactiveWorkspace = variants.${value}.customInactiveWorkspace;
       failure = variants.${value}.red;
       warning = variants.${value}.yellow;
       blue = variants.${value}.blue;
@@ -135,7 +162,7 @@
   };
   dracula = rec {
     variants = {
-      standard = {
+      standard = rec {
         background = "282a36"; #282a36
         currentLine = "44475a"; #44475a
         foreground = "f8f8f2"; #f8f8f2
@@ -147,8 +174,14 @@
         purple = "bd93f9"; #bd93f9
         red = "ff5555"; #ff5555
         yellow = "f1fa8c"; #f1fa8c
+        customBg = background;
+        customText = foreground;
+        customBtnHoverBg = comment;
+        customBtnHoverFg = foreground;
+        customActiveWorkspace = purple;
+        customInactiveWorkspace = comment;
       };
-      alucard = {
+      alucard = rec {
         background = "f8f8f2"; #f8f8f2
         currentLine = "e2e4e5"; #e2e4e5
         foreground = "282a36"; #282a36
@@ -160,17 +193,26 @@
         purple = "bd93f9"; #bd93f9
         red = "ff5555"; #ff5555
         yellow = "f1fa8c"; #f1fa8c
+        customBg = currentLine;
+        customText = foreground;
+        customBtnHoverBg = comment;
+        customBtnHoverFg = currentLine;
+        customActiveWorkspace = red;
+        customInactiveWorkspace = comment;
       };
     };
     cognates = value: {
-      activeBorder1 = variants.${value}.green;
+      activeBorder1 = variants.${value}.pink;
       activeBorder2 = variants.${value}.cyan;
       inactiveBorder1 = variants.${value}.comment;
       inactiveBorder2 = variants.${value}.currentLine;
-      text = variants.${value}.foreground;
-      textField = variants.${value}.currentLine;
-      bg = variants.${value}.background;
-      darkBg = variants.${value}.purple;
+      text = variants.${value}.customText;
+      textField = variants.${value}.background;
+      bg = variants.${value}.customBg;
+      btnHoverBg = variants.${value}.customBtnHoverBg;
+      btnHoverFg = variants.${value}.customBtnHoverFg;
+      activeWorkspace = variants.${value}.customActiveWorkspace;
+      inactiveWorkspace = variants.${value}.customInactiveWorkspace;
       failure = variants.${value}.red;
       warning = variants.${value}.yellow;
       blue = variants.${value}.cyan;

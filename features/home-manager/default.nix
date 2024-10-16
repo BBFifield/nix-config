@@ -1,6 +1,9 @@
-{lib, ...}: let
-  hotloadSubmodule = import ./submodules {inherit lib;};
-in {
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   imports =
     (lib.concatMap import [./programs])
     ++ [./themes];
@@ -19,5 +22,43 @@ in {
       '';
     };
     hidpi.enable = lib.mkEnableOption "Enable hidpi (which just makes the scale 2x in relevant parts of the configuration).";
+  };
+
+  config = {
+    home.packages = let
+      parts =
+        {
+          "1" = ''
+            #!/usr/bin/env bash
+            directory=${config.home.homeDirectory}/.config
+            current_colorscheme="$1"
+            switch_config() {
+          '';
+          "4" = ''
+            }
+              if [ "$(ls -1 "$directory/hypr/hyprland_colorschemes" | wc -l)" -le 1 ]; then
+                exit 1
+              else
+                next_colorscheme=$(ls -1 "$directory/hypr/hyprland_colorschemes" | sed -n "/$current_colorscheme/{n;p}" | sed 's/\.[^.]*$//')
+                if [[ -z "$next_colorscheme" ]]; then
+                  next_colorscheme=$(ls -1 "$directory/hypr/hyprland_colorschemes" | sed -n '1p' | sed 's/\.[^.]*$//')
+                fi
+              fi
+              switch_config "$next_colorscheme"
+          '';
+        }
+        // config.hm.hotload.scriptParts;
+
+      sortedList = builtins.trace (lib.sort (a: b: a.name < b.name) (lib.attrsToList parts)) (lib.sort (a: b: a.name < b.name) (lib.attrsToList parts));
+
+      scriptList = lib.map (part: part.value) sortedList;
+    in [
+      (pkgs.writeTextFile {
+        name = "switch-colorscheme";
+        text = pkgs.lib.concatStringsSep "\n" scriptList;
+        executable = true;
+        destination = "/bin/switch-colorscheme";
+      })
+    ];
   };
 }

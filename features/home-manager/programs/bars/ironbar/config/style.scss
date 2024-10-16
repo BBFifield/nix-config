@@ -1,37 +1,15 @@
-$rosewater: #f5e0dc;
-$flamingo: #f2cdcd;
-$pink: #f5c2e7;
-$mauve: #cba6f7;
-$red: #f38ba8;
-$maroon: #eba0ac;
-$peach: #fab387;
-$yellow: #f9e2af;
-$green: #a6e3a1;
-$teal: #94e2d5;
-$sky: #89dceb;
-$sapphire: #74c7ec;
-$blue: #89b4fa;
-$lavender: #b4befe;
-$text: #cdd6f4;
-$subtext1: #bac2de;
-$subtext0: #a6adc8;
-$overlay2: #9399b2;
-$overlay1: #7f849c;
-$overlay0: #6c7086;
-$surface2: #585b70;
-$surface1: #45475a;
-$surface0: #313244;
-$base: #1e1e2e;
-$mantle: #181825;
-$crust: #11111b;
+@use "ironbar_colors";
 
-$color_text: $blue;
-$color_text_focused: $base;
-$color_bg: $base;
-$color_bg_dark: $blue;
-$color_border: $surface2;
-$color_border_active: $mauve;
-$color_urgent: $red;
+$color_text: ironbar_colors.$text;
+$color_text_focused: ironbar_colors.$bg;
+$color_bg: ironbar_colors.$bg;
+$color_btn_hover_bg: ironbar_colors.$btnHoverBg;
+$color_btn_hover_fg: ironbar_colors.$btnHoverFg;
+$color_border: ironbar_colors.$inactiveBorder2;
+$color_active_workspace: ironbar_colors.$activeWorkspace;
+$color_inactive_workspace: ironbar_colors.$inactiveWorkspace;
+$color_border_active: ironbar_colors.$purple;
+$color_urgent: ironbar_colors.$red;
 $font-family:
   JetBrainsMono Nerd Font,
   sans-serif;
@@ -76,7 +54,7 @@ button {
   background-color: $color_bg;
   background-image: none;
   box-shadow: none;
-  color: $blue;
+  color: $color_text;
   box-shadow: none;
   .item {
     transition-duration: 0.2s;
@@ -87,18 +65,18 @@ button {
     transition-timing-function: linear;
   }
   &:hover {
-    background-color: $color_bg_dark;
+    background-color: $color_btn_hover_bg;
     label {
-      color: $base;
+      color: $color_btn_hover_fg;
     }
     box {
-      background-color: $color_bg_dark;
-      color: $color_bg;
+      background-color: $color_btn_hover_bg;
+      color: $color_btn_hover_fg;
     }
   }
 }
 label {
-  color: $blue;
+  color: $color_text;
   box-shadow: none;
 }
 scale {
@@ -149,8 +127,8 @@ scale {
       font-size: 1.5em;
     }
     &:selected {
-      background-color: $color_bg_dark;
-      color: $color_bg;
+      background-color: $color_btn_hover_bg;
+      color: $color_btn_hover_fg;
       border-radius: 20%;
     }
   }
@@ -165,7 +143,7 @@ scale {
     examtem {
       &:not(.focused) {
         &:hover {
-          background-color: $color_bg_dark;
+          background-color: $color_btn_hover_bg;
         }
       }
     }
@@ -193,7 +171,7 @@ scale {
 .music {
   &:hover {
     * {
-      background-color: $color_bg_dark;
+      background-color: $color_btn_hover_bg;
     }
   }
 }
@@ -274,14 +252,14 @@ scale {
 .popup-volume {
   .slider {
     .top {
-      color: $color_bg_dark;
+      color: $color_btn_hover_fg;
     }
   }
   slider {
-    background-color: $color_bg_dark;
+    background-color: $color_btn_hover_bg;
   }
   highlight {
-    background-color: $color_bg_dark;
+    background-color: $color_btn_hover_bg;
   }
   .device-box {
     border-right: 1px solid $color_border;
@@ -289,19 +267,19 @@ scale {
       .combo {
         &:hover {
           box {
-            background-color: $color_bg_dark;
-            color: $color_bg;
+            background-color: $color_btn_hover_bg;
+            color: $color_btn_hover_fg;
           }
         }
       }
       menu {
         background-color: $color_bg;
-        color: $color_bg_dark;
+        color: $color_btn_hover_fg;
       }
       menuitem {
         &:hover {
-          background-color: $color_bg_dark;
-          color: $color_bg;
+          background-color: $color_btn_hover_bg;
+          color: $color_btn_hover_fg;
         }
       }
     }
@@ -310,10 +288,13 @@ scale {
 
 /* -- workspaces -- */
 .workspaces {
+  label {
+    color: $color_inactive_workspace;
+  }
   .item.focused {
     background-color: transparent;
     > label {
-      color: $green;
+      color: $color_active_workspace;
     }
   }
 }

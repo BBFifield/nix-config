@@ -1,17 +1,15 @@
 {
   config,
   lib,
-  osConfig,
   ...
 }:
 with lib; let
-  hotloadSubmodule = import ../../../submodules {inherit lib;};
+  cfg = config.hm.hyprland.hyprlock;
 in {
   options.hm.hyprland.hyprlock = {
     enable = mkEnableOption "Enable Hyprlock.";
-    hotload = hotloadSubmodule;
   };
-  config = mkIf config.hm.hyprland.enable {
+  config = mkIf cfg.enable {
     xdg.configFile."hypr/start_hyprlock.sh".source = ./start_hyprlock.sh; # This ensures the script is available to ironbar while its config is outside of the store;
     programs.hyprlock = {
       enable = true;
@@ -39,15 +37,15 @@ in {
               blur_passes = 2;
             };
           }
-          (mkIf (config.hm.hotload.enable) {
+          {
             source = "$HOME/.config/hypr/hyprland.conf";
-            "$accent" = "rgb($activeBorder1})";
-            "$accentAlpha" = "rgb($activeBorder1)";
-            "$text" = "rgb($text)";
+            "$accent" = "0xff$activeBorder1";
+            "$accentAlpha" = "0xff$activeBorder1";
+            "$textVar" = "0xff$text";
             "$font" = "${config.hm.theme.fonts.defaultMonospace}";
 
             background = {
-              color = "rgb($bg)";
+              color = "0xff$bg";
             };
 
             # LAYOUT
@@ -55,7 +53,7 @@ in {
               {
                 monitor = "";
                 text = "Layout: $LAYOUT";
-                color = "$text";
+                color = "$textVar";
                 font_size = 25 * scale;
                 font_family = "$font";
                 position = "${builtins.toString (30 * scale)}, ${builtins.toString (-60 * scale)}";
@@ -66,7 +64,7 @@ in {
               {
                 monitor = "";
                 text = "$TIME";
-                color = "$text";
+                color = "$textVar";
                 font_size = 90 * scale;
                 font_family = "$font";
                 position = "${builtins.toString (-30 * scale)}, 0";
@@ -77,7 +75,7 @@ in {
               {
                 monitor = "";
                 text = ''cmd[update:43200000] date +"%A, %d %B %Y"'';
-                color = "$text";
+                color = "$textVar";
                 font_size = 25 * scale;
                 font_family = "$font";
                 position = "${builtins.toString (-30 * scale)}, ${builtins.toString (-150 * scale)}";
@@ -106,20 +104,20 @@ in {
               dots_spacing = 0.2 * scale;
               dots_center = true;
               outer_color = "$accent";
-              inner_color = "rgb($textField)";
-              font_color = "$text";
+              inner_color = "0xff$textField";
+              font_color = "$textVar";
               fade_on_empty = "false";
-              placeholder_text = ''<span foreground="##$text"><i>󰌾 Logged in as </i><span foreground="##$accentAlpha">$USER</span></span>'';
+              placeholder_text = ''<span foreground="##$text"><i>󰌾 Logged in as </i><span foreground="##$activeBorder1">$USER</span></span>'';
               hide_input = false;
               check_color = "$accent";
-              fail_color = "rgb($failure)";
+              fail_color = "0xff$failure";
               fail_text = ''<i>$FAIL <b>($ATTEMPTS)</b></i>'';
-              capslock_color = "rgb($warning)";
+              capslock_color = "0xff$warning";
               position = "0, ${builtins.toString (-47 * scale)}";
               halign = "center";
               valign = "center";
             };
-          })
+          }
         ];
     };
   };

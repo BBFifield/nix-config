@@ -23,35 +23,12 @@ with lib; let
     };
   };
 
-  switch_conf = pkgs.writeShellScript "switch_conf" ''
-    #!/usr/bin/env bash
-    directory=${config.home.homeDirectory}/.config/hypr
-    current_colorscheme="$1"
-    switch_config() {
-      rm "$directory/colorscheme_settings.conf"
-      rm "$directory/hyprland_colorscheme.conf"
-      cp -rf "$directory/hyprland_colorschemes/$1" "$directory/hyprland_colorscheme.conf"
-      cp -rf "$directory/colorscheme_settings/$1" "$directory/colorscheme_settings.conf"
-    }
-
-    if [ "$(ls -1 "$directory/hyprland_colorschemes" | wc -l)" -le 1 ]; then
-      exit 1
-    else
-      next_colorscheme=$(ls -1 "$directory/hyprland_colorschemes" | sed -n "/$current_colorscheme/{n;p}")
-      if [[ -z "$next_colorscheme" ]]; then
-        next_colorscheme=$(ls -1 "$directory/hyprland_colorschemes" | sed -n '1p')
-      fi
-    fi
-    switch_config "$next_colorscheme"
-    hyprctl reload
-  '';
-
   settings = {
     source =
       [
         "${config.home.homeDirectory}/.config/hypr/hyprland_colorscheme.conf"
       ]
-      ++ (lib.optionals (config.hm.hotload.enable) ["${config.home.homeDirectory}/.config/hypr/colorscheme_settings.conf"]);
+      ++ (lib.optionals (config.hm.hyprland.shell.hotload.enable) ["${config.home.homeDirectory}/.config/hypr/colorscheme_settings.conf"]);
 
     exec-once =
       [
@@ -82,7 +59,7 @@ with lib; let
   };
 
   colorschemeSettings = theme: {
-    bind = ''SUPER, T, exec, ${switch_conf} ${theme}.conf'';
+    bind = ''SUPER, T, exec, switch-colorscheme ${theme}'';
     env = [
       "CURRENT_COLORSCHEME,${theme}.conf"
     ];
@@ -203,8 +180,10 @@ in {
               hm.hyprland.hyprlock.enable = true;
               hm.walker.enable = true;
               hm.satty.enable = true;
-              hm.ironbar.enable = true;
-
+              hm.ironbar = {
+                enable = true;
+                hotload.enable = true;
+              };
               home.packages = with pkgs; [
                 hyprpicker
                 clipse #TUI clipboard manager
@@ -225,6 +204,18 @@ in {
                 };
             }
             (lib.mkIf (cfg.hotload.enable) (mkMerge [
+              {
+                hm.hotload.scriptParts = {
+                  "2" = ''
+                    rm "$directory/hypr/colorscheme_settings.conf" "$directory/hypr/hyprland_colorscheme.conf"
+                    cp -rf "$directory/hypr/hyprland_colorschemes/$1.conf" "$directory/hypr/hyprland_colorscheme.conf"
+                    cp -rf "$directory/hypr/colorscheme_settings/$1.conf" "$directory/hypr/colorscheme_settings.conf"
+                  '';
+                  "5" = ''
+                    hyprctl reload
+                  '';
+                };
+              }
               colorFiles
               settingsFiles
             ]))
