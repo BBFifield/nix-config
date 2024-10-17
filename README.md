@@ -11,7 +11,7 @@ There are several outputs provided by this flake. If you want to utilize any of 
 The first step is to add this repository to inputs inside your flake. 
 
 ```nix 
-inputs.newfie = {
+inputs.<my-repo> = {
   url = "github:/BBFifield/nix-config";
 };
 ```
@@ -22,9 +22,9 @@ The packages supplied by this flake are found in the _pkgs_ directory. These may
 
 Call any of my custom packages with;
 
-`<name> = inputs.newfie.packages.<system>.<package_name>;`
+`<name> = inputs.<my-repo>.packages.<system>.<package_name>;`
 
-Example: `klassy = inputs.newfie.packages.x86_64-linux.klassy;` Then you can add it to your environment.packages or home.packages.
+Example: `klassy = inputs.<my-repo>.packages.x86_64-linux.klassy;` Then you can add it to your environment.packages or home.packages.
 
 ### Raspberry Pi 2B:
 
