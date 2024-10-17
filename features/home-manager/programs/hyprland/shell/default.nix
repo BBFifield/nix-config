@@ -211,7 +211,7 @@ in {
                     cp -rf "$directory/hypr/hyprland_colorschemes/$1.conf" "$directory/hypr/hyprland_colorscheme.conf"
                     cp -rf "$directory/hypr/colorscheme_settings/$1.conf" "$directory/hypr/colorscheme_settings.conf"
                   '';
-                  "5" = ''
+                  "7" = ''
                     hyprctl reload
                   '';
                 };

@@ -252,7 +252,7 @@ scale {
 .popup-volume {
   .slider {
     .top {
-      color: $color_btn_hover_fg;
+      color: $color_text;
     }
   }
   slider {
@@ -274,7 +274,7 @@ scale {
       }
       menu {
         background-color: $color_bg;
-        color: $color_btn_hover_fg;
+        color: $color_text;
       }
       menuitem {
         &:hover {

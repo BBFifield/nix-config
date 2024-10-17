@@ -34,7 +34,7 @@
             current_colorscheme="$1"
             switch_config() {
           '';
-          "4" = ''
+          "6" = ''
             }
               if [ "$(ls -1 "$directory/hypr/hyprland_colorschemes" | wc -l)" -le 1 ]; then
                 exit 1
@@ -49,7 +49,7 @@
         }
         // config.hm.hotload.scriptParts;
 
-      sortedList = builtins.trace (lib.sort (a: b: a.name < b.name) (lib.attrsToList parts)) (lib.sort (a: b: a.name < b.name) (lib.attrsToList parts));
+      sortedList = lib.sort (a: b: a.name < b.name) (lib.attrsToList parts);
 
       scriptList = lib.map (part: part.value) sortedList;
     in [

@@ -85,12 +85,14 @@ in {
       (lib.optionalAttrs (sysCfg.desktop.hyprland.enable) {
         firefox.style = "gnome";
         dconf.enable = true;
+        alacritty.hotload.enable = true;
+        yazi.hotload.enable = true;
         theme = {
           gtkTheme.name = "adw-gtk3-dark";
           iconTheme = "MoreWaita";
           colorscheme = {
-            name = "catppuccin";
-            variant = "macchiato";
+            name = "dracula";
+            variant = "standard";
           };
         };
         hyprland = lib.mkMerge [

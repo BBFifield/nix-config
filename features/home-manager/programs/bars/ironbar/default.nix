@@ -74,7 +74,7 @@ in {
                   cp -rf "$directory/ironbar/ironbar_colorschemes/$1.scss" "$directory/ironbar/_ironbar_colors.scss"
                   sass "$directory/ironbar/style.scss" "$directory/ironbar/style.css"
                 '';
-                "6" = ''
+                "8" = ''
                   ironbar reload
                 '';
               };
